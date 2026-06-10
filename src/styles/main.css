@@ -1,0 +1,575 @@
+/* ============================================================
+   Halal Kansai — identidad visual
+   noche #10211d · esmeralda #1d6a55 · oro #c9a24b · papel #f6f1e6
+   Fraunces (títulos) · Inter (texto) · Amiri (árabe)
+   Firma visual: arco mihrab.
+   ============================================================ */
+
+:root {
+  --night: #10211d;
+  --night-soft: #1a312b;
+  --emerald: #1d6a55;
+  --emerald-soft: #2a8169;
+  --gold: #c9a24b;
+  --gold-soft: #e0c684;
+  --paper: #f6f1e6;
+  --paper-dim: #efe7d5;
+  --ink: #21302c;
+  --ink-soft: #5c6f69;
+  --danger: #a8503f;
+
+  --font-display: 'Fraunces', 'Amiri', serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-arabic: 'Amiri', 'Scheherazade New', serif;
+
+  /* Arco mihrab: radio superior característico */
+  --arch: 999px 999px 14px 14px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--night);
+  color: var(--paper);
+  -webkit-font-smoothing: antialiased;
+}
+
+:lang(ar) body,
+[dir='rtl'] body {
+  font-family: var(--font-arabic), var(--font-body);
+}
+
+#app {
+  max-width: 540px;
+  margin: 0 auto;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---------- Cabecera ---------- */
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.9rem 1.1rem 0.6rem;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.brand-arch {
+  width: 34px;
+  height: 42px;
+  border: 2px solid var(--gold);
+  border-radius: var(--arch);
+  background: linear-gradient(180deg, var(--emerald) 0%, var(--night-soft) 100%);
+  flex-shrink: 0;
+}
+
+.brand h1 {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--paper);
+  letter-spacing: 0.01em;
+}
+
+.brand .tagline {
+  margin: 0;
+  font-size: 0.7rem;
+  color: var(--gold-soft);
+}
+
+.lang-switch {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.lang-switch button {
+  background: transparent;
+  border: 1px solid var(--emerald);
+  color: var(--paper);
+  border-radius: 8px;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.lang-switch button[aria-pressed='true'] {
+  background: var(--emerald);
+  border-color: var(--gold);
+}
+
+/* ---------- Contenido ---------- */
+
+main {
+  flex: 1;
+  padding: 0.5rem 1.1rem 5.5rem;
+}
+
+.view {
+  display: none;
+}
+
+.view.active {
+  display: block;
+  animation: fade 0.25s ease;
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+h2 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.25rem;
+  margin: 0.8rem 0 0.2rem;
+}
+
+.subtitle {
+  color: var(--ink-soft);
+  font-size: 0.78rem;
+  margin: 0 0 1rem;
+  color: #9db4ac;
+}
+
+/* ---------- Tarjeta mihrab (salat destacada) ---------- */
+
+.mihrab-card {
+  border: 2px solid var(--gold);
+  border-radius: var(--arch);
+  background: linear-gradient(180deg, var(--emerald) 0%, var(--night-soft) 130%);
+  text-align: center;
+  padding: 2.2rem 1rem 1.4rem;
+  margin: 1.2rem auto 1rem;
+  max-width: 320px;
+}
+
+.mihrab-card .label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--gold-soft);
+}
+
+.mihrab-card .big {
+  font-family: var(--font-display);
+  font-size: 2.4rem;
+  margin: 0.2rem 0;
+  color: var(--paper);
+}
+
+.mihrab-card .small {
+  font-size: 0.85rem;
+  color: var(--paper-dim);
+}
+
+/* ---------- Lista de horarios ---------- */
+
+.times-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  background: var(--paper);
+  color: var(--ink);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.times-list li {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.75rem 1.1rem;
+  border-bottom: 1px solid var(--paper-dim);
+  font-size: 0.95rem;
+}
+
+.times-list li:last-child {
+  border-bottom: none;
+}
+
+.times-list li.next {
+  background: var(--emerald);
+  color: var(--paper);
+  font-weight: 600;
+}
+
+.times-list .t {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+/* ---------- Botones ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--emerald);
+  color: var(--paper);
+  border: 1px solid var(--gold);
+  border-radius: 12px;
+  padding: 0.6rem 1.1rem;
+  font-size: 0.9rem;
+  font-family: var(--font-body);
+  cursor: pointer;
+  margin: 0.6rem 0;
+}
+
+.btn:active {
+  background: var(--emerald-soft);
+}
+
+.btn.stop {
+  background: var(--danger);
+  border-color: var(--danger);
+}
+
+.note {
+  font-size: 0.78rem;
+  color: #9db4ac;
+}
+
+/* ---------- Qibla ---------- */
+
+.compass-wrap {
+  position: relative;
+  width: 260px;
+  height: 260px;
+  margin: 1.4rem auto;
+}
+
+.compass-dial {
+  position: absolute;
+  inset: 0;
+  border: 2px solid var(--gold);
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 35%, var(--night-soft), var(--night));
+  transition: transform 0.15s ease-out;
+}
+
+.compass-dial .cardinal {
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  font-size: 0.7rem;
+  color: var(--gold-soft);
+}
+
+.compass-needle {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 4px;
+  height: 108px;
+  transform-origin: 50% 100%;
+  background: linear-gradient(180deg, var(--gold) 0%, transparent 100%);
+  border-radius: 4px;
+  translate: -2px -108px;
+}
+
+.compass-kaaba {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
+  font-size: 1.1rem;
+}
+
+.compass-wrap.aligned .compass-dial {
+  border-color: var(--emerald-soft);
+  box-shadow: 0 0 24px rgba(42, 129, 105, 0.55);
+}
+
+.qibla-readout {
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+}
+
+/* ---------- Lugares ---------- */
+
+.filters {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.8rem;
+}
+
+.filters button {
+  background: transparent;
+  border: 1px solid var(--emerald);
+  color: var(--paper);
+  border-radius: 999px;
+  padding: 0.3rem 0.85rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.filters button[aria-pressed='true'] {
+  background: var(--emerald);
+  border-color: var(--gold);
+}
+
+#map {
+  height: 240px;
+  border-radius: 16px;
+  border: 1px solid var(--emerald);
+  margin-bottom: 1rem;
+  background: var(--night-soft);
+}
+
+.place-card {
+  background: var(--paper);
+  color: var(--ink);
+  border-radius: 14px;
+  padding: 0.8rem 1rem;
+  margin-bottom: 0.7rem;
+}
+
+.place-card h3 {
+  margin: 0 0 0.15rem;
+  font-family: var(--font-display);
+  font-size: 1rem;
+}
+
+.place-card .meta {
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.badge {
+  display: inline-block;
+  border-radius: 999px;
+  padding: 0.1rem 0.55rem;
+  font-size: 0.7rem;
+  background: var(--emerald);
+  color: var(--paper);
+}
+
+.badge.shop {
+  background: var(--gold);
+  color: var(--night);
+}
+
+.badge.restaurant {
+  background: var(--emerald-soft);
+}
+
+.badge.warn {
+  background: var(--paper-dim);
+  color: var(--ink-soft);
+  border: 1px dashed var(--ink-soft);
+}
+
+/* ---------- Jutba ---------- */
+
+.disclaimer {
+  border: 1px solid var(--gold);
+  border-radius: 12px;
+  background: rgba(201, 162, 75, 0.12);
+  color: var(--gold-soft);
+  font-size: 0.78rem;
+  padding: 0.6rem 0.9rem;
+  margin: 0.6rem 0 1rem;
+}
+
+.khutbah-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.khutbah-controls label {
+  font-size: 0.8rem;
+  color: #9db4ac;
+}
+
+.khutbah-controls select {
+  width: 100%;
+  background: var(--night-soft);
+  color: var(--paper);
+  border: 1px solid var(--emerald);
+  border-radius: 10px;
+  padding: 0.55rem 0.7rem;
+  font-size: 0.9rem;
+}
+
+.transcript {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.bubble {
+  background: var(--paper);
+  color: var(--ink);
+  border-radius: 14px;
+  padding: 0.7rem 1rem;
+  font-size: 0.92rem;
+}
+
+.bubble .orig {
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  margin-top: 0.35rem;
+}
+
+.bubble.interim {
+  opacity: 0.55;
+  font-style: italic;
+}
+
+/* Tarjetas de cita: Corán con arco mihrab dorado */
+.bubble.quran {
+  border: 2px solid var(--gold);
+  border-radius: var(--arch);
+  background: linear-gradient(180deg, #fdf9ee, var(--paper));
+  text-align: center;
+  padding-top: 1.4rem;
+}
+
+.bubble.quran .arabic {
+  font-family: var(--font-arabic);
+  font-size: 1.35rem;
+  direction: rtl;
+  line-height: 2;
+}
+
+.bubble.hadith {
+  border: 1px dashed var(--emerald);
+}
+
+.bubble.dua {
+  border: 1px solid var(--emerald-soft);
+}
+
+.bubble .ref {
+  display: inline-block;
+  margin-top: 0.4rem;
+  font-size: 0.72rem;
+  color: var(--emerald);
+  font-weight: 600;
+}
+
+.status-pill[hidden] {
+  display: none;
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.8rem;
+  color: var(--gold-soft);
+}
+
+.status-pill .dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--danger);
+  animation: pulse 1.2s infinite;
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.3;
+  }
+}
+
+/* ---------- Guía ---------- */
+
+.guide-card {
+  background: var(--paper);
+  color: var(--ink);
+  border-radius: 14px;
+  padding: 0.9rem 1.1rem;
+  margin-bottom: 0.8rem;
+}
+
+.guide-card h3 {
+  font-family: var(--font-display);
+  margin: 0 0 0.3rem;
+  font-size: 1rem;
+  color: var(--emerald);
+}
+
+.guide-card p {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.55;
+}
+
+/* ---------- Navegación inferior ---------- */
+
+.tabbar {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  translate: -50% 0;
+  width: 100%;
+  max-width: 540px;
+  display: flex;
+  background: var(--night-soft);
+  border-top: 1px solid var(--emerald);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.tabbar button {
+  flex: 1;
+  background: none;
+  border: none;
+  color: #9db4ac;
+  font-size: 0.68rem;
+  padding: 0.55rem 0 0.65rem;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.18rem;
+  font-family: var(--font-body);
+}
+
+.tabbar button .icon {
+  font-size: 1.15rem;
+  line-height: 1;
+}
+
+.tabbar button[aria-selected='true'] {
+  color: var(--gold);
+}
+
+/* Leaflet en tema oscuro: atenuar atribución */
+.leaflet-container {
+  font-family: var(--font-body);
+}

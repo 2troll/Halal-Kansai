@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Halal Kansai: arco mihrab sobre fondo noche, esmeralda y oro -->
+  <rect width="512" height="512" rx="96" fill="#10211d"/>
+  <path d="M256 84c-78 38-122 102-122 178v166h244V262c0-76-44-140-122-178z"
+        fill="#1d6a55" stroke="#c9a24b" stroke-width="14"/>
+  <path d="M256 148c-52 28-82 74-82 128v152h164V276c0-54-30-100-82-128z"
+        fill="#f6f1e6"/>
+  <circle cx="256" cy="252" r="26" fill="#c9a24b"/>
+</svg>

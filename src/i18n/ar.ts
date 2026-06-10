@@ -1,0 +1,79 @@
+import type { Dict } from './index';
+
+export const ar: Dict = {
+  appName: 'حلال كانساي',
+  tagline: 'رفيق يومي للجالية المسلمة في اليابان',
+
+  navSalat: 'الصلاة',
+  navQibla: 'القبلة',
+  navPlaces: 'الأماكن',
+  navKhutbah: 'الخطبة',
+  navGuide: 'الدليل',
+
+  salatTitle: 'مواقيت الصلاة',
+  salatMethod: 'رابطة العالم الإسلامي · العصر شافعي',
+  fajr: 'الفجر',
+  sunrise: 'الشروق',
+  dhuhr: 'الظهر',
+  asr: 'العصر',
+  maghrib: 'المغرب',
+  isha: 'العشاء',
+  nextPrayer: 'الصلاة القادمة',
+  inTime: 'بعد',
+  useMyLocation: 'استخدم موقعي',
+  locationDenied: 'الموقع غير متاح — تُعرض مواقيت أوساكا.',
+  city: 'المدينة',
+
+  qiblaTitle: 'اتجاه القبلة',
+  qiblaFromNorth: 'من الشمال الحقيقي',
+  qiblaDistance: 'إلى الكعبة',
+  compassStart: 'تشغيل البوصلة',
+  compassHint: 'أمسك الهاتف أفقيًا وبعيدًا عن الأجسام المعدنية.',
+  compassUnsupported: 'البوصلة غير متاحة على هذا الجهاز. استخدم الاتجاه مع بوصلة عادية.',
+  compassPermissionDenied: 'تم رفض إذن البوصلة.',
+  qiblaAligned: 'أنت باتجاه القبلة',
+
+  placesTitle: 'أماكن حلال في كانساي',
+  filterAll: 'الكل',
+  filterMosque: 'مساجد',
+  filterRestaurant: 'مطاعم',
+  filterShop: 'متاجر',
+  typeMosque: 'مسجد',
+  typeRestaurant: 'مطعم',
+  typeShop: 'متجر حلال',
+  unverified: 'بانتظار التحقق ميدانيًا',
+  openMap: 'الخريطة',
+  kmAway: 'كم',
+
+  khutbahTitle: 'ترجمة الخطبة مباشرة',
+  khutbahDisclaimer:
+    'الترجمة المباشرة وسيلة للفهم فقط — ليست فتوى ولا نصًا دينيًا رسميًا.',
+  sourceLang: 'لغة الخطبة',
+  targetLang: 'الترجمة إلى',
+  startListening: 'ابدأ الاستماع',
+  stopListening: 'إيقاف',
+  listening: 'يستمع…',
+  speechUnsupported: 'التعرف على الكلام غير مدعوم في هذا المتصفح. استخدم كروم على أندرويد.',
+  backendUnavailable: 'خدمة الترجمة غير متاحة. تحقق من اتصالك.',
+  citationQuran: 'قرآن كريم',
+  citationHadith: 'حديث — تحقق من المصدر',
+  citationDua: 'دعاء',
+  citationUnverified: 'اقتباس غير مُتحقق منه',
+
+  guideTitle: 'الدليل',
+  guideSalatH: 'الصلاة في اليابان',
+  guideSalatP:
+    'تُحسب المواقيت فلكيًا (طريقة رابطة العالم الإسلامي) وتعمل دون اتصال. كثير من المحطات والمراكز التجارية في كانساي فيها مصليات — انظر تبويب الأماكن.',
+  guideHalalH: 'العثور على طعام حلال',
+  guideHalalP:
+    'لا يوجد في اليابان وسم حلال رسمي. ابحث عن شهادات الاعتماد، واسأل عن المكونات، واحذر من الميرين والساكي والدهون الحيوانية في الأطعمة المصنعة.',
+  guideJummahH: 'صلاة الجمعة',
+  guideJummahP:
+    'تُلقى الخطب في كانساي عادة بالأردية أو الإندونيسية أو اليابانية أو العربية. تبويب الخطبة يترجمها مباشرة إلى لغتك.',
+  guideAboutH: 'عن التطبيق',
+  guideAboutP: 'مجاني، بلا إعلانات، بلا حسابات، بلا تتبع. صُنع من أجل الجالية المسلمة في كانساي.',
+
+  language: 'اللغة',
+  offlineReady: 'متاح دون اتصال',
+  loading: 'جارٍ التحميل…',
+};
