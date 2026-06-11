@@ -63,6 +63,7 @@ export const en = {
   citationHadith: 'Hadith — verify source',
   citationDua: 'Du‘a',
   citationUnverified: 'Citation not verified',
+  translationUnofficial: 'unofficial translation',
 
   // Guide
   guideTitle: 'Guide',

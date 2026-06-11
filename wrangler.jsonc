@@ -1,0 +1,18 @@
+{
+  // Despliegue del backend en Cloudflare Workers (Fase 2).
+  // Requiere: cuenta Cloudflare (pendiente del fundador) y
+  //   npx wrangler secret put ANTHROPIC_API_KEY
+  "name": "halal-kansai-api",
+  "main": "server/src/worker.ts",
+  "compatibility_date": "2026-06-01",
+  "assets": {
+    // Sirve server/data/* como /data/* para el binding ASSETS (29 MB de
+    // Corán + traducciones Tanzil que no caben en el bundle del worker).
+    "directory": "./server/data",
+    "binding": "ASSETS"
+  },
+  "vars": {
+    "ANTHROPIC_MODEL": "claude-opus-4-8",
+    "ALLOWED_ORIGINS": "https://halalkansai.app"
+  }
+}

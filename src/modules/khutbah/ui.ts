@@ -10,13 +10,15 @@ const PREF_TARGET = 'hk-khutbah-target';
 
 function segmentCard(seg: TranslatedSegment): string {
   if (seg.kind === 'quran') {
+    const unofficial =
+      seg.verified && seg.translationSource === 'llm' ? ` · ${t('translationUnofficial')}` : '';
     return `
       <div class="bubble quran">
         ${seg.arabicVerified ? `<div class="arabic">${seg.arabicVerified}</div>` : ''}
         <div>${seg.translation}</div>
         <span class="ref">${
           seg.verified && seg.reference
-            ? `${t('citationQuran')} ${seg.reference}`
+            ? `${t('citationQuran')} ${seg.reference}${unofficial}`
             : `⚠ ${t('citationUnverified')}`
         }</span>
       </div>`;

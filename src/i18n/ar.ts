@@ -59,6 +59,7 @@ export const ar: Dict = {
   citationHadith: 'حديث — تحقق من المصدر',
   citationDua: 'دعاء',
   citationUnverified: 'اقتباس غير مُتحقق منه',
+  translationUnofficial: 'ترجمة غير رسمية',
 
   guideTitle: 'الدليل',
   guideSalatH: 'الصلاة في اليابان',

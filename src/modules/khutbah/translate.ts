@@ -21,6 +21,8 @@ export interface TranslatedSegment {
   reference?: string;
   /** false → mostrar "cita no verificada". */
   verified: boolean;
+  /** Origen de la traducción: oficial de Tanzil o generada por LLM. */
+  translationSource?: 'tanzil' | 'llm';
 }
 
 const API_URL = '/api/translate';

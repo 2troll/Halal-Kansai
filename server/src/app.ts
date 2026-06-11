@@ -1,0 +1,142 @@
+/**
+ * API Halal Kansai (Hono): corre igual en Node (dev) y Cloudflare Workers.
+ *
+ *   POST /api/translate    → clasifica + traduce un segmento de jutba;
+ *                            citas coránicas verificadas contra Tanzil.
+ *   POST /api/quran/match  → verificación directa de un texto contra la BD.
+ *   GET  /api/health       → estado.
+ */
+import { Hono } from 'hono';
+import { cors } from 'hono/cors';
+import { analyzeSegment, type LlmConfig } from './llm.ts';
+import { CONFIDENCE_THRESHOLD, type VerseRef } from './match.ts';
+import { hasArabic } from './normalize.ts';
+import { getMatcher, type QuranStore } from './store.ts';
+
+export interface AppConfig {
+  store: QuranStore;
+  llm: LlmConfig;
+  /** Orígenes permitidos para CORS; '*' solo en desarrollo. */
+  allowedOrigins: string[];
+  /** Peticiones por minuto y por IP en /api/translate. */
+  rateLimitPerMinute?: number;
+}
+
+/** Forma de respuesta que espera el frontend (src/modules/khutbah/translate.ts). */
+interface TranslatedSegment {
+  kind: 'speech' | 'quran' | 'hadith' | 'dua';
+  translation: string;
+  original: string;
+  arabicVerified?: string;
+  reference?: string;
+  verified: boolean;
+  translationSource: 'tanzil' | 'llm';
+}
+
+/**
+ * Rate limit en memoria por IP (ventana de 1 min). Suficiente por isolate;
+ * para límites globales en producción, respaldar con KV o Durable Objects.
+ */
+function makeRateLimiter(limit: number) {
+  const hits = new Map<string, { count: number; windowStart: number }>();
+  return (ip: string): boolean => {
+    const now = Date.now();
+    const entry = hits.get(ip);
+    if (!entry || now - entry.windowStart > 60_000) {
+      hits.set(ip, { count: 1, windowStart: now });
+      if (hits.size > 10_000) hits.clear(); // tope de memoria
+      return true;
+    }
+    entry.count += 1;
+    return entry.count <= limit;
+  };
+}
+
+function clientIp(headers: Headers): string {
+  return (
+    headers.get('cf-connecting-ip') ??
+    headers.get('x-forwarded-for')?.split(',')[0].trim() ??
+    'unknown'
+  );
+}
+
+export function createApp(config: AppConfig): Hono {
+  const app = new Hono();
+  const allowRequest = makeRateLimiter(config.rateLimitPerMinute ?? 30);
+
+  app.use(
+    '/api/*',
+    cors({
+      origin: (origin) =>
+        config.allowedOrigins.includes('*') || config.allowedOrigins.includes(origin)
+          ? origin
+          : null,
+      allowMethods: ['GET', 'POST'],
+    }),
+  );
+
+  app.get('/api/health', (c) => c.json({ ok: true }));
+
+  app.post('/api/quran/match', async (c) => {
+    const body = await c.req.json<{ text?: string; candidate?: VerseRef }>().catch(() => null);
+    if (!body?.text) return c.json({ error: 'text requerido' }, 400);
+
+    const matcher = await getMatcher(config.store);
+    const result = matcher.match(body.text, body.candidate);
+    return c.json({ match: result, threshold: CONFIDENCE_THRESHOLD });
+  });
+
+  app.post('/api/translate', async (c) => {
+    if (!allowRequest(clientIp(c.req.raw.headers))) {
+      return c.json({ error: 'rate limit' }, 429);
+    }
+
+    const body = await c.req
+      .json<{ text?: string; source?: string; target?: string }>()
+      .catch(() => null);
+    if (!body?.text || !body.target) {
+      return c.json({ error: 'text y target requeridos' }, 400);
+    }
+    const text = body.text.slice(0, 1000);
+    const target = body.target.slice(0, 8);
+    const source = (body.source ?? 'unknown').slice(0, 12);
+
+    let analysis;
+    try {
+      analysis = await analyzeSegment(config.llm, text, source, target);
+    } catch {
+      return c.json({ error: 'translation failed' }, 502);
+    }
+
+    const segment: TranslatedSegment = {
+      kind: analysis.kind,
+      translation: analysis.translation,
+      original: text,
+      verified: false,
+      translationSource: 'llm',
+    };
+
+    // Cita coránica: verificar contra la BD. El árabe mostrado sale SIEMPRE
+    // de quran-uthmani.json; la traducción oficial de Tanzil si existe.
+    if (analysis.kind === 'quran' && hasArabic(text)) {
+      const matcher = await getMatcher(config.store);
+      const match = matcher.match(text, analysis.candidate ?? undefined);
+      if (match) {
+        const key = `${match.ref.sura}:${match.ref.ayah}`;
+        segment.verified = true;
+        segment.arabicVerified = match.uthmani;
+        segment.reference = key;
+        const translation = await config.store.loadTranslation(target);
+        const official = translation?.verses[key];
+        if (official) {
+          segment.translation = official;
+          segment.translationSource = 'tanzil';
+        }
+      }
+    }
+
+    return c.json(segment);
+  });
+
+  return app;
+}

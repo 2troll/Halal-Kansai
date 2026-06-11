@@ -61,6 +61,7 @@ export const es: Dict = {
   citationHadith: 'Hadiz — verificar fuente',
   citationDua: 'Du‘a',
   citationUnverified: 'Cita no verificada',
+  translationUnofficial: 'traducción no oficial',
 
   guideTitle: 'Guía',
   guideSalatH: 'La oración en Japón',
