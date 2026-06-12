@@ -20,5 +20,14 @@
   // y pegar el id generado. También: npx wrangler secret put ADMIN_TOKEN
   "kv_namespaces": [
     { "binding": "SUGGESTIONS", "id": "<rellenar-tras-crear-namespace>" }
+  ],
+  // Salas del modo transmisor (Fase 4): una instancia por sala.
+  "durable_objects": {
+    "bindings": [
+      { "name": "KHUTBAH_ROOMS", "class_name": "KhutbahRoomDO" }
+    ]
+  },
+  "migrations": [
+    { "tag": "v1", "new_classes": ["KhutbahRoomDO"] }
   ]
 }

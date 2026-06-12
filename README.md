@@ -76,6 +76,22 @@ verificados.
   la jutba está activa (se re-adquiere al volver a la pestaña y se libera
   al parar).
 
+## Estado: Fase 4 — modo transmisor implementado
+
+- ✅ **Modo transmisor** (la killer feature): en la pestaña Jutba, el móvil
+  junto al altavoz elige «Transmitir a una sala» con un código (ej.
+  `osaka-masjid`); los demás eligen «Unirse a una transmisión» y reciben por
+  WebSocket la traducción **en su propio idioma** (el servidor traduce una
+  vez por idioma distinto, no por oyente). Un solo micrófono y una sola
+  conexión de datos por mezquita; el resto ahorra batería y datos.
+  - Dev local: WebSocket integrado en `npm run dev:server` (@hono/node-ws).
+  - Producción: Durable Object por sala (`KhutbahRoomDO`, ver
+    `wrangler.jsonc`) para compartir estado entre conexiones.
+  - Si el LLM falla, la sala reenvía el texto original sin traducir.
+- 📄 **Whisper**: investigación de coste/arquitectura en
+  `docs/FASE4_WHISPER.md` (recomendación: Workers AI por chunks; ~13 h/mes
+  de jutba → coste casi nulo, y el pipeline posterior no cambia).
+
 ## Desarrollo
 
 ```bash
@@ -104,8 +120,8 @@ Firma visual: arco mihrab (`border-radius: 999px 999px 14px 14px`).
 
 ## Próximas fases
 
-- **Fase 4** — Whisper streaming en el backend y modo «transmisor»: un solo
-  móvil junto al altavoz transmite y los demás reciben la traducción por
-  WebSocket (la probable killer feature).
+- Whisper en el backend (ver `docs/FASE4_WHISPER.md`) tras la prueba de
+  campo del modo transmisor.
+- Hadices verificados contra corpus de sunnah (Bujari/Muslim) — spec §4.5.
 
 Especificación completa: `PROYECTO_HALAL_KANSAI_CLAUDE_CODE.md` (v1.0, junio 2026).

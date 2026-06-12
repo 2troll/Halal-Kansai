@@ -466,6 +466,7 @@ h2 {
   color: #9db4ac;
 }
 
+.khutbah-controls input,
 .khutbah-controls select {
   width: 100%;
   background: var(--night-soft);

@@ -8,9 +8,9 @@
  */
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
-import { analyzeSegment, type LlmConfig } from './llm.ts';
+import type { LlmConfig } from './llm.ts';
 import { CONFIDENCE_THRESHOLD, type VerseRef } from './match.ts';
-import { hasArabic } from './normalize.ts';
+import { buildSegment } from './segment.ts';
 import { getMatcher, type QuranStore } from './store.ts';
 import { parseSuggestion, type SuggestionStatus, type SuggestionStore } from './suggestions.ts';
 
@@ -25,17 +25,6 @@ export interface AppConfig {
   suggestions?: SuggestionStore;
   /** Token Bearer del panel admin; sin él, las rutas admin devuelven 503. */
   adminToken?: string;
-}
-
-/** Forma de respuesta que espera el frontend (src/modules/khutbah/translate.ts). */
-interface TranslatedSegment {
-  kind: 'speech' | 'quran' | 'hadith' | 'dua';
-  translation: string;
-  original: string;
-  arabicVerified?: string;
-  reference?: string;
-  verified: boolean;
-  translationSource: 'tanzil' | 'llm';
 }
 
 /**
@@ -164,41 +153,11 @@ export function createApp(config: AppConfig): Hono {
     const target = body.target.slice(0, 8);
     const source = (body.source ?? 'unknown').slice(0, 12);
 
-    let analysis;
     try {
-      analysis = await analyzeSegment(config.llm, text, source, target);
+      return c.json(await buildSegment({ llm: config.llm, store: config.store }, text, source, target));
     } catch {
       return c.json({ error: 'translation failed' }, 502);
     }
-
-    const segment: TranslatedSegment = {
-      kind: analysis.kind,
-      translation: analysis.translation,
-      original: text,
-      verified: false,
-      translationSource: 'llm',
-    };
-
-    // Cita coránica: verificar contra la BD. El árabe mostrado sale SIEMPRE
-    // de quran-uthmani.json; la traducción oficial de Tanzil si existe.
-    if (analysis.kind === 'quran' && hasArabic(text)) {
-      const matcher = await getMatcher(config.store);
-      const match = matcher.match(text, analysis.candidate ?? undefined);
-      if (match) {
-        const key = `${match.ref.sura}:${match.ref.ayah}`;
-        segment.verified = true;
-        segment.arabicVerified = match.uthmani;
-        segment.reference = key;
-        const translation = await config.store.loadTranslation(target);
-        const official = translation?.verses[key];
-        if (official) {
-          segment.translation = official;
-          segment.translationSource = 'tanzil';
-        }
-      }
-    }
-
-    return c.json(segment);
   });
 
   return app;
