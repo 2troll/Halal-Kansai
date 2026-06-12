@@ -14,5 +14,11 @@
   "vars": {
     "ANTHROPIC_MODEL": "claude-opus-4-8",
     "ALLOWED_ORIGINS": "https://halalkansai.app"
-  }
+  },
+  // Cola de moderación de lugares sugeridos (Fase 3). Crear con:
+  //   npx wrangler kv namespace create SUGGESTIONS
+  // y pegar el id generado. También: npx wrangler secret put ADMIN_TOKEN
+  "kv_namespaces": [
+    { "binding": "SUGGESTIONS", "id": "<rellenar-tras-crear-namespace>" }
+  ]
 }

@@ -21,6 +21,8 @@ export const es: Dict = {
   nextPrayer: 'Próxima oración',
   inTime: 'en',
   useMyLocation: 'Usar mi ubicación',
+  shareTimes: 'Compartir horarios',
+  shareError: 'No se pudo crear la imagen.',
   locationDenied: 'Ubicación no disponible — mostrando horarios de Osaka.',
   city: 'Ciudad',
 
@@ -45,6 +47,14 @@ export const es: Dict = {
   unverified: 'Pendiente de verificar in situ',
   openMap: 'Mapa',
   kmAway: 'km de distancia',
+  suggestPlace: 'Sugerir un lugar',
+  fieldName: 'Nombre',
+  fieldAddress: 'Dirección (opcional)',
+  fieldNote: 'Nota para el moderador (opcional)',
+  attachLocation: 'Adjuntar mi ubicación actual',
+  send: 'Enviar',
+  suggestThanks: '¡Gracias! Tu sugerencia se revisará antes de publicarse.',
+  suggestError: 'No se pudo enviar la sugerencia. Inténtalo más tarde.',
 
   khutbahTitle: 'Traducción de la jutba en vivo',
   khutbahDisclaimer:
@@ -54,6 +64,7 @@ export const es: Dict = {
   startListening: 'Empezar a escuchar',
   stopListening: 'Detener',
   listening: 'Escuchando…',
+  fridayMode: 'Modo viernes: la pantalla sigue encendida mientras escuchas.',
   speechUnsupported:
     'El reconocimiento de voz no funciona en este navegador. Usa Chrome en Android.',
   backendUnavailable: 'Servicio de traducción no disponible. Comprueba tu conexión.',

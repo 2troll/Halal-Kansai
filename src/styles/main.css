@@ -390,6 +390,58 @@ h2 {
   border: 1px dashed var(--ink-soft);
 }
 
+/* ---------- Sugerir lugar ---------- */
+
+.suggest {
+  margin: 1rem 0 0.5rem;
+}
+
+.suggest summary {
+  list-style: none;
+  cursor: pointer;
+  width: fit-content;
+}
+
+.suggest summary::-webkit-details-marker {
+  display: none;
+}
+
+.suggest-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  margin-top: 0.7rem;
+  background: var(--night-soft);
+  border: 1px solid var(--emerald);
+  border-radius: 14px;
+  padding: 0.9rem;
+}
+
+.suggest-form input,
+.suggest-form select,
+.suggest-form textarea {
+  background: var(--night);
+  color: var(--paper);
+  border: 1px solid var(--emerald);
+  border-radius: 10px;
+  padding: 0.55rem 0.7rem;
+  font-size: 0.9rem;
+  font-family: var(--font-body);
+}
+
+.suggest-form textarea {
+  min-height: 64px;
+  resize: vertical;
+}
+
+.suggest-form .attach {
+  font-size: 0.82rem;
+  color: #9db4ac;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
 /* ---------- Jutba ---------- */
 
 .disclaimer {

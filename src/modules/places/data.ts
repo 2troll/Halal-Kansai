@@ -4,8 +4,10 @@ export interface Place {
   id: string;
   name: string;
   type: PlaceType;
-  lat: number;
-  lng: number;
+  /** Los lugares comunitarios aprobados pueden venir sin coordenadas:
+   *  salen en la lista pero no en el mapa. */
+  lat?: number;
+  lng?: number;
   city: string;
   address?: string;
   /** false hasta que Luigi verifique coordenadas y datos in situ (pendiente del fundador). */

@@ -11,12 +11,17 @@
 import type { Hono } from 'hono';
 import { createApp } from './app.ts';
 import { WorkersAssetsStore } from './store.ts';
+import { KVSuggestionStore } from './suggestions.ts';
 
 interface Env {
   ASSETS: { fetch(request: Request | string): Promise<Response> };
+  /** KV para la cola de moderación (binding SUGGESTIONS en wrangler.jsonc). */
+  SUGGESTIONS?: { get(key: string): Promise<string | null>; put(key: string, value: string): Promise<void> };
   ANTHROPIC_API_KEY: string;
   ANTHROPIC_MODEL?: string;
   ALLOWED_ORIGINS?: string;
+  /** Secreto: wrangler secret put ADMIN_TOKEN */
+  ADMIN_TOKEN?: string;
 }
 
 let app: Hono | null = null;
@@ -29,6 +34,8 @@ export default {
         llm: { apiKey: env.ANTHROPIC_API_KEY, model: env.ANTHROPIC_MODEL },
         allowedOrigins: (env.ALLOWED_ORIGINS ?? '').split(',').map((s) => s.trim()).filter(Boolean),
         rateLimitPerMinute: 30,
+        suggestions: env.SUGGESTIONS ? new KVSuggestionStore(env.SUGGESTIONS) : undefined,
+        adminToken: env.ADMIN_TOKEN,
       });
     }
     return app.fetch(request);

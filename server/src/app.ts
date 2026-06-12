@@ -12,6 +12,7 @@ import { analyzeSegment, type LlmConfig } from './llm.ts';
 import { CONFIDENCE_THRESHOLD, type VerseRef } from './match.ts';
 import { hasArabic } from './normalize.ts';
 import { getMatcher, type QuranStore } from './store.ts';
+import { parseSuggestion, type SuggestionStatus, type SuggestionStore } from './suggestions.ts';
 
 export interface AppConfig {
   store: QuranStore;
@@ -20,6 +21,10 @@ export interface AppConfig {
   allowedOrigins: string[];
   /** Peticiones por minuto y por IP en /api/translate. */
   rateLimitPerMinute?: number;
+  /** Cola de moderación de lugares sugeridos (Fase 3). */
+  suggestions?: SuggestionStore;
+  /** Token Bearer del panel admin; sin él, las rutas admin devuelven 503. */
+  adminToken?: string;
 }
 
 /** Forma de respuesta que espera el frontend (src/modules/khutbah/translate.ts). */
@@ -76,6 +81,64 @@ export function createApp(config: AppConfig): Hono {
   );
 
   app.get('/api/health', (c) => c.json({ ok: true }));
+
+  // ---------- Lugares comunitarios (Fase 3) ----------
+
+  // Lugares aprobados por moderación; el frontend los fusiona con los de fábrica.
+  app.get('/api/places', async (c) => {
+    if (!config.suggestions) return c.json({ places: [] });
+    const approved = await config.suggestions.list('approved');
+    return c.json({
+      places: approved.map(({ id, name, type, city, address, lat, lng }) => ({
+        id: `community-${id}`,
+        name,
+        type,
+        city,
+        address,
+        lat,
+        lng,
+        verified: true, // aprobado por el moderador
+      })),
+    });
+  });
+
+  app.post('/api/places/suggest', async (c) => {
+    if (!config.suggestions) return c.json({ error: 'no disponible' }, 503);
+    if (!allowRequest(clientIp(c.req.raw.headers))) {
+      return c.json({ error: 'rate limit' }, 429);
+    }
+    const suggestion = parseSuggestion(await c.req.json().catch(() => null));
+    if (!suggestion) return c.json({ error: 'datos inválidos' }, 400);
+    await config.suggestions.add(suggestion);
+    return c.json({ ok: true, id: suggestion.id }, 201);
+  });
+
+  // ---------- Panel admin (token Bearer) ----------
+
+  const requireAdmin = (authHeader: string | undefined): boolean =>
+    Boolean(config.adminToken) && authHeader === `Bearer ${config.adminToken}`;
+
+  app.get('/api/admin/suggestions', async (c) => {
+    if (!config.suggestions || !config.adminToken) return c.json({ error: 'no disponible' }, 503);
+    if (!requireAdmin(c.req.header('Authorization'))) return c.json({ error: 'no autorizado' }, 401);
+    const status = c.req.query('status') as SuggestionStatus | undefined;
+    return c.json({ suggestions: await config.suggestions.list(status) });
+  });
+
+  app.post('/api/admin/suggestions/:id', async (c) => {
+    if (!config.suggestions || !config.adminToken) return c.json({ error: 'no disponible' }, 503);
+    if (!requireAdmin(c.req.header('Authorization'))) return c.json({ error: 'no autorizado' }, 401);
+    const body = await c.req.json<{ action?: string }>().catch(() => null);
+    if (body?.action !== 'approve' && body?.action !== 'reject') {
+      return c.json({ error: 'action debe ser approve o reject' }, 400);
+    }
+    const updated = await config.suggestions.setStatus(
+      c.req.param('id'),
+      body.action === 'approve' ? 'approved' : 'rejected',
+    );
+    if (!updated) return c.json({ error: 'no existe' }, 404);
+    return c.json({ ok: true, suggestion: updated });
+  });
 
   app.post('/api/quran/match', async (c) => {
     const body = await c.req.json<{ text?: string; candidate?: VerseRef }>().catch(() => null);

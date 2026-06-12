@@ -1,5 +1,6 @@
 import { KhutbahListener, SOURCE_LOCALES, TARGET_LANGS, isSpeechSupported } from './speech';
 import { translateSegment, type TranslatedSegment } from './translate';
+import { disableFridayMode, enableFridayMode } from './wakelock';
 import { t, getLang } from '../../i18n';
 
 let listener: KhutbahListener | null = null;
@@ -48,6 +49,7 @@ export function renderKhutbah(container: HTMLElement): void {
   if (running && listener) {
     listener.stop();
     running = false;
+    void disableFridayMode();
   }
 
   const savedSource = localStorage.getItem(PREF_SOURCE) ?? 'ur-PK';
@@ -130,12 +132,13 @@ export function renderKhutbah(container: HTMLElement): void {
     if (running) {
       listener?.stop();
       running = false;
+      void disableFridayMode();
       btn.textContent = `🎙 ${t('startListening')}`;
       btn.classList.remove('stop');
       status.hidden = true;
+      note.textContent = '';
       return;
     }
-    note.textContent = '';
     listener = new KhutbahListener({
       onSentence,
       onInterim: showInterim,
@@ -145,6 +148,9 @@ export function renderKhutbah(container: HTMLElement): void {
     });
     listener.start(selSource.value);
     running = true;
+    // Modo viernes: pantalla siempre encendida durante la jutba.
+    void enableFridayMode();
+    note.textContent = `🔆 ${t('fridayMode')}`;
     btn.textContent = `■ ${t('stopListening')}`;
     btn.classList.add('stop');
     status.hidden = false;

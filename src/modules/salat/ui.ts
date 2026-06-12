@@ -62,8 +62,18 @@ export function renderSalat(container: HTMLElement): void {
       ).join('')}
     </ul>
     <button class="btn" id="btn-locate">📍 ${t('useMyLocation')}</button>
+    <button class="btn" id="btn-share">📤 ${t('shareTimes')}</button>
     <p class="note" id="salat-note"></p>
   `;
+
+  container.querySelector<HTMLButtonElement>('#btn-share')!.addEventListener('click', async () => {
+    const { shareTimesImage } = await import('./share');
+    try {
+      await shareTimesImage(times, now);
+    } catch {
+      container.querySelector('#salat-note')!.textContent = t('shareError');
+    }
+  });
 
   container.querySelector<HTMLButtonElement>('#btn-locate')!.addEventListener('click', () => {
     navigator.geolocation.getCurrentPosition(

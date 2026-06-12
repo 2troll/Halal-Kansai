@@ -61,6 +61,21 @@ verificados.
   sirven como Static Assets (binding `ASSETS`, ver `wrangler.jsonc`) y se
   cachean en memoria por isolate.
 
+## Estado: Fase 3 completada
+
+- ✅ **Sugerir lugar**: formulario en la pestaña Lugares (con ubicación opcional)
+  → `POST /api/places/suggest` → cola de moderación. Panel admin en
+  `/admin.html` protegido por token Bearer (`ADMIN_TOKEN`); los lugares
+  aprobados salen en `GET /api/places` y la app los fusiona con los de
+  fábrica (caché local para offline). En Workers la cola vive en KV
+  (binding `SUGGESTIONS`, ver `wrangler.jsonc`).
+- ✅ **Compartir horarios como imagen**: canvas 1080×1350 con la identidad
+  visual (arco mihrab), vía Web Share API con fallback a descarga PNG —
+  pensado para grupos de WhatsApp.
+- ✅ **Modo viernes**: Wake Lock API mantiene la pantalla encendida mientras
+  la jutba está activa (se re-adquiere al volver a la pestaña y se libera
+  al parar).
+
 ## Desarrollo
 
 ```bash
@@ -89,8 +104,8 @@ Firma visual: arco mihrab (`border-radius: 999px 999px 14px 14px`).
 
 ## Próximas fases
 
-- **Fase 3** — Sugerir lugar + moderación, compartir horarios como imagen,
-  modo viernes (Wake Lock).
-- **Fase 4** — Whisper streaming y modo «transmisor» por WebSocket.
+- **Fase 4** — Whisper streaming en el backend y modo «transmisor»: un solo
+  móvil junto al altavoz transmite y los demás reciben la traducción por
+  WebSocket (la probable killer feature).
 
 Especificación completa: `PROYECTO_HALAL_KANSAI_CLAUDE_CODE.md` (v1.0, junio 2026).

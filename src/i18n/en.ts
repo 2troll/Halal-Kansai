@@ -21,6 +21,8 @@ export const en = {
   nextPrayer: 'Next prayer',
   inTime: 'in',
   useMyLocation: 'Use my location',
+  shareTimes: 'Share times',
+  shareError: 'Could not create the image.',
   locationDenied: 'Location unavailable — showing Osaka times.',
   city: 'City',
 
@@ -46,6 +48,14 @@ export const en = {
   unverified: 'To be verified on site',
   openMap: 'Map',
   kmAway: 'km away',
+  suggestPlace: 'Suggest a place',
+  fieldName: 'Name',
+  fieldAddress: 'Address (optional)',
+  fieldNote: 'Note for the moderator (optional)',
+  attachLocation: 'Attach my current location',
+  send: 'Send',
+  suggestThanks: 'Thank you! Your suggestion will be reviewed before publishing.',
+  suggestError: 'Could not send the suggestion. Try again later.',
 
   // Khutbah
   khutbahTitle: 'Live khutbah translation',
@@ -56,6 +66,7 @@ export const en = {
   startListening: 'Start listening',
   stopListening: 'Stop',
   listening: 'Listening…',
+  fridayMode: 'Friday mode: the screen stays on while listening.',
   speechUnsupported:
     'Speech recognition is not supported in this browser. Use Chrome on Android.',
   backendUnavailable: 'Translation service unavailable. Check your connection.',

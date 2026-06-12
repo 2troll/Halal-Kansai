@@ -21,6 +21,8 @@ export const ar: Dict = {
   nextPrayer: 'الصلاة القادمة',
   inTime: 'بعد',
   useMyLocation: 'استخدم موقعي',
+  shareTimes: 'مشاركة المواقيت',
+  shareError: 'تعذر إنشاء الصورة.',
   locationDenied: 'الموقع غير متاح — تُعرض مواقيت أوساكا.',
   city: 'المدينة',
 
@@ -44,6 +46,14 @@ export const ar: Dict = {
   unverified: 'بانتظار التحقق ميدانيًا',
   openMap: 'الخريطة',
   kmAway: 'كم',
+  suggestPlace: 'اقترح مكانًا',
+  fieldName: 'الاسم',
+  fieldAddress: 'العنوان (اختياري)',
+  fieldNote: 'ملاحظة للمشرف (اختياري)',
+  attachLocation: 'إرفاق موقعي الحالي',
+  send: 'إرسال',
+  suggestThanks: 'شكرًا! ستُراجع المقترحات قبل النشر.',
+  suggestError: 'تعذر إرسال الاقتراح. حاول لاحقًا.',
 
   khutbahTitle: 'ترجمة الخطبة مباشرة',
   khutbahDisclaimer:
@@ -53,6 +63,7 @@ export const ar: Dict = {
   startListening: 'ابدأ الاستماع',
   stopListening: 'إيقاف',
   listening: 'يستمع…',
+  fridayMode: 'وضع الجمعة: تبقى الشاشة مضاءة أثناء الاستماع.',
   speechUnsupported: 'التعرف على الكلام غير مدعوم في هذا المتصفح. استخدم كروم على أندرويد.',
   backendUnavailable: 'خدمة الترجمة غير متاحة. تحقق من اتصالك.',
   citationQuran: 'قرآن كريم',
