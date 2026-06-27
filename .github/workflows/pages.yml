@@ -1,0 +1,56 @@
+name: Deploy frontend to GitHub Pages
+
+# Despliegue GRATIS del frontend (solo estático) para probar en el móvil el
+# reconocimiento de voz de la jutba. La traducción necesita el backend con
+# clave de Anthropic y NO se incluye aquí (mostrará "servicio no disponible").
+# Requiere que el repositorio sea público (Pages gratis no admite repos privados).
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [claude/halal-kansai-app-fswvap]
+    paths:
+      - 'src/**'
+      - 'index.html'
+      - 'admin.html'
+      - 'public/**'
+      - 'vite.config.ts'
+      - '.github/workflows/pages.yml'
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Build (base relativa para Pages)
+        run: PAGES_BASE=./ npm run build
+      - uses: actions/configure-pages@v5
+        with:
+          enablement: true
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

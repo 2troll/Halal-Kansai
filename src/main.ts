@@ -84,9 +84,15 @@ renderShell();
 onLangChange(renderShell);
 
 // PWA: registrar el service worker (solo en producción).
-if ('serviceWorker' in navigator && import.meta.env.PROD) {
+// En GitHub Pages (subruta) lo saltamos: el SW cachea rutas absolutas y el
+// despliegue de Pages es solo para probar el reconocimiento de voz online.
+if (
+  'serviceWorker' in navigator &&
+  import.meta.env.PROD &&
+  !location.hostname.endsWith('github.io')
+) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js').catch(() => {
+    navigator.serviceWorker.register(`${import.meta.env.BASE_URL}sw.js`).catch(() => {
       /* sin SW seguimos funcionando online */
     });
   });

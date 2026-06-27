@@ -10,7 +10,8 @@
     "lint": "eslint src tests tools server",
     "icons": "node tools/gen-icons.mjs",
     "dev:server": "node --experimental-strip-types server/src/node.ts",
-    "build:quran": "node tools/build-quran-data.mjs"
+    "build:quran": "node tools/build-quran-data.mjs",
+    "start": "bash scripts/start.sh"
   },
   "repository": {
     "type": "git",
