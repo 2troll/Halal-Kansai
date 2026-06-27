@@ -5,17 +5,13 @@ name: Deploy frontend to GitHub Pages
 # clave de Anthropic y NO se incluye aquí (mostrará "servicio no disponible").
 # Requiere que el repositorio sea público (Pages gratis no admite repos privados).
 
+# Solo manual: este despliegue requiere que el repositorio sea PÚBLICO
+# (GitHub Pages gratis no admite repos privados) y que Pages esté habilitado
+# (Settings → Pages → Source: GitHub Actions). Una vez hecho, lánzalo desde
+# la pestaña Actions → "Deploy frontend to GitHub Pages" → Run workflow.
+# No se ejecuta en cada push para no marcar el CI en rojo.
 on:
   workflow_dispatch:
-  push:
-    branches: [claude/halal-kansai-app-fswvap]
-    paths:
-      - 'src/**'
-      - 'index.html'
-      - 'admin.html'
-      - 'public/**'
-      - 'vite.config.ts'
-      - '.github/workflows/pages.yml'
 
 permissions:
   contents: read
