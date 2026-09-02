@@ -626,3 +626,97 @@ h2 {
 .leaflet-container {
   font-family: var(--font-body);
 }
+
+/* ── Comida: lectura de etiquetas y tarjetas para el camarero ───────────── */
+
+.food-label {
+  display: block;
+  margin: 0 0 0.4rem;
+  font-size: 0.9rem;
+  opacity: 0.85;
+}
+
+.food-input {
+  width: 100%;
+  padding: 0.7rem;
+  border: 1px solid var(--line, #d8cfc0);
+  border-radius: 10px;
+  font: inherit;
+  font-size: 1rem;
+  resize: vertical;
+  background: var(--card, #fff);
+  color: inherit;
+}
+
+.food-verdict {
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  margin: 0.9rem 0;
+  border-inline-start: 5px solid currentColor;
+}
+.food-verdict p { margin: 0.35rem 0 0; font-size: 0.9rem; opacity: 0.9; }
+
+.food-card { margin-block: 0.6rem; border-inline-start: 5px solid transparent; }
+.food-head { display: flex; align-items: flex-start; gap: 0.6rem; }
+.food-head > div { flex: 1; }
+.food-icon { font-size: 1.3rem; line-height: 1.2; }
+
+/* El color acompaña al icono y al texto: nunca es la única señal. */
+.food-haram    { color: #8c1c13; background: #fbeae8; }
+.food-doubtful { color: #7a5200; background: #fdf4e0; }
+.food-halal    { color: #1e5631; background: #e9f5ec; }
+
+.food-all { margin-top: 1.2rem; }
+.food-all summary { cursor: pointer; padding: 0.5rem 0; font-weight: 600; }
+
+.phrase-list { display: flex; flex-direction: column; gap: 0.55rem; }
+
+.phrase-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  width: 100%;
+  padding: 0.8rem 0.9rem;
+  border: 1px solid var(--line, #d8cfc0);
+  border-radius: 12px;
+  background: var(--card, #fff);
+  color: inherit;
+  text-align: start;
+  font: inherit;
+  cursor: pointer;
+}
+.phrase-item:hover { border-color: var(--accent, #1e5631); }
+.phrase-own { font-weight: 600; }
+.phrase-ja { font-size: 0.95rem; opacity: 0.75; }
+
+/* Hoja a pantalla completa: se le enseña el móvil al camarero, así que el
+   japonés va grande y sin nada que distraiga. */
+.phrase-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: 1.2rem;
+  background: rgba(20, 16, 12, 0.55);
+  backdrop-filter: blur(3px);
+}
+.phrase-sheet[hidden] { display: none; }
+
+.phrase-sheet-inner {
+  width: min(100%, 34rem);
+  padding: 1.6rem 1.4rem;
+  border-radius: 18px;
+  background: var(--card, #fff);
+  text-align: center;
+}
+.phrase-sheet-own { margin: 0 0 1rem; font-size: 1rem; opacity: 0.7; }
+.phrase-sheet-ja {
+  margin: 0 0 0.9rem;
+  font-size: clamp(1.5rem, 6vw, 2.4rem);
+  line-height: 1.5;
+  font-weight: 700;
+}
+.phrase-sheet-romaji { margin: 0 0 1.3rem; font-size: 0.95rem; opacity: 0.65; }
+
+body.sheet-open { overflow: hidden; }

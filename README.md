@@ -61,6 +61,36 @@ verificados.
   sirven como Static Assets (binding `ASSETS`, ver `wrangler.jsonc`) y se
   cachean en memoria por isolate.
 
+
+## Fase 5 — Comida: leer etiquetas y hablar con el camarero
+
+El problema que faltaba por resolver. En Japón las etiquetas están en japonés y
+los términos que de verdad importan —豚脂, 料理酒, ゼラチン, 酒精— no salen en
+ningún traductor con el matiz religioso. Y en el restaurante la barrera no es la
+mala voluntad, es que nadie entiende la pregunta.
+
+- ✅ **Base de ingredientes japoneses** (`src/modules/food/ingredients.ts`).
+  Búsqueda por kanji, kana, romaji o alias. Clasificación en `haram` /
+  `doubtful` / `halal` con el motivo explicado en los tres idiomas.
+- ✅ **Escaneo de etiqueta**: se pega la lista de ingredientes completa y
+  devuelve el hallazgo más grave, con el detalle de cada coincidencia.
+- ✅ **`inconclusive` es un estado de primera clase.** Si no se reconoce ningún
+  término, la aplicación dice *«no se reconoció nada»* y **nunca** da el visto
+  bueno. No reconocer no es lo mismo que ser lícito, y confundir las dos cosas
+  en una app religiosa es peor que no tener la función.
+- ✅ **Tarjetas para el personal** (`phrases.ts`): once frases en japonés cortés
+  (ですます) que se muestran a pantalla completa. Resuelven en cinco segundos lo
+  que cinco minutos de gestos no resuelven.
+- ✅ i18n completo ES/EN/AR con RTL, offline, sin API ni claves.
+- ✅ 14 tests nuevos (67 en total).
+
+### Los límites, dichos en la propia aplicación
+
+No emitimos fatwa. Donde las escuelas difieren —醤油 y su ~2% de alcohol de
+fermentación, 味噌, la carne no sacrificada según el rito— se dice que difieren
+y la decisión queda en el usuario. La aplicación ayuda a **preguntar mejor**;
+no sustituye a una certificación halal ni a un sabio.
+
 ## Estado: Fase 3 completada
 
 - ✅ **Sugerir lugar**: formulario en la pestaña Lugares (con ubicación opcional)
