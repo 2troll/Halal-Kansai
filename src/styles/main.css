@@ -1,0 +1,722 @@
+/* ============================================================
+   Halal Kansai — identidad visual
+   noche #10211d · esmeralda #1d6a55 · oro #c9a24b · papel #f6f1e6
+   Fraunces (títulos) · Inter (texto) · Amiri (árabe)
+   Firma visual: arco mihrab.
+   ============================================================ */
+
+:root {
+  --night: #10211d;
+  --night-soft: #1a312b;
+  --emerald: #1d6a55;
+  --emerald-soft: #2a8169;
+  --gold: #c9a24b;
+  --gold-soft: #e0c684;
+  --paper: #f6f1e6;
+  --paper-dim: #efe7d5;
+  --ink: #21302c;
+  --ink-soft: #5c6f69;
+  --danger: #a8503f;
+
+  --font-display: 'Fraunces', 'Amiri', serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-arabic: 'Amiri', 'Scheherazade New', serif;
+
+  /* Arco mihrab: radio superior característico */
+  --arch: 999px 999px 14px 14px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--night);
+  color: var(--paper);
+  -webkit-font-smoothing: antialiased;
+}
+
+:lang(ar) body,
+[dir='rtl'] body {
+  font-family: var(--font-arabic), var(--font-body);
+}
+
+#app {
+  max-width: 540px;
+  margin: 0 auto;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---------- Cabecera ---------- */
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.9rem 1.1rem 0.6rem;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.brand-arch {
+  width: 34px;
+  height: 42px;
+  border: 2px solid var(--gold);
+  border-radius: var(--arch);
+  background: linear-gradient(180deg, var(--emerald) 0%, var(--night-soft) 100%);
+  flex-shrink: 0;
+}
+
+.brand h1 {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--paper);
+  letter-spacing: 0.01em;
+}
+
+.brand .tagline {
+  margin: 0;
+  font-size: 0.7rem;
+  color: var(--gold-soft);
+}
+
+.lang-switch {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.lang-switch button {
+  background: transparent;
+  border: 1px solid var(--emerald);
+  color: var(--paper);
+  border-radius: 8px;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.lang-switch button[aria-pressed='true'] {
+  background: var(--emerald);
+  border-color: var(--gold);
+}
+
+/* ---------- Contenido ---------- */
+
+main {
+  flex: 1;
+  padding: 0.5rem 1.1rem 5.5rem;
+}
+
+.view {
+  display: none;
+}
+
+.view.active {
+  display: block;
+  animation: fade 0.25s ease;
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+h2 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.25rem;
+  margin: 0.8rem 0 0.2rem;
+}
+
+.subtitle {
+  color: var(--ink-soft);
+  font-size: 0.78rem;
+  margin: 0 0 1rem;
+  color: #9db4ac;
+}
+
+/* ---------- Tarjeta mihrab (salat destacada) ---------- */
+
+.mihrab-card {
+  border: 2px solid var(--gold);
+  border-radius: var(--arch);
+  background: linear-gradient(180deg, var(--emerald) 0%, var(--night-soft) 130%);
+  text-align: center;
+  padding: 2.2rem 1rem 1.4rem;
+  margin: 1.2rem auto 1rem;
+  max-width: 320px;
+}
+
+.mihrab-card .label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--gold-soft);
+}
+
+.mihrab-card .big {
+  font-family: var(--font-display);
+  font-size: 2.4rem;
+  margin: 0.2rem 0;
+  color: var(--paper);
+}
+
+.mihrab-card .small {
+  font-size: 0.85rem;
+  color: var(--paper-dim);
+}
+
+/* ---------- Lista de horarios ---------- */
+
+.times-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  background: var(--paper);
+  color: var(--ink);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.times-list li {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.75rem 1.1rem;
+  border-bottom: 1px solid var(--paper-dim);
+  font-size: 0.95rem;
+}
+
+.times-list li:last-child {
+  border-bottom: none;
+}
+
+.times-list li.next {
+  background: var(--emerald);
+  color: var(--paper);
+  font-weight: 600;
+}
+
+.times-list .t {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+/* ---------- Botones ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--emerald);
+  color: var(--paper);
+  border: 1px solid var(--gold);
+  border-radius: 12px;
+  padding: 0.6rem 1.1rem;
+  font-size: 0.9rem;
+  font-family: var(--font-body);
+  cursor: pointer;
+  margin: 0.6rem 0;
+}
+
+.btn:active {
+  background: var(--emerald-soft);
+}
+
+.btn.stop {
+  background: var(--danger);
+  border-color: var(--danger);
+}
+
+.note {
+  font-size: 0.78rem;
+  color: #9db4ac;
+}
+
+/* ---------- Qibla ---------- */
+
+.compass-wrap {
+  position: relative;
+  width: 260px;
+  height: 260px;
+  margin: 1.4rem auto;
+}
+
+.compass-dial {
+  position: absolute;
+  inset: 0;
+  border: 2px solid var(--gold);
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 35%, var(--night-soft), var(--night));
+  transition: transform 0.15s ease-out;
+}
+
+.compass-dial .cardinal {
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  font-size: 0.7rem;
+  color: var(--gold-soft);
+}
+
+.compass-needle {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 4px;
+  height: 108px;
+  transform-origin: 50% 100%;
+  background: linear-gradient(180deg, var(--gold) 0%, transparent 100%);
+  border-radius: 4px;
+  translate: -2px -108px;
+}
+
+.compass-kaaba {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
+  font-size: 1.1rem;
+}
+
+.compass-wrap.aligned .compass-dial {
+  border-color: var(--emerald-soft);
+  box-shadow: 0 0 24px rgba(42, 129, 105, 0.55);
+}
+
+.qibla-readout {
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+}
+
+/* ---------- Lugares ---------- */
+
+.filters {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.8rem;
+}
+
+.filters button {
+  background: transparent;
+  border: 1px solid var(--emerald);
+  color: var(--paper);
+  border-radius: 999px;
+  padding: 0.3rem 0.85rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.filters button[aria-pressed='true'] {
+  background: var(--emerald);
+  border-color: var(--gold);
+}
+
+#map {
+  height: 240px;
+  border-radius: 16px;
+  border: 1px solid var(--emerald);
+  margin-bottom: 1rem;
+  background: var(--night-soft);
+}
+
+.place-card {
+  background: var(--paper);
+  color: var(--ink);
+  border-radius: 14px;
+  padding: 0.8rem 1rem;
+  margin-bottom: 0.7rem;
+}
+
+.place-card h3 {
+  margin: 0 0 0.15rem;
+  font-family: var(--font-display);
+  font-size: 1rem;
+}
+
+.place-card .meta {
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.badge {
+  display: inline-block;
+  border-radius: 999px;
+  padding: 0.1rem 0.55rem;
+  font-size: 0.7rem;
+  background: var(--emerald);
+  color: var(--paper);
+}
+
+.badge.shop {
+  background: var(--gold);
+  color: var(--night);
+}
+
+.badge.restaurant {
+  background: var(--emerald-soft);
+}
+
+.badge.warn {
+  background: var(--paper-dim);
+  color: var(--ink-soft);
+  border: 1px dashed var(--ink-soft);
+}
+
+/* ---------- Sugerir lugar ---------- */
+
+.suggest {
+  margin: 1rem 0 0.5rem;
+}
+
+.suggest summary {
+  list-style: none;
+  cursor: pointer;
+  width: fit-content;
+}
+
+.suggest summary::-webkit-details-marker {
+  display: none;
+}
+
+.suggest-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  margin-top: 0.7rem;
+  background: var(--night-soft);
+  border: 1px solid var(--emerald);
+  border-radius: 14px;
+  padding: 0.9rem;
+}
+
+.suggest-form input,
+.suggest-form select,
+.suggest-form textarea {
+  background: var(--night);
+  color: var(--paper);
+  border: 1px solid var(--emerald);
+  border-radius: 10px;
+  padding: 0.55rem 0.7rem;
+  font-size: 0.9rem;
+  font-family: var(--font-body);
+}
+
+.suggest-form textarea {
+  min-height: 64px;
+  resize: vertical;
+}
+
+.suggest-form .attach {
+  font-size: 0.82rem;
+  color: #9db4ac;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+/* ---------- Jutba ---------- */
+
+.disclaimer {
+  border: 1px solid var(--gold);
+  border-radius: 12px;
+  background: rgba(201, 162, 75, 0.12);
+  color: var(--gold-soft);
+  font-size: 0.78rem;
+  padding: 0.6rem 0.9rem;
+  margin: 0.6rem 0 1rem;
+}
+
+.khutbah-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.khutbah-controls label {
+  font-size: 0.8rem;
+  color: #9db4ac;
+}
+
+.khutbah-controls input,
+.khutbah-controls select {
+  width: 100%;
+  background: var(--night-soft);
+  color: var(--paper);
+  border: 1px solid var(--emerald);
+  border-radius: 10px;
+  padding: 0.55rem 0.7rem;
+  font-size: 0.9rem;
+}
+
+.transcript {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.bubble {
+  background: var(--paper);
+  color: var(--ink);
+  border-radius: 14px;
+  padding: 0.7rem 1rem;
+  font-size: 0.92rem;
+}
+
+.bubble .orig {
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  margin-top: 0.35rem;
+}
+
+.bubble.interim {
+  opacity: 0.55;
+  font-style: italic;
+}
+
+/* Tarjetas de cita: Corán con arco mihrab dorado */
+.bubble.quran {
+  border: 2px solid var(--gold);
+  border-radius: var(--arch);
+  background: linear-gradient(180deg, #fdf9ee, var(--paper));
+  text-align: center;
+  padding-top: 1.4rem;
+}
+
+.bubble.quran .arabic {
+  font-family: var(--font-arabic);
+  font-size: 1.35rem;
+  direction: rtl;
+  line-height: 2;
+}
+
+.bubble.hadith {
+  border: 1px dashed var(--emerald);
+}
+
+.bubble.dua {
+  border: 1px solid var(--emerald-soft);
+}
+
+.bubble .ref {
+  display: inline-block;
+  margin-top: 0.4rem;
+  font-size: 0.72rem;
+  color: var(--emerald);
+  font-weight: 600;
+}
+
+.status-pill[hidden] {
+  display: none;
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.8rem;
+  color: var(--gold-soft);
+}
+
+.status-pill .dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--danger);
+  animation: pulse 1.2s infinite;
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.3;
+  }
+}
+
+/* ---------- Guía ---------- */
+
+.guide-card {
+  background: var(--paper);
+  color: var(--ink);
+  border-radius: 14px;
+  padding: 0.9rem 1.1rem;
+  margin-bottom: 0.8rem;
+}
+
+.guide-card h3 {
+  font-family: var(--font-display);
+  margin: 0 0 0.3rem;
+  font-size: 1rem;
+  color: var(--emerald);
+}
+
+.guide-card p {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.55;
+}
+
+/* ---------- Navegación inferior ---------- */
+
+.tabbar {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  translate: -50% 0;
+  width: 100%;
+  max-width: 540px;
+  display: flex;
+  background: var(--night-soft);
+  border-top: 1px solid var(--emerald);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.tabbar button {
+  flex: 1;
+  background: none;
+  border: none;
+  color: #9db4ac;
+  font-size: 0.68rem;
+  padding: 0.55rem 0 0.65rem;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.18rem;
+  font-family: var(--font-body);
+}
+
+.tabbar button .icon {
+  font-size: 1.15rem;
+  line-height: 1;
+}
+
+.tabbar button[aria-selected='true'] {
+  color: var(--gold);
+}
+
+/* Leaflet en tema oscuro: atenuar atribución */
+.leaflet-container {
+  font-family: var(--font-body);
+}
+
+/* ── Comida: lectura de etiquetas y tarjetas para el camarero ───────────── */
+
+.food-label {
+  display: block;
+  margin: 0 0 0.4rem;
+  font-size: 0.9rem;
+  opacity: 0.85;
+}
+
+.food-input {
+  width: 100%;
+  padding: 0.7rem;
+  border: 1px solid var(--line, #d8cfc0);
+  border-radius: 10px;
+  font: inherit;
+  font-size: 1rem;
+  resize: vertical;
+  background: var(--card, #fff);
+  color: inherit;
+}
+
+.food-verdict {
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  margin: 0.9rem 0;
+  border-inline-start: 5px solid currentColor;
+}
+.food-verdict p { margin: 0.35rem 0 0; font-size: 0.9rem; opacity: 0.9; }
+
+.food-card { margin-block: 0.6rem; border-inline-start: 5px solid transparent; }
+.food-head { display: flex; align-items: flex-start; gap: 0.6rem; }
+.food-head > div { flex: 1; }
+.food-icon { font-size: 1.3rem; line-height: 1.2; }
+
+/* El color acompaña al icono y al texto: nunca es la única señal. */
+.food-haram    { color: #8c1c13; background: #fbeae8; }
+.food-doubtful { color: #7a5200; background: #fdf4e0; }
+.food-halal    { color: #1e5631; background: #e9f5ec; }
+
+.food-all { margin-top: 1.2rem; }
+.food-all summary { cursor: pointer; padding: 0.5rem 0; font-weight: 600; }
+
+.phrase-list { display: flex; flex-direction: column; gap: 0.55rem; }
+
+.phrase-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  width: 100%;
+  padding: 0.8rem 0.9rem;
+  border: 1px solid var(--line, #d8cfc0);
+  border-radius: 12px;
+  background: var(--card, #fff);
+  color: inherit;
+  text-align: start;
+  font: inherit;
+  cursor: pointer;
+}
+.phrase-item:hover { border-color: var(--accent, #1e5631); }
+.phrase-own { font-weight: 600; }
+.phrase-ja { font-size: 0.95rem; opacity: 0.75; }
+
+/* Hoja a pantalla completa: se le enseña el móvil al camarero, así que el
+   japonés va grande y sin nada que distraiga. */
+.phrase-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: 1.2rem;
+  background: rgba(20, 16, 12, 0.55);
+  backdrop-filter: blur(3px);
+}
+.phrase-sheet[hidden] { display: none; }
+
+.phrase-sheet-inner {
+  width: min(100%, 34rem);
+  padding: 1.6rem 1.4rem;
+  border-radius: 18px;
+  background: var(--card, #fff);
+  text-align: center;
+}
+.phrase-sheet-own { margin: 0 0 1rem; font-size: 1rem; opacity: 0.7; }
+.phrase-sheet-ja {
+  margin: 0 0 0.9rem;
+  font-size: clamp(1.5rem, 6vw, 2.4rem);
+  line-height: 1.5;
+  font-weight: 700;
+}
+.phrase-sheet-romaji { margin: 0 0 1.3rem; font-size: 0.95rem; opacity: 0.65; }
+
+body.sheet-open { overflow: hidden; }

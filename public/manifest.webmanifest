@@ -1,0 +1,37 @@
+{
+  "name": "Halal Kansai",
+  "short_name": "Halal Kansai",
+  "description": "Salat, qibla, lugares halal y traducción de la jutba en vivo para la comunidad musulmana en Japón.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#10211d",
+  "theme_color": "#10211d",
+  "lang": "en",
+  "dir": "auto",
+  "icons": [
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

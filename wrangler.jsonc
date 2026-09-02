@@ -1,0 +1,33 @@
+{
+  // Despliegue del backend en Cloudflare Workers (Fase 2).
+  // Requiere: cuenta Cloudflare (pendiente del fundador) y
+  //   npx wrangler secret put ANTHROPIC_API_KEY
+  "name": "halal-kansai-api",
+  "main": "server/src/worker.ts",
+  "compatibility_date": "2026-06-01",
+  "assets": {
+    // Sirve server/data/* como /data/* para el binding ASSETS (29 MB de
+    // Corán + traducciones Tanzil que no caben en el bundle del worker).
+    "directory": "./server/data",
+    "binding": "ASSETS"
+  },
+  "vars": {
+    "ANTHROPIC_MODEL": "claude-opus-4-8",
+    "ALLOWED_ORIGINS": "https://halalkansai.app"
+  },
+  // Cola de moderación de lugares sugeridos (Fase 3). Crear con:
+  //   npx wrangler kv namespace create SUGGESTIONS
+  // y pegar el id generado. También: npx wrangler secret put ADMIN_TOKEN
+  "kv_namespaces": [
+    { "binding": "SUGGESTIONS", "id": "<rellenar-tras-crear-namespace>" }
+  ],
+  // Salas del modo transmisor (Fase 4): una instancia por sala.
+  "durable_objects": {
+    "bindings": [
+      { "name": "KHUTBAH_ROOMS", "class_name": "KhutbahRoomDO" }
+    ]
+  },
+  "migrations": [
+    { "tag": "v1", "new_classes": ["KhutbahRoomDO"] }
+  ]
+}
