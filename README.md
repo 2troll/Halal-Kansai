@@ -91,6 +91,36 @@ fermentación, 味噌, la carne no sacrificada según el rito— se dice que dif
 y la decisión queda en el usuario. La aplicación ayuda a **preguntar mejor**;
 no sustituye a una certificación halal ni a un sabio.
 
+
+## Fase 6 — Ayuno: imsak, iftar y calendario de Ramadán
+
+Reutiliza el mismo cálculo astronómico de las horas de oración, así que también
+funciona sin conexión y sin API.
+
+- ✅ `fastingDay()` — imsak, iftar y duración del ayuno para cualquier fecha.
+- ✅ `ramadanCalendar()` — mes completo desde el primer día, de 29 o 30 días.
+- ✅ `fastingCountdown()` — cuánto falta para romper o para empezar. Es una
+  función **pura**: recibe la hora en lugar de leer el reloj, y por eso puede
+  probarse de verdad.
+- ✅ 17 tests nuevos (84 en total).
+
+### Dos decisiones honestas
+
+**El margen de imsak es 0 por defecto.** Muchos calendarios adelantan el inicio
+del ayuno unos minutos por precaución. Ese margen es costumbre, no obligación:
+mostramos el fayr real y dejamos que el usuario añada el suyo si lo desea.
+
+**No calculamos fechas hiyríes.** El comienzo de Ramadán depende del
+avistamiento de la luna y cambia de un país a otro. El usuario indica el primer
+día y a partir de ahí contamos. Fingir precisión astronómica sobre algo que se
+decide mirando el cielo sería mentir con buena presentación.
+
+### Un caso que el test detectó
+
+Después del iftar, el siguiente hito es el imsak de **mañana**. Sin tratarlo,
+la cuenta atrás devuelve minutos negativos toda la noche. Hay un test dedicado
+justamente a eso.
+
 ## Estado: Fase 3 completada
 
 - ✅ **Sugerir lugar**: formulario en la pestaña Lugares (con ubicación opcional)
