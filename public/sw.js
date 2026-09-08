@@ -1,12 +1,15 @@
 /* Service worker Halal Kansai.
    Estrategia (spec §Fase 1):
    - /api/*           → network-only (nunca cachear traducciones).
-   - app shell        → cache-first con relleno en segundo plano.
+   - navegación (HTML)→ network-first con caída a caché: si no se hace así, el
+     index.html cacheado se sirve para siempre y una versión nueva de la app
+     NUNCA llega al usuario (ni a una demo) aunque se haya desplegado.
+   - resto del shell  → cache-first (los assets de Vite llevan hash en el nombre).
    - tiles/fonts CDN  → cache-first con tope de entradas.
    Salat y qibla funcionan 100% offline porque todo su código va en el shell. */
 
-const SHELL_CACHE = 'hk-shell-v1';
-const RUNTIME_CACHE = 'hk-runtime-v1';
+const SHELL_CACHE = 'hk-shell-v2';
+const RUNTIME_CACHE = 'hk-runtime-v2';
 const RUNTIME_MAX_ENTRIES = 120;
 
 const PRECACHE = ['/', '/manifest.webmanifest', '/icons/icon.svg', '/icons/icon-192.png'];
@@ -44,6 +47,22 @@ async function trimCache(cacheName, maxEntries) {
   }
 }
 
+/** HTML: la red manda; la caché solo salva cuando no hay conexión. */
+async function networkFirst(request, cacheName) {
+  try {
+    const response = await fetch(request);
+    if (response.ok) {
+      const cache = await caches.open(cacheName);
+      cache.put(request, response.clone());
+    }
+    return response;
+  } catch (err) {
+    const cached = (await caches.match(request)) || (await caches.match('/'));
+    if (cached) return cached;
+    throw err;
+  }
+}
+
 async function cacheFirst(request, cacheName) {
   const cached = await caches.match(request);
   if (cached) return cached;
@@ -65,7 +84,14 @@ self.addEventListener('fetch', (event) => {
   if (url.pathname.startsWith('/api/')) return;
 
   if (url.origin === self.location.origin) {
-    // App shell (HTML/JS/CSS/iconos): cache-first; los assets de Vite llevan hash.
+    // El documento se pide siempre a la red: es lo único sin hash en el nombre
+    // y, por tanto, lo único que puede quedarse congelado en una versión vieja.
+    if (event.request.mode === 'navigate' || event.request.destination === 'document') {
+      event.respondWith(networkFirst(event.request, SHELL_CACHE));
+      return;
+    }
+
+    // JS/CSS/iconos: cache-first sin riesgo, porque Vite les pone hash.
     event.respondWith(
       cacheFirst(event.request, SHELL_CACHE).catch(() => caches.match('/')),
     );
