@@ -622,6 +622,209 @@ h2 {
   color: var(--gold);
 }
 
+/* ---------- Lector de etiquetas ---------- */
+
+.scan-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.btn.ghost {
+  background: transparent;
+  color: var(--gold-soft);
+  border-color: var(--emerald);
+}
+
+.camera-box {
+  position: relative;
+  margin: 0.6rem 0;
+  border: 2px solid var(--gold);
+  border-radius: var(--arch);
+  overflow: hidden;
+  background: #000;
+}
+
+.camera-box video {
+  display: block;
+  width: 100%;
+  max-height: 320px;
+  object-fit: cover;
+}
+
+.camera-box .btn.stop {
+  position: absolute;
+  inset-inline-end: 0.6rem;
+  bottom: 0.6rem;
+  margin: 0;
+}
+
+.label-input {
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 6.5rem;
+  resize: vertical;
+  background: var(--paper);
+  color: var(--ink);
+  border: 1px solid var(--emerald);
+  border-radius: 14px;
+  padding: 0.7rem 0.8rem;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+/* Veredicto: mismo lenguaje visual que la tarjeta mihrab del salat. */
+.verdict {
+  border: 2px solid var(--gold);
+  border-radius: var(--arch);
+  padding: 1.6rem 1rem 1.2rem;
+  margin: 1.2rem 0 0.8rem;
+  text-align: center;
+  background: linear-gradient(180deg, var(--emerald) 0%, var(--night-soft) 130%);
+}
+
+.verdict.haram {
+  border-color: var(--danger);
+  background: linear-gradient(180deg, var(--danger) 0%, var(--night-soft) 130%);
+}
+
+.verdict.mushbooh {
+  background: linear-gradient(180deg, #8a6a1f 0%, var(--night-soft) 130%);
+}
+
+.verdict.nothing-recognised {
+  background: linear-gradient(180deg, var(--night-soft) 0%, var(--night) 130%);
+  border-color: var(--ink-soft);
+}
+
+.verdict .label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--gold-soft);
+  margin: 0;
+}
+
+.verdict .big {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  margin: 0.3rem 0;
+  color: var(--paper);
+}
+
+.verdict .small {
+  font-size: 0.85rem;
+  color: var(--paper-dim);
+  margin: 0;
+}
+
+.verdict .tally {
+  margin: 0.6rem 0 0;
+  font-size: 0.9rem;
+  letter-spacing: 0.08em;
+}
+
+.note.strong {
+  color: var(--gold-soft);
+  border-inline-start: 3px solid var(--gold);
+  padding-inline-start: 0.6rem;
+}
+
+.section-h {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  margin: 1.2rem 0 0.4rem;
+}
+
+.marked-label {
+  background: var(--paper);
+  color: var(--ink);
+  border-radius: 14px;
+  padding: 0.8rem;
+  font-size: 0.9rem;
+  line-height: 2;
+  word-break: break-word;
+}
+
+.hit {
+  border-radius: 6px;
+  padding: 0.05rem 0.15rem;
+  font-weight: 600;
+}
+
+.hit.haram {
+  background: var(--danger);
+  color: var(--paper);
+}
+
+.hit.mushbooh {
+  background: var(--gold);
+  color: var(--night);
+}
+
+.hit.halal {
+  background: #cfe6da;
+  color: var(--night);
+}
+
+.finding {
+  background: var(--night-soft);
+  border: 1px solid var(--emerald);
+  border-inline-start: 4px solid var(--emerald);
+  border-radius: 14px;
+  padding: 0.7rem 0.9rem;
+  margin: 0.5rem 0;
+}
+
+.finding.haram {
+  border-inline-start-color: var(--danger);
+}
+
+.finding.mushbooh {
+  border-inline-start-color: var(--gold);
+}
+
+.finding h3 {
+  font-family: var(--font-display);
+  font-size: 0.98rem;
+  margin: 0 0 0.35rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.finding h3 code {
+  font-family: var(--font-body);
+  background: var(--paper-dim);
+  color: var(--night);
+  border-radius: 6px;
+  padding: 0.05rem 0.35rem;
+  font-size: 0.82rem;
+}
+
+.finding p {
+  margin: 0.4rem 0 0;
+  font-size: 0.83rem;
+  line-height: 1.6;
+  color: var(--paper-dim);
+}
+
+.badge.haram {
+  background: var(--danger);
+}
+
+.badge.mushbooh {
+  background: var(--gold);
+  color: var(--night);
+}
+
+.badge.halal {
+  background: var(--emerald-soft);
+}
+
 /* Leaflet en tema oscuro: atenuar atribución */
 .leaflet-container {
   font-family: var(--font-body);

@@ -105,6 +105,56 @@ export const en = {
   guideAboutP:
     'Free, no ads, no accounts, no tracking. Built by and for the Muslim community of Kansai.',
 
+  // Ingredient checker
+  navScan: 'Label',
+  scanTitle: 'Japanese label checker',
+  scanSubtitle:
+    'Scan the barcode, or paste the 原材料名 line from the package. The reading happens on your phone: no account, and it works with no connection.',
+  scanPlaceholder: '原材料名：小麦粉、豚脂、しょうゆ、みりん…',
+  scanCheck: 'Check the label',
+  scanClear: 'Clear',
+  scanCamera: 'Scan barcode',
+  scanCameraStop: 'Stop camera',
+  scanPointCamera: 'Point the camera at the barcode.',
+  scanCameraUnsupported:
+    'This browser cannot read barcodes. Use Chrome on Android, or paste the ingredient list below.',
+  scanCameraDenied: 'Camera unavailable. Paste the ingredient list below.',
+  scanLookingUp: 'Looking up the barcode…',
+  scanFound: 'Product',
+  scanNotFound:
+    'That barcode is not in the open database yet. Paste the ingredient list from the package.',
+  scanNoIngredients:
+    'The product is in the database but carries no ingredient text. Paste it from the package.',
+  scanOffline:
+    'No connection, so the barcode cannot be looked up. Paste the ingredient list — the analysis itself works offline.',
+  scanNetworkError: 'Could not reach the product database. Paste the ingredient list instead.',
+  scanEmpty: 'Paste an ingredient list first.',
+  scanVerdict: 'Result',
+  verdictHaramTitle: 'Forbidden ingredient found',
+  verdictHaramBody: 'The label names at least one ingredient forbidden by explicit text.',
+  verdictMushboohTitle: 'Doubtful — verify before eating',
+  verdictMushboohBody:
+    'Nothing openly forbidden, but there are ingredients whose source the label does not state, or on which scholars differ. Ask the manufacturer.',
+  verdictNoHaramTitle: 'No forbidden ingredient recognised',
+  verdictNoHaramBody:
+    'Every term recognised on this label is unproblematic. Whatever the app did not recognise remains unchecked.',
+  verdictUnknownTitle: 'Nothing recognised',
+  verdictUnknownBody:
+    'Not a single term was recognised. Check that you pasted the 原材料名 line, and read the package yourself.',
+  scanNotClearance:
+    'This is not a halal certification. The app only reads the words it knows, and never issues a clearance.',
+  scanNoFatwa:
+    'Where scholars differ, this app says so and leaves the judgement to you and your scholar.',
+  scanMarkedLabel: 'The label, marked',
+  scanFoundTerms: 'What was recognised',
+  scanAskMaker: 'Copy the question for the manufacturer (Japanese)',
+  scanCopied: 'Copied. Send it to the maker’s enquiry address.',
+  statusHaram: 'Forbidden',
+  statusMushbooh: 'Doubtful',
+  statusHalal: 'No objection',
+  scanOfflineNote: 'The analysis runs offline, on your phone.',
+  scanSource: 'Product data: Open Food Facts (ODbL)',
+
   // Misc
   language: 'Language',
   offlineReady: 'Available offline',

@@ -92,6 +92,42 @@ verificados.
   `docs/FASE4_WHISPER.md` (recomendación: Workers AI por chunks; ~13 h/mes
   de jutba → coste casi nulo, y el pipeline posterior no cambia).
 
+## Estado: Fase 5 — lector de etiquetas japonesas
+
+Japón no tiene etiquetado halal obligatorio: la información está en la línea
+`原材料名` del envase, en japonés y sin distinguir el origen de cada
+ingrediente. La pestaña **Etiqueta** resuelve eso:
+
+- ✅ **Escaneo del producto**: `BarcodeDetector` (API nativa del navegador, sin
+  librería) lee el código JAN/EAN con la cámara y trae la lista de ingredientes
+  de **Open Food Facts** (base abierta ODbL, sin clave ni cuota). Si el producto
+  no está o no hay cobertura, se pega la lista a mano y el resultado es idéntico.
+- ✅ **Dictamen local y determinista** (`src/modules/ingredients/`): un
+  diccionario de términos impresos en envases japoneses (豚脂, ポークエキス,
+  料理酒, みりん, 酒精, ゼラチン, 動物性油脂, 乳化剤, カラメル色素, E441,
+  E120…) clasifica cada término como **prohibido / dudoso / sin objeción** y
+  explica el porqué en árabe, inglés y español. Sin modelo y sin red: la misma
+  etiqueta da siempre el mismo resultado y cada dictamen es auditable.
+- ✅ **Coincidencia más larga**, que es donde se juegan los dictámenes:
+  `動物性油脂` no se confunde con `植物性油脂`, `みりん風調味料` (dudoso) no se
+  confunde con `本みりん` (prohibido) y `豚由来ゼラチン` cuenta una sola vez.
+- ✅ **Aviso de línea compartida**: «本品製造工場では豚肉を含む製品を製造しています»
+  se trata como contaminación cruzada, **no** como ingrediente de cerdo. Acusar
+  de llevar cerdo a un producto que solo comparte fábrica es el falso positivo
+  más caro que puede cometer esta herramienta.
+- ✅ **Nunca da vía libre**: el resultado más favorable posible es «no se
+  reconoció ningún ingrediente prohibido», y si no reconoce nada lo dice. Una
+  etiqueta que no se supo leer no puede producir la misma pantalla que una
+  etiqueta limpia.
+- ✅ **No emite fatwa**: donde los sabios difieren (≈2 % de alcohol de
+  fermentación del 醤油, 酒精 añadido, carne no sacrificada según el rito,
+  cochinilla) se expone la discrepancia y la decisión queda en el usuario.
+- ✅ **Pregunta al fabricante lista para enviar**, redactada en japonés cortés
+  de negocios con los términos dudosos encontrados: resolver una duda es
+  preguntar a la empresa, y la barrera real era escribirlo en japonés.
+- ✅ Tests: etiquetas japonesas reales, desambiguación por longitud,
+  normalización (全角, katakana/hiragana) y la integridad trilingüe de la base.
+
 ## Desarrollo
 
 ```bash

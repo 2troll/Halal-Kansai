@@ -102,6 +102,56 @@ export const es: Dict = {
   guideAboutP:
     'Gratuita, sin anuncios, sin cuentas, sin rastreo. Hecha por y para la comunidad musulmana de Kansai.',
 
+  // Lector de etiquetas
+  navScan: 'Etiqueta',
+  scanTitle: 'Lector de etiquetas japonesas',
+  scanSubtitle:
+    'Escanea el código de barras o pega la línea 原材料名 del paquete. La lectura ocurre en tu móvil: sin cuenta y sin necesidad de conexión.',
+  scanPlaceholder: '原材料名：小麦粉、豚脂、しょうゆ、みりん…',
+  scanCheck: 'Analizar la etiqueta',
+  scanClear: 'Limpiar',
+  scanCamera: 'Escanear código',
+  scanCameraStop: 'Apagar cámara',
+  scanPointCamera: 'Apunta la cámara al código de barras.',
+  scanCameraUnsupported:
+    'Este navegador no lee códigos de barras. Usa Chrome en Android o pega la lista de ingredientes abajo.',
+  scanCameraDenied: 'Cámara no disponible. Pega la lista de ingredientes abajo.',
+  scanLookingUp: 'Buscando el código…',
+  scanFound: 'Producto',
+  scanNotFound:
+    'Ese código todavía no está en la base abierta. Pega la lista de ingredientes del paquete.',
+  scanNoIngredients:
+    'El producto está en la base pero sin texto de ingredientes. Cópialo del paquete.',
+  scanOffline:
+    'Sin conexión, así que no se puede buscar el código. Pega la lista de ingredientes: el análisis funciona sin internet.',
+  scanNetworkError: 'No se pudo llegar a la base de productos. Pega la lista de ingredientes.',
+  scanEmpty: 'Pega primero una lista de ingredientes.',
+  scanVerdict: 'Resultado',
+  verdictHaramTitle: 'Ingrediente prohibido encontrado',
+  verdictHaramBody: 'La etiqueta nombra al menos un ingrediente prohibido por texto explícito.',
+  verdictMushboohTitle: 'Dudoso — verifica antes de comer',
+  verdictMushboohBody:
+    'Nada abiertamente prohibido, pero hay ingredientes cuyo origen la etiqueta no declara, o sobre los que los sabios difieren. Pregunta al fabricante.',
+  verdictNoHaramTitle: 'No se reconoció ningún ingrediente prohibido',
+  verdictNoHaramBody:
+    'Todos los términos reconocidos en esta etiqueta son inofensivos. Lo que la app no reconoció sigue sin comprobar.',
+  verdictUnknownTitle: 'No se reconoció nada',
+  verdictUnknownBody:
+    'No se reconoció ni un solo término. Comprueba que pegaste la línea 原材料名 y lee el paquete tú mismo.',
+  scanNotClearance:
+    'Esto no es una certificación halal. La app solo lee las palabras que conoce y nunca da vía libre.',
+  scanNoFatwa:
+    'Donde los sabios difieren, esta app lo dice y deja el dictamen en tus manos y las de tu sabio.',
+  scanMarkedLabel: 'La etiqueta, marcada',
+  scanFoundTerms: 'Lo que se ha reconocido',
+  scanAskMaker: 'Copiar la pregunta para el fabricante (en japonés)',
+  scanCopied: 'Copiado. Envíalo a la dirección de consultas del fabricante.',
+  statusHaram: 'Prohibido',
+  statusMushbooh: 'Dudoso',
+  statusHalal: 'Sin objeción',
+  scanOfflineNote: 'El análisis se ejecuta sin conexión, en tu móvil.',
+  scanSource: 'Datos de producto: Open Food Facts (ODbL)',
+
   language: 'Idioma',
   offlineReady: 'Disponible sin conexión',
   loading: 'Cargando…',
