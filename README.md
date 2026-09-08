@@ -61,6 +61,7 @@ verificados.
   sirven como Static Assets (binding `ASSETS`, ver `wrangler.jsonc`) y se
   cachean en memoria por isolate.
 
+
 ## Estado: Fase 3 completada
 
 - ✅ **Sugerir lugar**: formulario en la pestaña Lugares (con ubicación opcional)
@@ -92,41 +93,89 @@ verificados.
   `docs/FASE4_WHISPER.md` (recomendación: Workers AI por chunks; ~13 h/mes
   de jutba → coste casi nulo, y el pipeline posterior no cambia).
 
-## Estado: Fase 5 — lector de etiquetas japonesas
+## Fase 5 — Comida: escanear el producto, leer la etiqueta y hablar con el camarero
 
-Japón no tiene etiquetado halal obligatorio: la información está en la línea
-`原材料名` del envase, en japonés y sin distinguir el origen de cada
-ingrediente. La pestaña **Etiqueta** resuelve eso:
+El problema que faltaba por resolver. En Japón las etiquetas están en japonés y
+los términos que de verdad importan —豚脂, 豚骨, 料理酒, ゼラチン, 酒精— no salen
+en ningún traductor con el matiz religioso. Y en el restaurante la barrera no es
+la mala voluntad, es que nadie entiende la pregunta.
 
 - ✅ **Escaneo del producto**: `BarcodeDetector` (API nativa del navegador, sin
   librería) lee el código JAN/EAN con la cámara y trae la lista de ingredientes
-  de **Open Food Facts** (base abierta ODbL, sin clave ni cuota). Si el producto
-  no está o no hay cobertura, se pega la lista a mano y el resultado es idéntico.
-- ✅ **Dictamen local y determinista** (`src/modules/ingredients/`): un
-  diccionario de términos impresos en envases japoneses (豚脂, ポークエキス,
-  料理酒, みりん, 酒精, ゼラチン, 動物性油脂, 乳化剤, カラメル色素, E441,
-  E120…) clasifica cada término como **prohibido / dudoso / sin objeción** y
-  explica el porqué en árabe, inglés y español. Sin modelo y sin red: la misma
-  etiqueta da siempre el mismo resultado y cada dictamen es auditable.
+  de **Open Food Facts** (base abierta ODbL, sin clave, sin cuota y sin tarjeta).
+  Si el producto no está o no hay cobertura, se pega la lista a mano y el
+  resultado es idéntico: el dictamen nunca depende de la red.
+- ✅ **Motor local y determinista** (`src/modules/ingredients/`): un diccionario
+  de términos impresos en envases japoneses —cerdo (豚脂, 豚骨, チャーシュー,
+  ハム, ポークエキス), alcohol (料理酒, みりん, 酒精), origen animal sin declarar
+  (ゼラチン, 動物性油脂, 乳化剤), aditivos por número E (E441, E120, E920, E631)—
+  clasificados en **prohibido / dudoso / sin objeción** con el porqué en árabe,
+  inglés y español. Sin modelo y sin red: la misma etiqueta da siempre el mismo
+  resultado y cada dictamen es auditable regla a regla.
 - ✅ **Coincidencia más larga**, que es donde se juegan los dictámenes:
   `動物性油脂` no se confunde con `植物性油脂`, `みりん風調味料` (dudoso) no se
-  confunde con `本みりん` (prohibido) y `豚由来ゼラチン` cuenta una sola vez.
+  confunde con `本みりん` (prohibido), `昆布エキス` no cae en el `エキス` genérico
+  y `豚由来ゼラチン` cuenta una sola vez.
 - ✅ **Aviso de línea compartida**: «本品製造工場では豚肉を含む製品を製造しています»
-  se trata como contaminación cruzada, **no** como ingrediente de cerdo. Acusar
-  de llevar cerdo a un producto que solo comparte fábrica es el falso positivo
-  más caro que puede cometer esta herramienta.
-- ✅ **Nunca da vía libre**: el resultado más favorable posible es «no se
-  reconoció ningún ingrediente prohibido», y si no reconoce nada lo dice. Una
-  etiqueta que no se supo leer no puede producir la misma pantalla que una
-  etiqueta limpia.
-- ✅ **No emite fatwa**: donde los sabios difieren (≈2 % de alcohol de
-  fermentación del 醤油, 酒精 añadido, carne no sacrificada según el rito,
-  cochinilla) se expone la discrepancia y la decisión queda en el usuario.
-- ✅ **Pregunta al fabricante lista para enviar**, redactada en japonés cortés
-  de negocios con los términos dudosos encontrados: resolver una duda es
-  preguntar a la empresa, y la barrera real era escribirlo en japonés.
-- ✅ Tests: etiquetas japonesas reales, desambiguación por longitud,
-  normalización (全角, katakana/hiragana) y la integridad trilingüe de la base.
+  se trata como contaminación cruzada, **no** como cerdo en el producto. Acusar
+  de llevar cerdo a algo que solo comparte fábrica es el falso positivo más caro
+  que puede cometer esta herramienta.
+- ✅ **Nunca da el visto bueno.** Lo más favorable que dice es «no se reconoció
+  ningún ingrediente prohibido», y si no reconoce nada lo dice. No reconocer no
+  es lo mismo que ser lícito, y confundir las dos cosas en una app religiosa es
+  peor que no tener la función.
+- ✅ **La etiqueta, marcada**: se devuelve el texto original con cada término
+  resaltado por estado, para ver de dónde sale el dictamen.
+- ✅ **Pregunta al fabricante lista para enviar**, redactada en japonés cortés de
+  negocios con los términos dudosos encontrados: resolver una duda es preguntar
+  a la empresa, y la barrera real era escribirlo en japonés.
+- ✅ **Diccionario consultable**: una palabra suelta (kanji, kana, romaji o el
+  nombre en tu idioma) devuelve la ficha en vez del análisis de etiqueta.
+- ✅ **Tarjetas para el personal** (`phrases.ts`): once frases en japonés cortés
+  (ですます) que se muestran a pantalla completa. Resuelven en cinco segundos lo
+  que cinco minutos de gestos no resuelven.
+- ✅ i18n completo ES/EN/AR con RTL, offline, sin API ni claves.
+- ✅ Tests: etiquetas japonesas reales, desambiguación por longitud, japonés
+  normalizado (全角, katakana/hiragana), contaminación cruzada e integridad
+  trilingüe de la base (102 en total).
+
+### Los límites, dichos en la propia aplicación
+
+No emitimos fatwa. Donde las escuelas difieren —醤油 y su ~2% de alcohol de
+fermentación, 酒精 añadido, 味噌, la carne no sacrificada según el rito, la
+cochinilla— se dice que difieren y la decisión queda en el usuario. La
+aplicación ayuda a **preguntar mejor**; no sustituye a una certificación halal
+ni a un sabio.
+
+
+## Fase 6 — Ayuno: imsak, iftar y calendario de Ramadán
+
+Reutiliza el mismo cálculo astronómico de las horas de oración, así que también
+funciona sin conexión y sin API.
+
+- ✅ `fastingDay()` — imsak, iftar y duración del ayuno para cualquier fecha.
+- ✅ `ramadanCalendar()` — mes completo desde el primer día, de 29 o 30 días.
+- ✅ `fastingCountdown()` — cuánto falta para romper o para empezar. Es una
+  función **pura**: recibe la hora en lugar de leer el reloj, y por eso puede
+  probarse de verdad.
+- ✅ 17 tests nuevos (84 en total).
+
+### Dos decisiones honestas
+
+**El margen de imsak es 0 por defecto.** Muchos calendarios adelantan el inicio
+del ayuno unos minutos por precaución. Ese margen es costumbre, no obligación:
+mostramos el fayr real y dejamos que el usuario añada el suyo si lo desea.
+
+**No calculamos fechas hiyríes.** El comienzo de Ramadán depende del
+avistamiento de la luna y cambia de un país a otro. El usuario indica el primer
+día y a partir de ahí contamos. Fingir precisión astronómica sobre algo que se
+decide mirando el cielo sería mentir con buena presentación.
+
+### Un caso que el test detectó
+
+Después del iftar, el siguiente hito es el imsak de **mañana**. Sin tratarlo,
+la cuenta atrás devuelve minutos negativos toda la noche. Hay un test dedicado
+justamente a eso.
 
 ## Desarrollo
 

@@ -18,7 +18,7 @@ const PREF_ROOM = 'hk-khutbah-room';
 function segmentCard(seg: TranslatedSegment): string {
   if (seg.kind === 'quran') {
     const unofficial =
-      seg.verified && seg.translationSource === 'llm' ? ` · ${t('translationUnofficial')}` : '';
+      seg.verified && seg.translationSource !== 'tanzil' ? ` · ${t('translationUnofficial')}` : '';
     return `
       <div class="bubble quran">
         ${seg.arabicVerified ? `<div class="arabic">${seg.arabicVerified}</div>` : ''}

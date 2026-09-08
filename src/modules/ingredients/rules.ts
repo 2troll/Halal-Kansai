@@ -40,6 +40,8 @@ export interface Rule {
   id: string;
   /** Variantes tal y como se imprimen (kanji, kana, romaji, número E). */
   terms: string[];
+  /** Solo para la búsqueda por palabra: romaji y nombres corrientes. */
+  search?: string[];
   status: Status;
   category: Category;
   /** Nombre del ingrediente. */
@@ -65,6 +67,7 @@ export const RULES: readonly Rule[] = [
   {
     id: 'pork-fat',
     terms: ['豚脂', '豚脂肪', 'ラード', '豚油'],
+    search: ['lard', 'rado'],
     status: 'haram',
     category: 'pork',
     label: { ar: 'شحم الخنزير', en: 'Lard (pork fat)', es: 'Manteca de cerdo' },
@@ -77,6 +80,7 @@ export const RULES: readonly Rule[] = [
   {
     id: 'pork-extract',
     terms: ['ポークエキス', '豚エキス', '豚肉エキス', 'ポークエキスパウダー', 'ポーク調味料'],
+    search: ['pork extract', 'poku ekisu'],
     status: 'haram',
     category: 'pork',
     label: { ar: 'خلاصة لحم الخنزير', en: 'Pork extract', es: 'Extracto de cerdo' },
@@ -96,6 +100,45 @@ export const RULES: readonly Rule[] = [
       ar: 'الملصق نفسه يصرّح بأن المصدر خنزير، فلا حاجة إلى استفسار.',
       en: 'The label itself states the source is pork, so no further enquiry is needed.',
       es: 'La propia etiqueta declara que el origen es porcino; no hace falta preguntar más.',
+    },
+  },
+  {
+    id: 'pork-bone-broth',
+    terms: ['豚骨', 'とんこつ', 'トンコツ', '豚骨スープ'],
+    search: ['tonkotsu'],
+    status: 'haram',
+    category: 'pork',
+    label: { ar: 'مرق عظام الخنزير (تونكوتسو)', en: 'Tonkotsu (pork bone broth)', es: 'Tonkotsu (caldo de hueso de cerdo)' },
+    why: {
+      ar: 'أكثر مصادر الخنزير خفاءً في اليابان: المعكرونة تبدو عادية والحساء كله من الخنزير.',
+      en: 'The most hidden pork in Japan: the noodles look plain while the entire broth is pork.',
+      es: 'El cerdo más escondido de Japón: los fideos parecen inocentes y todo el caldo es de cerdo.',
+    },
+  },
+  {
+    id: 'char-siu',
+    terms: ['チャーシュー', '焼豚', '叉焼', '角煮'],
+    search: ['chashu', 'charsiu'],
+    status: 'haram',
+    category: 'pork',
+    label: { ar: 'شرائح خنزير مطهوّة (تشاشو)', en: 'Chāshū (braised pork)', es: 'Chāshū (cerdo estofado)' },
+    why: {
+      ar: 'الإضافة الأساسية فوق الرامن، وهي لحم خنزير مطهوّ.',
+      en: 'The standard ramen topping, and it is braised pork.',
+      es: 'El acompañamiento estándar del ramen, y es cerdo estofado.',
+    },
+  },
+  {
+    id: 'ham',
+    terms: ['ハム', 'ロースハム'],
+    search: ['hamu', 'ham'],
+    status: 'haram',
+    category: 'pork',
+    label: { ar: 'لحم مُملّح (هام)', en: 'Ham', es: 'Jamón' },
+    why: {
+      ar: 'ما لم يُكتب صراحةً أنه من الدجاج (鶏ハム) أو الديك الرومي، فهو من الخنزير.',
+      en: 'Unless the label explicitly says chicken (鶏ハム) or turkey, it is pork.',
+      es: 'Salvo que la etiqueta diga explícitamente pollo (鶏ハム) o pavo, es cerdo.',
     },
   },
   {
@@ -139,6 +182,7 @@ export const RULES: readonly Rule[] = [
   {
     id: 'cooking-sake',
     terms: ['料理酒', '清酒', '日本酒', '純米酒', '合成清酒'],
+    search: ['ryorishu', 'sake', 'seishu'],
     status: 'haram',
     category: 'alcohol',
     label: { ar: 'خمر الطهي (ساكي)', en: 'Cooking sake', es: 'Sake de cocina' },
@@ -151,6 +195,7 @@ export const RULES: readonly Rule[] = [
   {
     id: 'mirin',
     terms: ['みりん', '味醂', '本みりん', 'ミリン'],
+    search: ['mirin', 'honmirin'],
     status: 'haram',
     category: 'alcohol',
     label: { ar: 'ميرين (خمر أرز حلو)', en: 'Mirin (sweet rice wine)', es: 'Mirin (vino dulce de arroz)' },
@@ -163,6 +208,7 @@ export const RULES: readonly Rule[] = [
   {
     id: 'mirin-style',
     terms: ['みりん風調味料', 'みりんタイプ調味料'],
+    search: ['mirinfu'],
     status: 'mushbooh',
     category: 'alcohol',
     label: { ar: 'توابل بنكهة الميرين', en: 'Mirin-style seasoning', es: 'Condimento tipo mirin' },
@@ -187,6 +233,7 @@ export const RULES: readonly Rule[] = [
   {
     id: 'shusei',
     terms: ['酒精', 'アルコール', 'エチルアルコール', '醸造アルコール'],
+    search: ['shusei', 'ethanol', 'alcohol'],
     status: 'mushbooh',
     category: 'alcohol',
     label: { ar: 'كحول مضاف (شوسي)', en: 'Added ethanol (shusei)', es: 'Etanol añadido (shusei)' },
@@ -199,6 +246,7 @@ export const RULES: readonly Rule[] = [
   {
     id: 'shoyu',
     terms: ['醤油', 'しょうゆ', 'こいくちしょうゆ', '本醸造醤油', '大豆醤油'],
+    search: ['shoyu', 'soy sauce'],
     status: 'mushbooh',
     category: 'alcohol',
     label: { ar: 'صلصة الصويا المخمَّرة', en: 'Brewed soy sauce', es: 'Salsa de soja fermentada' },
@@ -237,6 +285,7 @@ export const RULES: readonly Rule[] = [
   {
     id: 'gelatin',
     terms: ['ゼラチン', 'ゼラチン加工品', 'gelatin', 'gelatine', 'E441'],
+    search: ['zerachin'],
     status: 'mushbooh',
     category: 'animal',
     label: { ar: 'جيلاتين', en: 'Gelatin', es: 'Gelatina' },
@@ -261,6 +310,7 @@ export const RULES: readonly Rule[] = [
   {
     id: 'animal-fat',
     terms: ['動物性油脂', '動物油脂', '動物性脂肪'],
+    search: ['dobutsusei yushi'],
     status: 'mushbooh',
     category: 'animal',
     label: { ar: 'دهون حيوانية غير محددة', en: 'Unspecified animal fat', es: 'Grasa animal sin especificar' },
@@ -285,6 +335,7 @@ export const RULES: readonly Rule[] = [
   {
     id: 'shortening',
     terms: ['ショートニング', 'shortening'],
+    search: ['shotoningu'],
     status: 'mushbooh',
     category: 'animal',
     label: { ar: 'دهن الخبز (شورتنينغ)', en: 'Shortening', es: 'Grasa vegetal/animal (shortening)' },
@@ -309,6 +360,7 @@ export const RULES: readonly Rule[] = [
   {
     id: 'emulsifier',
     terms: ['乳化剤', 'モノグリセリド', 'グリセリン脂肪酸エステル', 'E471', 'E472'],
+    search: ['nyukazai', 'emulsifier'],
     status: 'mushbooh',
     category: 'additive',
     label: { ar: 'مستحلب', en: 'Emulsifier', es: 'Emulgente' },
@@ -356,7 +408,10 @@ export const RULES: readonly Rule[] = [
   },
   {
     id: 'meat-extract',
-    terms: ['チキンエキス', '鶏エキス', 'ビーフエキス', '牛肉エキス', '肉エキス', 'チキンブイヨン', 'ブイヨン', '牛脂', 'ゼラチン質'],
+    terms: [
+      'チキンエキス', '鶏エキス', 'ビーフエキス', '牛肉エキス', '肉エキス',
+      'チキンブイヨン', 'ビーフブイヨン', '牛脂',
+    ],
     status: 'mushbooh',
     category: 'animal',
     label: { ar: 'خلاصة لحم (غير الخنزير)', en: 'Meat extract (non-pork)', es: 'Extracto de carne (no cerdo)' },
@@ -364,6 +419,32 @@ export const RULES: readonly Rule[] = [
       ar: 'الحيوان حلال في أصله، لكن الذبح في اليابان لا يكون على الوجه الشرعي إلا بشهادة. جمهور يشترط التذكية، وبعض العلماء يتوسّع في ذبيحة أهل الكتاب.',
       en: 'The animal is lawful in itself, but slaughter in Japan is not Islamic unless certified. The majority require ritual slaughter; some scholars are broader regarding People of the Book.',
       es: 'El animal es lícito en sí, pero el sacrificio en Japón no es islámico salvo certificación. La mayoría exige degüello ritual; algunos sabios son más amplios respecto a la Gente del Libro.',
+    },
+  },
+  {
+    id: 'meat-nonpork',
+    terms: ['鶏肉', 'とり肉', 'チキン', '牛肉', 'ビーフ', 'マトン', '羊肉'],
+    search: ['toriniku', 'chicken', 'gyuniku', 'beef'],
+    status: 'mushbooh',
+    category: 'animal',
+    label: { ar: 'لحم حلال في أصله (غير مذكّى)', en: 'Lawful meat, slaughter unknown', es: 'Carne lícita, sacrificio desconocido' },
+    why: {
+      ar: 'الدجاج والبقر حلال في ذاتهما، لكن الذبح في اليابان ليس على الوجه الشرعي إلا بشهادة. المسألة خلافية والقرار قرارك.',
+      en: 'Chicken and beef are lawful in themselves, but slaughter in Japan is not Islamic unless certified. Scholars differ; the decision is yours.',
+      es: 'El pollo y el vacuno son lícitos en sí, pero el sacrificio en Japón no es islámico salvo certificación. Los sabios difieren; la decisión es tuya.',
+    },
+  },
+  {
+    id: 'extract-generic',
+    terms: ['エキス', 'コンソメ', 'ブイヨン', 'スープの素'],
+    search: ['ekisu', 'consomme', 'bouillon'],
+    status: 'mushbooh',
+    category: 'animal',
+    label: { ar: 'خلاصة أو مرق مركّز', en: 'Extract or stock', es: 'Extracto o caldo concentrado' },
+    why: {
+      ar: 'الكلمة وحدها لا تقول شيئًا: قد تكون من الخنزير أو الدجاج أو الخميرة. الواجب معرفة مصدرها.',
+      en: 'The word alone says nothing: it may come from pork, chicken or yeast. The source has to be established.',
+      es: 'La palabra sola no dice nada: puede venir de cerdo, de pollo o de levadura. Hay que saber el origen.',
     },
   },
   {
@@ -504,7 +585,11 @@ export const RULES: readonly Rule[] = [
   },
   {
     id: 'grains',
-    terms: ['小麦粉', '米', 'うるち米', '大豆', 'とうもろこし', 'じゃがいも', '加工でん粉', 'でん粉', '澱粉'],
+    terms: [
+      '小麦粉', '米', 'うるち米', '大豆', 'とうもろこし', 'じゃがいも',
+      '加工でん粉', 'でん粉', '澱粉', '豆腐', 'とうふ', '納豆', '枝豆', '野菜', 'やさい',
+    ],
+    search: ['tofu', 'natto', 'daizu', 'yasai'],
     status: 'halal',
     category: 'plant',
     label: { ar: 'حبوب ونشويات', en: 'Grains and starches', es: 'Cereales y almidones' },
@@ -540,7 +625,11 @@ export const RULES: readonly Rule[] = [
   },
   {
     id: 'seafood',
-    terms: ['かつお節', 'かつおぶし', '鰹節', '昆布', '昆布エキス', '魚醤', 'いりこ', '煮干し', '海苔', 'わかめ'],
+    terms: [
+      'かつお節', 'かつおぶし', '鰹節', '昆布', '昆布エキス', '魚醤', 'いりこ', '煮干し',
+      '海苔', 'わかめ', 'だし', '出汁', '鰹だし', 'かつおだし', '昆布だし',
+    ],
+    search: ['dashi', 'katsuobushi', 'kombu', 'nori'],
     status: 'halal',
     category: 'seafood',
     label: { ar: 'بحريات', en: 'Seafood and seaweed', es: 'Productos del mar y algas' },
@@ -565,6 +654,7 @@ export const RULES: readonly Rule[] = [
   {
     id: 'miso',
     terms: ['味噌', 'みそ', '米みそ', '豆みそ'],
+    search: ['miso'],
     status: 'halal',
     category: 'plant',
     label: { ar: 'ميسو', en: 'Miso', es: 'Miso' },

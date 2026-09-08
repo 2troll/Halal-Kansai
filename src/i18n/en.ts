@@ -106,8 +106,6 @@ export const en = {
     'Free, no ads, no accounts, no tracking. Built by and for the Muslim community of Kansai.',
 
   // Ingredient checker
-  navScan: 'Label',
-  scanTitle: 'Japanese label checker',
   scanSubtitle:
     'Scan the barcode, or paste the 原材料名 line from the package. The reading happens on your phone: no account, and it works with no connection.',
   scanPlaceholder: '原材料名：小麦粉、豚脂、しょうゆ、みりん…',
@@ -159,4 +157,16 @@ export const en = {
   language: 'Language',
   offlineReady: 'Available offline',
   loading: 'Loading…',
+
+  // Comida
+  navFood: 'Food',
+  foodTitle: 'Reading Japanese labels and menus',
+  foodTabScan: '🔍 Ingredients',
+  foodTabPhrases: '💬 Show the staff',
+  foodScanLabel: 'Paste an ingredient list, or type one word',
+  foodNoMatch: 'Not in the database. That does not mean it is lawful — ask.',
+  foodBrowseAll: 'Browse every term',
+  foodDisclaimer: 'Guidance to help you ask better questions — not a fatwa and not a halal certification. Where scholars differ, we say so and leave the decision to you.',
+  foodPhrasesHint: 'Tap a phrase to show it full-screen to the staff.',
+  foodClose: 'Close',
 } as const;

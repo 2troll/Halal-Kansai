@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { analyze, segmentsFor } from '../src/modules/ingredients/analyze';
+import { analyze, searchRules, segmentsFor } from '../src/modules/ingredients/analyze';
 import { RULES } from '../src/modules/ingredients/rules';
 
 /** Ids de lo encontrado, para leer los tests de un vistazo. */
@@ -124,6 +124,87 @@ describe('integridad de la base de reglas', () => {
     for (const rule of RULES) {
       expect(rule.terms.length, rule.id).toBeGreaterThan(0);
       expect(rule.terms.some((term) => /[ぁ-んァ-ヶ一-龯]/.test(term)), rule.id).toBe(true);
+    }
+  });
+});
+
+// ── Portado del módulo `food` al fusionar los dos lectores ────────────────
+
+describe('búsqueda por palabra (diccionario)', () => {
+  it('encuentra por romaji', () => {
+    expect(searchRules('mirin', 'es').map((r) => r.id)).toContain('mirin');
+  });
+
+  it('encuentra por kanji', () => {
+    expect(searchRules('豚肉', 'en').map((r) => r.id)).toContain('pork-meat');
+  });
+
+  it('encuentra por kana', () => {
+    expect(searchRules('とんこつ', 'en').map((r) => r.id)).toContain('pork-bone-broth');
+  });
+
+  it('encuentra por el nombre en el idioma de la interfaz', () => {
+    expect(searchRules('gelatina', 'es').map((r) => r.id)).toContain('gelatin');
+    expect(searchRules('خنزير', 'ar').length).toBeGreaterThan(0);
+  });
+
+  it('ordena lo prohibido antes que lo dudoso y lo lícito', () => {
+    const statuses = searchRules('肉', 'es').map((r) => r.status);
+    const firstMushbooh = statuses.indexOf('mushbooh');
+    const lastHaram = statuses.lastIndexOf('haram');
+    if (firstMushbooh !== -1 && lastHaram !== -1) expect(lastHaram).toBeLessThan(firstMushbooh);
+  });
+
+  it('devuelve vacío con consulta vacía', () => {
+    expect(searchRules('   ', 'en')).toEqual([]);
+  });
+});
+
+describe('cocina japonesa cotidiana', () => {
+  it('el caldo tonkotsu del ramen es cerdo aunque los fideos parezcan inocentes', () => {
+    expect(analyze('中華麺、豚骨スープ、ねぎ').verdict).toBe('haram');
+  });
+
+  it('チャーシュー y ハム se reconocen como cerdo', () => {
+    expect(ids('チャーシュー')).toEqual(['char-siu']);
+    expect(analyze('ハム、レタス、パン').verdict).toBe('haram');
+  });
+
+  it('だし de bonito y kombu es lícito', () => {
+    const a = analyze('原材料名：昆布だし、食塩、砂糖');
+    expect(a.counts.haram + a.counts.mushbooh).toBe(0);
+  });
+
+  it('エキス a secas es dudoso, pero 昆布エキス no lo es', () => {
+    expect(ids('エキス')).toEqual(['extract-generic']);
+    expect(ids('昆布エキス')).toEqual(['seafood']);
+  });
+
+  it('el pollo sin certificar queda en manos del usuario, no se prohíbe', () => {
+    const a = analyze('鶏肉、食塩、香辛料');
+    expect(a.verdict).toBe('mushbooh');
+    expect(a.counts.haram).toBe(0);
+  });
+
+  it('ignora los separadores y espacios del envase', () => {
+    expect(analyze('砂糖 ・ 豚 骨 ・ 塩').verdict).toBe('haram');
+  });
+
+  it('una etiqueta inocua no se declara lícita', () => {
+    const a = analyze('じゃがいも、植物性油脂、食塩');
+    expect(a.verdict).toBe('no-haram-found');
+    expect(a.verdict).not.toBe('halal');
+  });
+});
+
+describe('higiene de la base de reglas', () => {
+  it('ningún término está repetido en dos reglas', () => {
+    const seen = new Map<string, string>();
+    for (const rule of RULES) {
+      for (const term of rule.terms) {
+        expect(seen.has(term), `"${term}" repetido en ${rule.id} y ${seen.get(term)}`).toBe(false);
+        seen.set(term, rule.id);
+      }
     }
   });
 });

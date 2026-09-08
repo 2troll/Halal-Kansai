@@ -103,8 +103,6 @@ export const es: Dict = {
     'Gratuita, sin anuncios, sin cuentas, sin rastreo. Hecha por y para la comunidad musulmana de Kansai.',
 
   // Lector de etiquetas
-  navScan: 'Etiqueta',
-  scanTitle: 'Lector de etiquetas japonesas',
   scanSubtitle:
     'Escanea el código de barras o pega la línea 原材料名 del paquete. La lectura ocurre en tu móvil: sin cuenta y sin necesidad de conexión.',
   scanPlaceholder: '原材料名：小麦粉、豚脂、しょうゆ、みりん…',
@@ -155,4 +153,16 @@ export const es: Dict = {
   language: 'Idioma',
   offlineReady: 'Disponible sin conexión',
   loading: 'Cargando…',
+
+  // Comida
+  navFood: 'Comer',
+  foodTitle: 'Leer etiquetas y cartas en japonés',
+  foodTabScan: '🔍 Ingredientes',
+  foodTabPhrases: '💬 Enseñar al camarero',
+  foodScanLabel: 'Pegue una lista de ingredientes, o escriba una palabra',
+  foodNoMatch: 'No está en la base. Eso no significa que sea lícito: pregunte.',
+  foodBrowseAll: 'Ver todos los términos',
+  foodDisclaimer: 'Orientación para que pueda preguntar mejor. No es una fatwa ni una certificación halal. Donde los sabios difieren, se dice y la decisión queda en sus manos.',
+  foodPhrasesHint: 'Toque una frase para enseñarla a pantalla completa.',
+  foodClose: 'Cerrar',
 };

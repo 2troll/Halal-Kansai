@@ -12,6 +12,8 @@
 
 import { CROSS_CONTAMINATION, RULES, type Rule, type Status, type Trilingual } from './rules';
 
+export type { Rule } from './rules';
+
 export type Verdict = 'haram' | 'mushbooh' | 'no-haram-found' | 'nothing-recognised';
 
 export interface Finding {
@@ -253,4 +255,26 @@ export function segmentsFor(label: string, findings: Finding[]): Array<{
   }
   if (cursor < label.length) out.push({ text: label.slice(cursor), status: null });
   return out;
+}
+
+/**
+ * Búsqueda por palabra suelta: kanji, kana, romaji o el nombre en el idioma de
+ * la interfaz. Sirve para el diccionario ("¿qué es みりん?") sin pasar por el
+ * análisis de una etiqueta entera.
+ */
+export function searchRules(query: string, lang: 'ar' | 'en' | 'es'): Rule[] {
+  const raw = query.trim().toLowerCase();
+  if (!raw) return [];
+  const normalized = normalizeWithMap(raw).text;
+
+  const ORDER: Record<Status, number> = { haram: 0, mushbooh: 1, halal: 2 };
+  return RULES.filter((rule) => {
+    const japanese = rule.terms.some((term) => {
+      const t = normalizeTerm(term);
+      return t.includes(normalized) || normalized.includes(t);
+    });
+    const romaji = (rule.search ?? []).some((word) => word.toLowerCase().includes(raw));
+    const named = rule.label[lang].toLowerCase().includes(raw);
+    return japanese || romaji || named;
+  }).sort((a, b) => ORDER[a.status] - ORDER[b.status]);
 }

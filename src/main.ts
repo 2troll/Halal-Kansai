@@ -4,20 +4,16 @@ import { renderSalat } from './modules/salat/ui';
 import { renderQibla } from './modules/qibla/ui';
 import { renderPlaces } from './modules/places/ui';
 import { renderKhutbah } from './modules/khutbah/ui';
-import { renderIngredients, stopIngredientsCamera } from './modules/ingredients/ui';
 import { renderGuide } from './modules/guide/ui';
+import { renderFood, stopFoodCamera } from './modules/food/ui';
 
-type Tab = 'salat' | 'qibla' | 'places' | 'scan' | 'khutbah' | 'guide';
+type Tab = 'salat' | 'qibla' | 'places' | 'food' | 'khutbah' | 'guide';
 
-const TABS: Array<{
-  id: Tab;
-  icon: string;
-  labelKey: 'navSalat' | 'navQibla' | 'navPlaces' | 'navScan' | 'navKhutbah' | 'navGuide';
-}> = [
+const TABS: Array<{ id: Tab; icon: string; labelKey: 'navSalat' | 'navQibla' | 'navPlaces' | 'navFood' | 'navKhutbah' | 'navGuide' }> = [
   { id: 'salat', icon: '🕌', labelKey: 'navSalat' },
   { id: 'qibla', icon: '🧭', labelKey: 'navQibla' },
   { id: 'places', icon: '📍', labelKey: 'navPlaces' },
-  { id: 'scan', icon: '🔍', labelKey: 'navScan' },
+  { id: 'food', icon: '🍽', labelKey: 'navFood' },
   { id: 'khutbah', icon: '🎙', labelKey: 'navKhutbah' },
   { id: 'guide', icon: '📖', labelKey: 'navGuide' },
 ];
@@ -26,7 +22,7 @@ const RENDERERS: Record<Tab, (el: HTMLElement) => void> = {
   salat: renderSalat,
   qibla: renderQibla,
   places: renderPlaces,
-  scan: renderIngredients,
+  food: renderFood,
   khutbah: renderKhutbah,
   guide: renderGuide,
 };
@@ -70,8 +66,8 @@ function renderShell(): void {
 
   app.querySelectorAll<HTMLButtonElement>('.tabbar button').forEach((btn) => {
     btn.addEventListener('click', () => {
-      // Salir de la pestaña del lector debe apagar la cámara, no dejarla viva.
-      if (activeTab === 'scan') stopIngredientsCamera();
+      // Salir de la pestaña de comida debe apagar la cámara, no dejarla viva.
+      if (activeTab === 'food') stopFoodCamera();
       activeTab = btn.dataset.tab as Tab;
       app
         .querySelectorAll<HTMLButtonElement>('.tabbar button')
