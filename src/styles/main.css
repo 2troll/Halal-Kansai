@@ -18,8 +18,11 @@
   --ink-soft: #5c6f69;
   --danger: #a8503f;
 
-  --font-display: 'Fraunces', 'Amiri', serif;
-  --font-body: 'Inter', system-ui, sans-serif;
+  /* El japonés cae al tipo del sistema: Fraunces e Inter no traen kanji. */
+  --font-jp-serif: 'Hiragino Mincho ProN', 'Yu Mincho', 'Noto Serif JP';
+  --font-jp-sans: 'Hiragino Kaku Gothic ProN', 'Yu Gothic', Meiryo, 'Noto Sans JP';
+  --font-display: 'Fraunces', 'Amiri', var(--font-jp-serif), serif;
+  --font-body: 'Inter', var(--font-jp-sans), system-ui, sans-serif;
   --font-arabic: 'Amiri', 'Scheherazade New', serif;
 
   /* Arco mihrab: radio superior característico */

@@ -1,12 +1,13 @@
 import { ar } from './ar';
 import { en } from './en';
 import { es } from './es';
+import { ja } from './ja';
 
-export type Lang = 'ar' | 'en' | 'es';
+export type Lang = 'ar' | 'en' | 'es' | 'ja';
 /** Mismas claves que el diccionario inglés; los valores son las traducciones. */
 export type Dict = { [K in keyof typeof en]: string };
 
-const DICTS: Record<Lang, Dict> = { ar, en, es };
+const DICTS: Record<Lang, Dict> = { ar, en, es, ja };
 const RTL_LANGS: ReadonlySet<Lang> = new Set(['ar']);
 const STORAGE_KEY = 'hk-lang';
 
@@ -15,9 +16,9 @@ const listeners = new Set<() => void>();
 
 function loadLang(): Lang {
   const saved = localStorage.getItem(STORAGE_KEY);
-  if (saved === 'ar' || saved === 'en' || saved === 'es') return saved;
+  if (saved === 'ar' || saved === 'en' || saved === 'es' || saved === 'ja') return saved;
   const nav = navigator.language.slice(0, 2);
-  if (nav === 'ar' || nav === 'es') return nav;
+  if (nav === 'ar' || nav === 'es' || nav === 'ja') return nav;
   return 'en';
 }
 

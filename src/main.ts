@@ -1,5 +1,8 @@
 import './styles/main.css';
 import { applyDirection, getLang, onLangChange, setLang, t, type Lang } from './i18n';
+
+/** Etiqueta del botón: sigla, salvo el japonés, que se lee de un vistazo. */
+const LANG_LABEL: Record<Lang, string> = { ar: 'AR', en: 'EN', es: 'ES', ja: '日本語' };
 import { renderSalat } from './modules/salat/ui';
 import { renderQibla } from './modules/qibla/ui';
 import { renderPlaces } from './modules/places/ui';
@@ -41,10 +44,10 @@ function renderShell(): void {
         </div>
       </div>
       <div class="lang-switch" role="group" aria-label="${t('language')}">
-        ${(['ar', 'en', 'es'] as Lang[])
+        ${(['ar', 'en', 'es', 'ja'] as Lang[])
           .map(
             (l) =>
-              `<button data-lang="${l}" aria-pressed="${String(l === getLang())}">${l.toUpperCase()}</button>`,
+              `<button data-lang="${l}" aria-pressed="${String(l === getLang())}">${LANG_LABEL[l]}</button>`,
           )
           .join('')}
       </div>

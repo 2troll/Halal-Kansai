@@ -20,6 +20,7 @@ import {
 import { RULES, type Status } from '../ingredients/rules';
 import { PHRASES, type Phrase } from './phrases';
 import { getLang, t } from '../../i18n';
+import { ruleText } from '../ingredients/localize';
 
 type Mode = 'label' | 'phrases';
 
@@ -101,11 +102,11 @@ function findingHtml(f: Finding): string {
   return `
     <article class="finding ${f.status}">
       <h3><span class="icon" aria-hidden="true">${STATUS_ICON[f.status]}</span>
-        ${escapeHtml(f.label[lang])}
+        ${escapeHtml(ruleText(f.id, f.label, 'label', lang))}
         <code lang="ja">${escapeHtml(f.matched)}</code>
       </h3>
       <span class="badge ${f.status}">${STATUS_LABEL[f.status]()}</span>
-      <p>${escapeHtml(f.why[lang])}</p>
+      <p>${escapeHtml(ruleText(f.id, f.why, 'why', lang))}</p>
     </article>`;
 }
 
@@ -115,11 +116,11 @@ function ruleHtml(rule: Rule): string {
   return `
     <article class="finding ${rule.status}">
       <h3><span class="icon" aria-hidden="true">${STATUS_ICON[rule.status]}</span>
-        ${escapeHtml(rule.label[lang])}
+        ${escapeHtml(ruleText(rule.id, rule.label, 'label', lang))}
         <code lang="ja">${escapeHtml(rule.terms.slice(0, 3).join('・'))}</code>
       </h3>
       <span class="badge ${rule.status}">${STATUS_LABEL[rule.status]()}</span>
-      <p>${escapeHtml(rule.why[lang])}</p>
+      <p>${escapeHtml(ruleText(rule.id, rule.why, 'why', lang))}</p>
     </article>`;
 }
 

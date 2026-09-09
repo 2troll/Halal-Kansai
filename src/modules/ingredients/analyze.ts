@@ -11,6 +11,8 @@
  */
 
 import { CROSS_CONTAMINATION, RULES, type Rule, type Status, type Trilingual } from './rules';
+import type { Lang } from '../../i18n';
+import { ruleText } from './localize';
 
 export type { Rule } from './rules';
 
@@ -262,7 +264,7 @@ export function segmentsFor(label: string, findings: Finding[]): Array<{
  * la interfaz. Sirve para el diccionario ("¿qué es みりん?") sin pasar por el
  * análisis de una etiqueta entera.
  */
-export function searchRules(query: string, lang: 'ar' | 'en' | 'es'): Rule[] {
+export function searchRules(query: string, lang: Lang): Rule[] {
   const raw = query.trim().toLowerCase();
   if (!raw) return [];
   const normalized = normalizeWithMap(raw).text;
@@ -274,7 +276,7 @@ export function searchRules(query: string, lang: 'ar' | 'en' | 'es'): Rule[] {
       return t.includes(normalized) || normalized.includes(t);
     });
     const romaji = (rule.search ?? []).some((word) => word.toLowerCase().includes(raw));
-    const named = rule.label[lang].toLowerCase().includes(raw);
+    const named = ruleText(rule.id, rule.label, 'label', lang).toLowerCase().includes(raw);
     return japanese || romaji || named;
   }).sort((a, b) => ORDER[a.status] - ORDER[b.status]);
 }
