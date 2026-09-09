@@ -32,4 +32,14 @@
     <!-- Permissions -->
 
     <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- Leer el codigo de barras del envase. Sin esto el escaner falla al
+         abrirse, no al instalarse: es el fallo que solo se ve en el konbini. -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
+
+    <!-- Horas de rezo y qibla del sitio donde estas. La ubicacion no sale
+         del telefono: el calculo es local. -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 </manifest>

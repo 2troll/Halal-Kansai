@@ -13,6 +13,7 @@ import { CONFIDENCE_THRESHOLD, type VerseRef } from './match.ts';
 import { buildSegment } from './segment.ts';
 import { getMatcher, type QuranStore } from './store.ts';
 import { parseSuggestion, type SuggestionStatus, type SuggestionStore } from './suggestions.ts';
+import type { AiBinding } from './ai-translate.ts';
 
 export interface AppConfig {
   store: QuranStore;
@@ -25,6 +26,8 @@ export interface AppConfig {
   suggestions?: SuggestionStore;
   /** Token Bearer del panel admin; sin él, las rutas admin devuelven 503. */
   adminToken?: string;
+  /** Workers AI: traduce dentro de Cloudflare, sin cuotas de terceros por IP. */
+  ai?: AiBinding;
 }
 
 /**
@@ -154,7 +157,14 @@ export function createApp(config: AppConfig): Hono {
     const source = (body.source ?? 'unknown').slice(0, 12);
 
     try {
-      return c.json(await buildSegment({ llm: config.llm, store: config.store }, text, source, target));
+      return c.json(
+        await buildSegment(
+          { llm: config.llm, store: config.store, ai: config.ai },
+          text,
+          source,
+          target,
+        ),
+      );
     } catch {
       return c.json({ error: 'translation failed' }, 502);
     }

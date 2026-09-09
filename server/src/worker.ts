@@ -15,6 +15,7 @@ import type { Hono } from 'hono';
 import { createApp } from './app.ts';
 import { WorkersAssetsStore } from './store.ts';
 import { KVSuggestionStore } from './suggestions.ts';
+import type { AiBinding } from './ai-translate.ts';
 
 export { KhutbahRoomDO } from './room-do.ts';
 
@@ -27,6 +28,7 @@ interface Env {
   ASSETS: { fetch(request: Request | string): Promise<Response> };
   SUGGESTIONS?: { get(key: string): Promise<string | null>; put(key: string, value: string): Promise<void> };
   KHUTBAH_ROOMS?: DurableObjectNamespace;
+  AI?: AiBinding;
   ANTHROPIC_API_KEY: string;
   ANTHROPIC_MODEL?: string;
   ALLOWED_ORIGINS?: string;
@@ -59,6 +61,7 @@ export default {
         rateLimitPerMinute: 30,
         suggestions: env.SUGGESTIONS ? new KVSuggestionStore(env.SUGGESTIONS) : undefined,
         adminToken: env.ADMIN_TOKEN,
+        ai: env.AI,
       });
     }
     return app.fetch(request);

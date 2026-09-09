@@ -25,6 +25,9 @@
   },
   // Salas del modo transmisor: una instancia por sala.
   // new_sqlite_classes = Durable Objects del plan gratuito.
+  // Traducción dentro de Cloudflare. El plan gratuito trae una asignación
+  // diaria; agotada, se cae a los proveedores externos. Sin tarjeta.
+  "ai": { "binding": "AI" },
   "durable_objects": {
     "bindings": [{ "name": "KHUTBAH_ROOMS", "class_name": "KhutbahRoomDO" }]
   },

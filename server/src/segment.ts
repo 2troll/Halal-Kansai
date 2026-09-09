@@ -8,6 +8,7 @@
  * Compartido por POST /api/translate y por el modo transmisor (RoomHub).
  */
 import { freeTranslate } from './free-translate.ts';
+import { aiTranslate, type AiBinding } from './ai-translate.ts';
 import { analyzeSegment, type LlmConfig } from './llm.ts';
 import { hasArabic } from './normalize.ts';
 import { getMatcher, type QuranStore } from './store.ts';
@@ -26,6 +27,8 @@ export interface TranslatedSegment {
 export interface SegmentDeps {
   llm: LlmConfig;
   store: QuranStore;
+  /** Workers AI: solo existe desplegado en Cloudflare, no en Node. */
+  ai?: AiBinding;
 }
 
 /**
@@ -79,11 +82,18 @@ async function buildSegmentFree(
 
   // Si no es un verso con traducción oficial, traducimos con MT gratis.
   if (segment.translationSource !== 'tanzil') {
-    try {
-      segment.translation = await freeTranslate(text, source, target);
-    } catch {
-      // Sin red o proveedores caídos: mostrar el original (degradación suave).
-      segment.translation = text;
+    // Orden a propósito: primero el modelo de Cloudflare (misma red, sin
+    // cuota ajena), y solo si no está o falla, los proveedores por IP.
+    const viaAi = deps.ai ? await aiTranslate(deps.ai, text, source, target) : null;
+    if (viaAi) {
+      segment.translation = viaAi;
+    } else {
+      try {
+        segment.translation = await freeTranslate(text, source, target);
+      } catch {
+        // Sin red o proveedores caídos: mostrar el original (degradación suave).
+        segment.translation = text;
+      }
     }
     // Si casó un verso pero sin traducción Tanzil, la MT es "no oficial".
     if (matched) segment.translationSource = 'free';
