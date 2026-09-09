@@ -1,7 +1,7 @@
 {
   "name": "halal-kansai",
   "version": "0.1.0",
-  "description": "Herramienta diaria gratuita para la comunidad musulmana en Japón: salat, qibla, lugares halal y traducción de la jutba en vivo.",
+  "description": "Herramienta diaria gratuita para la comunidad musulmana en Jap\u00f3n: salat, qibla, lugares halal y traducci\u00f3n de la jutba en vivo.",
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
@@ -11,7 +11,9 @@
     "icons": "node tools/gen-icons.mjs",
     "dev:server": "node --experimental-strip-types server/src/node.ts",
     "build:quran": "node tools/build-quran-data.mjs",
-    "start": "bash scripts/start.sh"
+    "start": "bash scripts/start.sh",
+    "build:worker": "npm run build && rm -rf dist/data && cp -R server/data dist/data && rm -f dist/data/suggestions.json",
+    "deploy": "npm run build:worker && npx wrangler deploy"
   },
   "repository": {
     "type": "git",

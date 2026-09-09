@@ -1,5 +1,5 @@
 import { computePrayerTimes, formatTime, type Coordinates, type PrayerTimes } from './calculator';
-import { t } from '../../i18n';
+import { getLang, t } from '../../i18n';
 
 const OSAKA: Coordinates = { lat: 34.6937, lng: 135.5023 };
 const JST = 9;
@@ -42,7 +42,15 @@ export function renderSalat(container: HTMLElement): void {
   const next = nextPrayerOf(times, now);
   const h = Math.floor(next.minutesLeft / 60);
   const m = next.minutesLeft % 60;
-  const countdown = h > 0 ? `${h} h ${m} min` : `${m} min`;
+  // El japonés no usa las abreviaturas latinas: 1時間5分, no "1 h 5 min".
+  const ja = getLang() === 'ja';
+  const countdown = ja
+    ? h > 0
+      ? `${h}時間${m}分`
+      : `${m}分`
+    : h > 0
+      ? `${h} h ${m} min`
+      : `${m} min`;
 
   container.innerHTML = `
     <h2>${t('salatTitle')}</h2>

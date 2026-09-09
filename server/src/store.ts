@@ -66,8 +66,9 @@ export class WorkersAssetsStore implements QuranStore {
   }
 
   async loadUthmani(): Promise<Record<string, string>> {
-    // El binding ASSETS monta server/data/ en la raíz del path.
-    const data = await this.fetchJson<Record<string, string>>('/quran-uthmani.json');
+    // El binding ASSETS sirve el sitio entero; los datos coránicos se copian
+    // a dist/data/ durante el build (npm run build:worker).
+    const data = await this.fetchJson<Record<string, string>>('/data/quran-uthmani.json');
     if (!data) throw new Error('quran-uthmani.json no disponible en assets');
     return data;
   }
@@ -75,7 +76,7 @@ export class WorkersAssetsStore implements QuranStore {
   async loadTranslation(lang: string): Promise<TranslationFile | null> {
     if (!LANG_RE.test(lang)) return null;
     if (this.translations.has(lang)) return this.translations.get(lang) ?? null;
-    const result = await this.fetchJson<TranslationFile>(`/translations/${lang}.json`);
+    const result = await this.fetchJson<TranslationFile>(`/data/translations/${lang}.json`);
     this.translations.set(lang, result);
     return result;
   }

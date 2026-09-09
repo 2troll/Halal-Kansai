@@ -18,7 +18,10 @@ function shortLang(locale: string): string {
 
 async function viaMyMemory(text: string, source: string, target: string): Promise<string | null> {
   const params = new URLSearchParams({ q: text, langpair: `${source}|${target}` });
-  const email = process.env.MYMEMORY_EMAIL;
+  // Workers no tiene `process`; en Node sí. Sin email el límite es menor,
+  // pero la traducción sigue funcionando.
+  const email =
+    typeof process !== 'undefined' ? process.env?.MYMEMORY_EMAIL : undefined;
   if (email) params.set('de', email); // sube el límite de 5k a 50k palabras/día
   const res = await fetch(`https://api.mymemory.translated.net/get?${params}`);
   if (!res.ok) return null;

@@ -1,33 +1,32 @@
 {
-  // Despliegue del backend en Cloudflare Workers (Fase 2).
-  // Requiere: cuenta Cloudflare (pendiente del fundador) y
-  //   npx wrangler secret put ANTHROPIC_API_KEY
-  "name": "halal-kansai-api",
+  // Despliegue completo en Cloudflare Workers: un solo origen sirve la PWA
+  // (assets) y la API (/api/*). Al ser el mismo origen no hay CORS, y la
+  // jutba en vivo funciona sin configurar nada en el cliente.
+  //
+  //   npm run deploy      → build + copia de datos + wrangler deploy
+  //
+  // Plan gratuito: assets estáticos, KV y Durable Objects con backend SQLite.
+  // No hace falta ninguna clave de pago: sin ANTHROPIC_API_KEY la traducción
+  // usa el proveedor gratuito y las aleyas siguen saliendo de Tanzil.
+  "name": "halal-kansai",
   "main": "server/src/worker.ts",
   "compatibility_date": "2026-06-01",
+  // El bundle arrastra las variantes Node de store/suggestions (nunca se
+  // ejecutan aquí, pero se empaquetan). Con este flag no hay sorpresas.
+  "compatibility_flags": ["nodejs_compat"],
   "assets": {
-    // Sirve server/data/* como /data/* para el binding ASSETS (29 MB de
-    // Corán + traducciones Tanzil que no caben en el bundle del worker).
-    "directory": "./server/data",
+    // dist/ = la PWA compilada + dist/data/ = Corán y traducciones Tanzil.
+    "directory": "./dist",
     "binding": "ASSETS"
   },
   "vars": {
-    "ANTHROPIC_MODEL": "claude-opus-4-8",
-    "ALLOWED_ORIGINS": "https://halalkansai.app"
+    // Mismo origen: la lista solo hace falta si alguien embebe la API fuera.
+    "ALLOWED_ORIGINS": ""
   },
-  // Cola de moderación de lugares sugeridos (Fase 3). Crear con:
-  //   npx wrangler kv namespace create SUGGESTIONS
-  // y pegar el id generado. También: npx wrangler secret put ADMIN_TOKEN
-  "kv_namespaces": [
-    { "binding": "SUGGESTIONS", "id": "<rellenar-tras-crear-namespace>" }
-  ],
-  // Salas del modo transmisor (Fase 4): una instancia por sala.
+  // Salas del modo transmisor: una instancia por sala.
+  // new_sqlite_classes = Durable Objects del plan gratuito.
   "durable_objects": {
-    "bindings": [
-      { "name": "KHUTBAH_ROOMS", "class_name": "KhutbahRoomDO" }
-    ]
+    "bindings": [{ "name": "KHUTBAH_ROOMS", "class_name": "KhutbahRoomDO" }]
   },
-  "migrations": [
-    { "tag": "v1", "new_classes": ["KhutbahRoomDO"] }
-  ]
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["KhutbahRoomDO"] }]
 }

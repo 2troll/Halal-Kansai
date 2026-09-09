@@ -5,7 +5,10 @@
  * El LLM clasifica el fragmento y, si cree que es Corán, propone sura:aleya.
  * NUNCA se usa su árabe: la verificación y el texto literal salen de match.ts.
  */
-import Anthropic from '@anthropic-ai/sdk';
+// Import dinámico a propósito: el SDK arrastra módulos de Node que no existen
+// en Cloudflare Workers. Sin clave nunca llega a cargarse, y el despliegue
+// gratuito (traducción libre + Tanzil) no lo necesita.
+import type AnthropicType from '@anthropic-ai/sdk';
 
 export type SegmentKind = 'speech' | 'quran' | 'hadith' | 'dua';
 
@@ -77,6 +80,9 @@ export async function analyzeSegment(
   sourceLocale: string,
   targetLang: string,
 ): Promise<LlmAnalysis> {
+  const { default: Anthropic } = (await import('@anthropic-ai/sdk')) as {
+    default: typeof AnthropicType;
+  };
   const client = new Anthropic({ apiKey: config.apiKey, baseURL: config.baseURL });
 
   const response = await client.messages.create({
