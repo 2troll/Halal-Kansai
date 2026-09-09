@@ -192,6 +192,9 @@ export const es: Dict = {
   voicePick: 'Voz',
   voiceNone: 'No hay ninguna voz instalada para este idioma',
 
+  roomQrLabel: 'Código QR para entrar en esta sala',
+  roomQrHint: 'Enséñalo a la comunidad: apuntan la cámara y entran en su propio idioma.',
+
   // Comida
   navFood: 'Comer',
   foodTitle: 'Leer etiquetas y cartas en japonés',

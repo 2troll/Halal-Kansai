@@ -3,6 +3,7 @@ import { KhutbahRoom } from './room';
 import { translateSegment, type TranslatedSegment } from './translate';
 import { disableFridayMode, enableFridayMode } from './wakelock';
 import { t, getLang } from '../../i18n';
+import { qrSvg } from './qr';
 import {
   getVoiceName,
   setVoiceName,
@@ -79,8 +80,10 @@ export function renderKhutbah(container: HTMLElement): void {
 
   const savedSource = localStorage.getItem(PREF_SOURCE) ?? 'ur-PK';
   const savedTarget = localStorage.getItem(PREF_TARGET) ?? getLang();
-  const savedMode = (localStorage.getItem(PREF_MODE) ?? 'local') as Mode;
-  const savedRoom = localStorage.getItem(PREF_ROOM) ?? '';
+  // Enlace de un QR escaneado: entra directo a esa sala, sin teclear nada.
+  const invited = new URLSearchParams(location.search).get('room');
+  const savedMode = (invited ? 'join' : (localStorage.getItem(PREF_MODE) ?? 'local')) as Mode;
+  const savedRoom = invited ?? localStorage.getItem(PREF_ROOM) ?? '';
 
   container.innerHTML = `
     <h2>${t('khutbahTitle')}</h2>
@@ -127,6 +130,7 @@ export function renderKhutbah(container: HTMLElement): void {
       <span class="status-pill" id="status" hidden><span class="dot"></span><span id="status-text"></span></span>
       <p class="note" id="khutbah-note"></p>
     </div>
+    <div class="room-qr" id="room-qr" hidden></div>
     <div class="live-caption" id="live-caption" hidden aria-live="polite"></div>
     <div class="transcript" id="transcript"></div>
   `;
@@ -155,6 +159,8 @@ export function renderKhutbah(container: HTMLElement): void {
     btn.textContent = idleButtonLabel();
     btn.classList.remove('stop');
     status.hidden = true;
+    const qr = container.querySelector<HTMLElement>('#room-qr');
+    if (qr) qr.hidden = true;
   };
   setIdleUi();
 
@@ -166,6 +172,29 @@ export function renderKhutbah(container: HTMLElement): void {
   });
   selSource.addEventListener('change', () => localStorage.setItem(PREF_SOURCE, selSource.value));
   selTarget.addEventListener('change', () => localStorage.setItem(PREF_TARGET, selTarget.value));
+
+  const qrBox = container.querySelector<HTMLElement>('#room-qr')!;
+
+  /**
+   * El QR de la sala, para el que transmite.
+   *
+   * En una mezquita, decirle un código a doscientas personas y que cada una
+   * lo teclee bien no ocurre. Se enseña esto en una pantalla y cada uno
+   * apunta la cámara: entra directamente en la sala y en su idioma.
+   */
+  const showRoomQr = (code: string): void => {
+    const url = `${location.origin}${location.pathname}?room=${encodeURIComponent(code)}`;
+    try {
+      qrBox.innerHTML = `
+        ${qrSvg(url, t('roomQrLabel'))}
+        <p class="room-qr-code">${code}</p>
+        <p class="note">${t('roomQrHint')}</p>`;
+      qrBox.hidden = false;
+    } catch {
+      // Sala con nombre larguísimo: el código escrito sigue sirviendo.
+      qrBox.hidden = true;
+    }
+  };
 
   warmUpVoices();
 
@@ -317,6 +346,7 @@ export function renderKhutbah(container: HTMLElement): void {
       return;
     }
     localStorage.setItem(PREF_ROOM, roomCode);
+    if (currentMode === 'transmit') showRoomQr(roomCode);
     room = new KhutbahRoom();
     room.connect(
       {

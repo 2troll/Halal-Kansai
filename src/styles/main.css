@@ -995,3 +995,27 @@ body.sheet-open { overflow: hidden; }
   text-align: center;
   min-height: 3rem;
 }
+
+/* QR de la sala: se enseña en una pantalla, así que grande y con fondo
+   blanco fijo — un QR sobre fondo oscuro no lo lee ninguna cámara. */
+.room-qr {
+  text-align: center;
+  margin: 0.8rem 0;
+}
+
+.room-qr svg {
+  width: min(260px, 70vw);
+  height: auto;
+  background: #fff;
+  padding: 0.5rem;
+  border-radius: 12px;
+}
+
+.room-qr-code {
+  font-family: var(--font-body);
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  margin: 0.5rem 0 0.2rem;
+  color: var(--on-surface);
+}

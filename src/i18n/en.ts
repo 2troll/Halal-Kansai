@@ -191,6 +191,9 @@ export const en = {
   voicePick: 'Voice',
   voiceNone: 'No voice installed for this language',
 
+  roomQrLabel: 'QR code to join this room',
+  roomQrHint: 'Show this to the congregation: they point their camera at it and join in their own language.',
+
   // Misc
   language: 'Language',
   offlineReady: 'Available offline',

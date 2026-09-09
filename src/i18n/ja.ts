@@ -200,6 +200,9 @@ export const ja: Dict = {
   voicePick: '音声',
   voiceNone: 'この言語の音声が端末に入っていません',
 
+  roomQrLabel: 'このルームに参加するQRコード',
+  roomQrHint: '会衆にお見せください。カメラを向けるだけで、それぞれの言語で参加できます。',
+
   // Misc
   language: '言語',
   offlineReady: 'オフラインで利用できます',
