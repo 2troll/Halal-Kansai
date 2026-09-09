@@ -9,6 +9,7 @@
  */
 import { freeTranslate } from './free-translate.ts';
 import { aiTranslate, type AiBinding } from './ai-translate.ts';
+import { hasTerms, protectTerms, restoreTerms } from './glossary.ts';
 import { analyzeSegment, type LlmConfig } from './llm.ts';
 import { hasArabic } from './normalize.ts';
 import { getMatcher, type QuranStore } from './store.ts';
@@ -82,14 +83,20 @@ async function buildSegmentFree(
 
   // Si no es un verso con traducción oficial, traducimos con MT gratis.
   if (segment.translationSource !== 'tanzil') {
+    // El vocabulario religioso no pasa por el traductor: se sustituye por
+    // marcadores y se restaura después. Ver glossary.ts para el porqué.
+    const guarded = hasTerms(text) ? protectTerms(text) : { text, used: [] };
+    const restore = (out: string): string =>
+      guarded.used.length > 0 ? restoreTerms(out, guarded.used, target) : out;
+
     // Orden a propósito: primero el modelo de Cloudflare (misma red, sin
     // cuota ajena), y solo si no está o falla, los proveedores por IP.
-    const viaAi = deps.ai ? await aiTranslate(deps.ai, text, source, target) : null;
+    const viaAi = deps.ai ? await aiTranslate(deps.ai, guarded.text, source, target) : null;
     if (viaAi) {
-      segment.translation = viaAi;
+      segment.translation = restore(viaAi);
     } else {
       try {
-        segment.translation = await freeTranslate(text, source, target);
+        segment.translation = restore(await freeTranslate(guarded.text, source, target));
       } catch {
         // Sin red o proveedores caídos: mostrar el original (degradación suave).
         segment.translation = text;

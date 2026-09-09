@@ -58,7 +58,11 @@ export default {
         store: new WorkersAssetsStore(env.ASSETS),
         llm: { apiKey: env.ANTHROPIC_API_KEY, model: env.ANTHROPIC_MODEL },
         allowedOrigins: (env.ALLOWED_ORIGINS ?? '').split(',').map((s) => s.trim()).filter(Boolean),
-        rateLimitPerMinute: 30,
+        // Una mezquita entera sale por la MISMA IP: el router del local hace
+        // NAT de todos los móviles. Con 30/min, a la quinta persona que abre
+        // la jutba se bloquea la sala. El limite sigue existiendo para frenar
+        // abusos, pero dimensionado para una congregacion, no para una persona.
+        rateLimitPerMinute: 600,
         suggestions: env.SUGGESTIONS ? new KVSuggestionStore(env.SUGGESTIONS) : undefined,
         adminToken: env.ADMIN_TOKEN,
         ai: env.AI,
