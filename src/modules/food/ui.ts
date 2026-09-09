@@ -20,6 +20,7 @@ import {
 import { RULES, type Status } from '../ingredients/rules';
 import { PHRASES, type Phrase } from './phrases';
 import { getLang, t } from '../../i18n';
+import { nativeScanAvailable, scanBarcodeNative } from '../ingredients/scan-native';
 import { ruleText } from '../ingredients/localize';
 
 type Mode = 'label' | 'phrases';
@@ -33,6 +34,17 @@ const EXAMPLES: Array<{ name: string; text: string }> = [
   {
     name: '🍞 菓子パン',
     text: '原材料名：小麦粉、砂糖、マーガリン、ショートニング、ゼラチン、卵、乳化剤、香料、L-システイン（本品製造工場では豚肉を含む製品を製造しています）',
+  },
+  {
+    // 鍋つゆ: el caso japonés por excelencia. Parece verdura y caldo, y lleva
+    // 料理酒 y ポークエキス en la misma línea.
+    name: '🍲 鍋つゆ',
+    text: '原材料名：しょうゆ、食塩、ポークエキス、砂糖、料理酒、みりん、かつおぶしエキス、こんぶエキス、調味料（アミノ酸等）、酒精',
+  },
+  {
+    // Konbini: onigiri y sándwiches, lo que se compra a diario.
+    name: '🏪 コンビニ',
+    text: '原材料名：ご飯（国産米）、具材（まぐろ、マヨネーズ）、のり、乳化剤、調味料（アミノ酸等）、pH調整剤、グリシン、酒精',
   },
   {
     name: '🍶 調味料',
@@ -287,6 +299,20 @@ function renderLabelMode(body: HTMLElement): void {
   });
 
   async function openCamera(): Promise<void> {
+    // Dentro de la app, la cámara nativa: lee donde el navegador no llega
+    // (iOS no trae BarcodeDetector) y funciona con la luz de un konbini.
+    if (nativeScanAvailable()) {
+      try {
+        say(t('scanPointCamera'));
+        const code = await scanBarcodeNative();
+        if (code) void fetchProduct(code);
+        else say('');
+      } catch {
+        say(t('scanCameraDenied'));
+      }
+      return;
+    }
+
     if (!barcodeSupported()) {
       say(t('scanCameraUnsupported'));
       return;

@@ -6,6 +6,12 @@
 	<string>$(CAPACITOR_DEBUG)</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
+	<!-- Apple rechaza la app si falta el motivo de cada permiso, y el motivo
+	     tiene que decir para qué sirve de verdad, no una frase genérica. -->
+	<key>NSCameraUsageDescription</key>
+	<string>To read the barcode on a food package and look up its ingredients. Nothing is recorded or sent anywhere.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>To compute prayer times and the qibla direction for where you are. Your location stays on this device.</string>
 	<key>CFBundleDisplayName</key>
         <string>Halal Kansai</string>
 	<key>CFBundleExecutable</key>
