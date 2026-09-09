@@ -91,6 +91,16 @@ applyDirection();
 renderShell();
 onLangChange(renderShell);
 
+// App nativa: barra de estado, splash y reprogramación de avisos al volver.
+void (async () => {
+  const [{ initNative }, { rescheduleNotifications }] = await Promise.all([
+    import('./native'),
+    import('./modules/salat/ui'),
+  ]);
+  await initNative(rescheduleNotifications);
+  await rescheduleNotifications();
+})();
+
 // PWA: registrar el service worker (solo en producción).
 // En GitHub Pages (subruta) lo saltamos: el SW cachea rutas absolutas y el
 // despliegue de Pages es solo para probar el reconocimiento de voz online.

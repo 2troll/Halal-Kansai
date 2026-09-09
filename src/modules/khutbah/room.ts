@@ -3,6 +3,7 @@
  * segmentos reconocidos; los demás reciben por WebSocket la traducción
  * en su idioma (el servidor traduce una vez por idioma distinto).
  */
+import { apiWsUrl } from '../../backend';
 import type { TranslatedSegment } from './translate';
 
 export type RoomRole = 'transmitter' | 'receiver';
@@ -30,8 +31,7 @@ export class KhutbahRoom {
   private closedByUs = false;
 
   connect(opts: RoomOptions, callbacks: RoomCallbacks): void {
-    const proto = location.protocol === 'https:' ? 'wss' : 'ws';
-    const url = `${proto}://${location.host}/api/khutbah/ws?room=${encodeURIComponent(opts.room)}`;
+    const url = apiWsUrl(`/api/khutbah/ws?room=${encodeURIComponent(opts.room)}`);
     const ws = new WebSocket(url);
     this.ws = ws;
     this.closedByUs = false;

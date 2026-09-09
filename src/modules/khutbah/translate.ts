@@ -7,6 +7,8 @@
  * la base de datos Uthmani, jamás lo genera la IA (principio no negociable).
  */
 
+import { apiUrl } from '../../backend';
+
 export type SegmentKind = 'speech' | 'quran' | 'hadith' | 'dua';
 
 export interface TranslatedSegment {
@@ -25,14 +27,14 @@ export interface TranslatedSegment {
   translationSource?: 'tanzil' | 'llm' | 'free';
 }
 
-const API_URL = '/api/translate';
+
 
 export async function translateSegment(
   text: string,
   sourceLocale: string,
   targetLang: string,
 ): Promise<TranslatedSegment> {
-  const res = await fetch(API_URL, {
+  const res = await fetch(apiUrl('/api/translate'), {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ text, source: sourceLocale, target: targetLang }),

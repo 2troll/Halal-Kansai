@@ -1,5 +1,12 @@
 import { computePrayerTimes, formatTime, type Coordinates, type PrayerTimes } from './calculator';
 import { getLang, t } from '../../i18n';
+import { isNative } from '../../backend';
+import {
+  cancelPrayerNotifications,
+  notificationsEnabled,
+  schedulePrayerNotifications,
+  setNotificationsEnabled,
+} from '../../native';
 
 const OSAKA: Coordinates = { lat: 34.6937, lng: 135.5023 };
 const JST = 9;
@@ -69,6 +76,14 @@ export function renderSalat(container: HTMLElement): void {
         </li>`,
       ).join('')}
     </ul>
+    ${
+      isNative()
+        ? `<label class="notify-row">
+             <input type="checkbox" id="chk-notify" ${notificationsEnabled() ? 'checked' : ''} />
+             <span>🔔 ${t('notifyPrayers')}</span>
+           </label>`
+        : ''
+    }
     <button class="btn" id="btn-locate">📍 ${t('useMyLocation')}</button>
     <button class="btn" id="btn-share">📤 ${t('shareTimes')}</button>
     <p class="note" id="salat-note"></p>
@@ -81,6 +96,13 @@ export function renderSalat(container: HTMLElement): void {
     } catch {
       container.querySelector('#salat-note')!.textContent = t('shareError');
     }
+  });
+
+  const chk = container.querySelector<HTMLInputElement>('#chk-notify');
+  chk?.addEventListener('change', async () => {
+    setNotificationsEnabled(chk.checked);
+    if (chk.checked) await rescheduleNotifications();
+    else await cancelPrayerNotifications();
   });
 
   container.querySelector<HTMLButtonElement>('#btn-locate')!.addEventListener('click', () => {
@@ -102,4 +124,29 @@ export function renderSalat(container: HTMLElement): void {
 
 export function getCoords(): Coordinates {
   return loadCoords();
+}
+
+/**
+ * Reprograma los avisos de los próximos 7 días.
+ *
+ * Siete y no más porque iOS limita a 64 avisos pendientes por app: 5 rezos ×
+ * 7 días = 35, con margen de sobra. Se vuelve a llamar cada vez que la app
+ * pasa a primer plano, así que la ventana se renueva sola.
+ */
+export async function rescheduleNotifications(): Promise<void> {
+  const coords = loadCoords();
+  const today = new Date();
+  const days = Array.from({ length: 7 }, (_, i) => {
+    const date = new Date(today);
+    date.setDate(today.getDate() + i);
+    return {
+      date,
+      times: computePrayerTimes(
+        { year: date.getFullYear(), month: date.getMonth() + 1, day: date.getDate() },
+        coords,
+        JST,
+      ),
+    };
+  });
+  await schedulePrayerNotifications(days);
 }

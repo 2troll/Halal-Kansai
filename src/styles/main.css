@@ -959,3 +959,19 @@ h2 {
 .phrase-sheet-romaji { margin: 0 0 1.3rem; font-size: 0.95rem; opacity: 0.65; }
 
 body.sheet-open { overflow: hidden; }
+
+/* Interruptor de avisos de rezo: solo existe dentro de la app nativa. */
+.notify-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0.9rem 0 0.4rem;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.notify-row input {
+  width: 1.15rem;
+  height: 1.15rem;
+  accent-color: var(--gold);
+}

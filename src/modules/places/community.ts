@@ -4,6 +4,7 @@
  * lista siga disponible offline.
  */
 import type { Place } from './data';
+import { apiUrl } from '../../backend';
 
 const CACHE_KEY = 'hk-community-places';
 
@@ -18,7 +19,7 @@ export interface SuggestionInput {
 }
 
 export async function submitSuggestion(input: SuggestionInput): Promise<void> {
-  const res = await fetch('/api/places/suggest', {
+  const res = await fetch(apiUrl('/api/places/suggest'), {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(input),
@@ -40,7 +41,7 @@ function readCache(): Place[] {
  */
 export async function fetchCommunityPlaces(): Promise<Place[]> {
   try {
-    const res = await fetch('/api/places');
+    const res = await fetch(apiUrl('/api/places'));
     if (!res.ok) return readCache();
     const data = (await res.json()) as { places: Place[] };
     // Sin coordenadas también vale: saldrá en la lista aunque no en el mapa.

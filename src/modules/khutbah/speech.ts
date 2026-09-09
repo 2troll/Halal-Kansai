@@ -3,6 +3,8 @@
  * Chrome Android es el objetivo principal; la lista de locales de origen
  * mantiene solo los probados (SpeechRecognition no expone los soportados).
  */
+import { isNative } from '../../backend';
+
 
 /* Web Speech API no está en lib.dom completa: tipos mínimos propios. */
 interface SpeechRecognitionResultLike {
@@ -92,6 +94,11 @@ const SENTENCE_END = /[.!?。؟।…]\s*$/;
 const MAX_BUFFER_CHARS = 160;
 
 export function isSpeechSupported(): boolean {
+  // El WebView de la app nativa expone el objeto pero no reconoce nada: en
+  // iOS no existe motor, y en Android el de Chrome no está disponible dentro
+  // del contenedor. Decirlo aquí evita un botón que no hace nada; el modo
+  // «unirse a una sala» sí funciona en la app y es el que se usa en la mezquita.
+  if (isNative()) return false;
   return 'webkitSpeechRecognition' in window || 'SpeechRecognition' in window;
 }
 

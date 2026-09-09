@@ -167,6 +167,8 @@ export const es: Dict = {
     'La etiqueta dice «apto para musulmanes», «sin cerdo» o algo parecido. Eso lo afirma el fabricante, no es una certificación auditada: nadie ha comprobado el origen del resto de ingredientes. Lee la lista de abajo y pregunta.',
   certVerifyNote: 'Verifica la entidad emisora y la fecha de caducidad. La declaración por sí sola no es prueba.',
 
+  notifyPrayers: 'Avisarme a la hora del rezo',
+
   // Comida
   navFood: 'Comer',
   foodTitle: 'Leer etiquetas y cartas en japonés',

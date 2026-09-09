@@ -166,6 +166,8 @@ export const en = {
     'This label says “Muslim friendly”, “no pork” or similar. That is the manufacturer\u2019s own claim, not an audited certification: nobody has verified the source of the other ingredients. Read the list below and ask.',
   certVerifyNote: 'Verify the issuing body and the expiry date. The claim alone is not proof.',
 
+  notifyPrayers: 'Notify me at prayer times',
+
   // Misc
   language: 'Language',
   offlineReady: 'Available offline',
