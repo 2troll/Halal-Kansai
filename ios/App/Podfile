@@ -31,3 +31,8 @@ end
 post_install do |installer|
   assertDeploymentTarget(installer)
 end
+
+# ML Kit no publica version arm64 para el simulador (limitacion de Google,
+# no nuestra), asi que en un Mac con Apple Silicon la app NO se puede probar
+# en el simulador: hay que probarla en un iPhone de verdad. El binario de
+# dispositivo si es arm64 y compila sin problema.
