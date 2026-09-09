@@ -1,7 +1,9 @@
 import './styles/main.css';
 import './styles/themes.css';
+import './styles/refined.css';
 import { applyDirection, getLang, onLangChange, setLang, t, type Lang } from './i18n';
 import { applyAppearance, openAppearanceSheet } from './modules/appearance';
+import { icon, type IconName } from './ui/icons';
 
 /** Etiqueta del botón: sigla, salvo el japonés, que se lee de un vistazo. */
 const LANG_LABEL: Record<Lang, string> = { ar: 'AR', en: 'EN', es: 'ES', ja: '日本語' };
@@ -14,13 +16,13 @@ import { renderFood, stopFoodCamera } from './modules/food/ui';
 
 type Tab = 'salat' | 'qibla' | 'places' | 'food' | 'khutbah' | 'guide';
 
-const TABS: Array<{ id: Tab; icon: string; labelKey: 'navSalat' | 'navQibla' | 'navPlaces' | 'navFood' | 'navKhutbah' | 'navGuide' }> = [
-  { id: 'salat', icon: '🕌', labelKey: 'navSalat' },
-  { id: 'qibla', icon: '🧭', labelKey: 'navQibla' },
-  { id: 'places', icon: '📍', labelKey: 'navPlaces' },
-  { id: 'food', icon: '🍽', labelKey: 'navFood' },
-  { id: 'khutbah', icon: '🎙', labelKey: 'navKhutbah' },
-  { id: 'guide', icon: '📖', labelKey: 'navGuide' },
+const TABS: Array<{ id: Tab; icon: IconName; labelKey: 'navSalat' | 'navQibla' | 'navPlaces' | 'navFood' | 'navKhutbah' | 'navGuide' }> = [
+  { id: 'salat', icon: 'salat', labelKey: 'navSalat' },
+  { id: 'qibla', icon: 'qibla', labelKey: 'navQibla' },
+  { id: 'places', icon: 'places', labelKey: 'navPlaces' },
+  { id: 'food', icon: 'food', labelKey: 'navFood' },
+  { id: 'khutbah', icon: 'khutbah', labelKey: 'navKhutbah' },
+  { id: 'guide', icon: 'guide', labelKey: 'navGuide' },
 ];
 
 const RENDERERS: Record<Tab, (el: HTMLElement) => void> = {
@@ -45,7 +47,7 @@ function renderShell(): void {
           <p class="tagline">${t('tagline')}</p>
         </div>
       </div>
-      <button class="btn-appearance" id="btn-appearance" aria-label="${t('appearance')}" title="${t('appearance')}">⚙</button>
+      <button class="btn-appearance" id="btn-appearance" aria-label="${t('appearance')}" title="${t('appearance')}">${icon('settings', 20)}</button>
       <div class="lang-switch" role="group" aria-label="${t('language')}">
         ${(['ar', 'en', 'es', 'ja'] as Lang[])
           .map(
@@ -60,7 +62,7 @@ function renderShell(): void {
       ${TABS.map(
         (tab) => `
         <button role="tab" data-tab="${tab.id}" aria-selected="${String(tab.id === activeTab)}">
-          <span class="icon">${tab.icon}</span>${t(tab.labelKey)}
+          ${icon(tab.icon, 25)}${t(tab.labelKey)}
         </button>`,
       ).join('')}
     </nav>

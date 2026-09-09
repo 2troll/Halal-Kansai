@@ -4,6 +4,7 @@ import { PLACES, type Place, type PlaceType } from './data';
 import { fetchCommunityPlaces, submitSuggestion } from './community';
 import { getCoords } from '../salat/ui';
 import { t } from '../../i18n';
+import { icon } from '../../ui/icons';
 
 type Filter = PlaceType | 'all';
 
@@ -19,10 +20,11 @@ const TYPE_LABEL: Record<PlaceType, () => string> = {
   shop: () => t('typeShop'),
 };
 
+/** Mismo trazo que la barra de pestañas: la app se ve de una pieza. */
 const TYPE_ICON: Record<PlaceType, string> = {
-  mosque: '🕌',
-  restaurant: '🍜',
-  shop: '🛒',
+  mosque: icon('salat', 18),
+  restaurant: icon('food', 18),
+  shop: icon('places', 18),
 };
 
 function distanceKm(aLat: number, aLng: number, bLat: number, bLng: number): number {
@@ -109,7 +111,7 @@ function suggestFormHtml(): string {
         <input name="address" maxlength="200" placeholder="${t('fieldAddress')}" />
         <textarea name="note" maxlength="500" placeholder="${t('fieldNote')}"></textarea>
         <label class="attach">
-          <input type="checkbox" name="attach" checked /> 📍 ${t('attachLocation')}
+          <input type="checkbox" name="attach" checked /> ${icon('location', 17)}${t('attachLocation')}
         </label>
         <button class="btn" type="submit">${t('send')}</button>
         <p class="note" id="suggest-note"></p>

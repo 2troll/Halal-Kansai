@@ -198,8 +198,8 @@ export const es: Dict = {
   // Comida
   navFood: 'Comer',
   foodTitle: 'Leer etiquetas y cartas en japonés',
-  foodTabScan: '🔍 Ingredientes',
-  foodTabPhrases: '💬 Enseñar al camarero',
+  foodTabScan: 'Ingredientes',
+  foodTabPhrases: 'Enseñar al camarero',
   foodScanLabel: 'Pegue una lista de ingredientes, o escriba una palabra',
   foodNoMatch: 'No está en la base. Eso no significa que sea lícito: pregunte.',
   foodBrowseAll: 'Ver todos los términos',

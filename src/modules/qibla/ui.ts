@@ -1,6 +1,7 @@
 import { distanceToKaabaKm, qiblaBearing } from './qibla';
 import { getCoords } from '../salat/ui';
 import { t } from '../../i18n';
+import { icon } from '../../ui/icons';
 
 /** Evento webkit de iOS con rumbo de brújula real. */
 interface WebkitOrientationEvent extends DeviceOrientationEvent {
@@ -32,7 +33,7 @@ export function renderQibla(container: HTMLElement): void {
     </div>
     <p class="qibla-readout">${bearing.toFixed(1)}° <span style="font-size:.8rem">${t('qiblaFromNorth')}</span></p>
     <div style="text-align:center">
-      <button class="btn" id="btn-compass">🧭 ${t('compassStart')}</button>
+      <button class="btn" id="btn-compass">${icon('qibla', 19)}${t('compassStart')}</button>
       <p class="note" id="qibla-note">${t('compassHint')}</p>
     </div>
   `;

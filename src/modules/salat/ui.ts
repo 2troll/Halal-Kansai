@@ -1,5 +1,6 @@
 import { computePrayerTimes, formatTime, type Coordinates, type PrayerTimes } from './calculator';
 import { getLang, t } from '../../i18n';
+import { icon } from '../../ui/icons';
 import { isNative } from '../../backend';
 import {
   cancelPrayerNotifications,
@@ -80,12 +81,12 @@ export function renderSalat(container: HTMLElement): void {
       isNative()
         ? `<label class="notify-row">
              <input type="checkbox" id="chk-notify" ${notificationsEnabled() ? 'checked' : ''} />
-             <span>🔔 ${t('notifyPrayers')}</span>
+             <span>${icon('listen', 19)}${t('notifyPrayers')}</span>
            </label>`
         : ''
     }
-    <button class="btn" id="btn-locate">📍 ${t('useMyLocation')}</button>
-    <button class="btn" id="btn-share">📤 ${t('shareTimes')}</button>
+    <button class="btn" id="btn-locate">${icon('location', 19)}${t('useMyLocation')}</button>
+    <button class="btn" id="btn-share">${icon('share', 19)}${t('shareTimes')}</button>
     <p class="note" id="salat-note"></p>
   `;
 

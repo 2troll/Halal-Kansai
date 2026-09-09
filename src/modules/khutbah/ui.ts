@@ -4,6 +4,7 @@ import { translateSegment, type TranslatedSegment } from './translate';
 import { disableFridayMode, enableFridayMode } from './wakelock';
 import { t, getLang } from '../../i18n';
 import { qrSvg } from './qr';
+import { icon } from '../../ui/icons';
 import {
   getVoiceName,
   setVoiceName,
@@ -91,9 +92,9 @@ export function renderKhutbah(container: HTMLElement): void {
     <div class="khutbah-controls">
       <label>${t('modeLabel')}
         <select id="sel-mode">
-          <option value="local" ${savedMode === 'local' ? 'selected' : ''}>🎙 ${t('modeLocal')}</option>
-          <option value="transmit" ${savedMode === 'transmit' ? 'selected' : ''}>📡 ${t('modeTransmit')}</option>
-          <option value="join" ${savedMode === 'join' ? 'selected' : ''}>📻 ${t('modeJoin')}</option>
+          <option value="local" ${savedMode === 'local' ? 'selected' : ''}>${t('modeLocal')}</option>
+          <option value="transmit" ${savedMode === 'transmit' ? 'selected' : ''}>${t('modeTransmit')}</option>
+          <option value="join" ${savedMode === 'join' ? 'selected' : ''}>${t('modeJoin')}</option>
         </select>
       </label>
       <input id="inp-room" maxlength="24" placeholder="${t('roomCode')}"
@@ -118,7 +119,7 @@ export function renderKhutbah(container: HTMLElement): void {
         speechOutputSupported()
           ? `<label class="notify-row">
                <input type="checkbox" id="chk-voice" ${voiceEnabled() ? 'checked' : ''} />
-               <span>🎧 ${t('voiceOutput')}</span>
+               <span>${icon('join', 19)}${t('voiceOutput')}</span>
              </label>
              <label id="lbl-voice" ${voiceEnabled() ? '' : 'hidden'}>${t('voicePick')}
                <select id="sel-voice"></select>
@@ -150,13 +151,13 @@ export function renderKhutbah(container: HTMLElement): void {
 
   const idleButtonLabel = (): string =>
     mode() === 'transmit'
-      ? `📡 ${t('startBroadcast')}`
+      ? `${icon('broadcast', 19)}${t('startBroadcast')}`
       : mode() === 'join'
-        ? `📻 ${t('joinRoom')}`
-        : `🎙 ${t('startListening')}`;
+        ? `${icon('join', 19)}${t('joinRoom')}`
+        : `${icon('listen', 19)}${t('startListening')}`;
 
   const setIdleUi = () => {
-    btn.textContent = idleButtonLabel();
+    btn.innerHTML = idleButtonLabel();
     btn.classList.remove('stop');
     status.hidden = true;
     const qr = container.querySelector<HTMLElement>('#room-qr');
@@ -286,7 +287,7 @@ export function renderKhutbah(container: HTMLElement): void {
     running = true;
     void enableFridayMode();
     note.textContent = `🔆 ${t('fridayMode')}`;
-    btn.textContent = `■ ${t('stopListening')}`;
+    btn.innerHTML = `${icon('stop', 19)}${t('stopListening')}`;
     btn.classList.add('stop');
     statusText.textContent = statusLabel;
     status.hidden = false;

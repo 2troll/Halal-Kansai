@@ -211,8 +211,8 @@ export const ja: Dict = {
   // Comida
   navFood: '食べ物',
   foodTitle: '日本の原材料表示とメニューを読む',
-  foodTabScan: '🔍 原材料',
-  foodTabPhrases: '💬 店員さんに見せる',
+  foodTabScan: '原材料',
+  foodTabPhrases: '店員さんに見せる',
   foodScanLabel: '原材料名を貼り付けるか、語をひとつ入力してください',
   foodNoMatch:
     'データベースにありません。許されているという意味ではありませんので、お尋ねください。',

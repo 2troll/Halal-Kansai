@@ -192,8 +192,8 @@ export const ar: Dict = {
   // الطعام
   navFood: 'الطعام',
   foodTitle: 'قراءة الملصقات وقوائم الطعام اليابانية',
-  foodTabScan: '🔍 المكوّنات',
-  foodTabPhrases: '💬 أرِ الموظّف',
+  foodTabScan: 'المكوّنات',
+  foodTabPhrases: 'أرِ الموظّف',
   foodScanLabel: 'الصق قائمة المكوّنات، أو اكتب كلمة واحدة',
   foodNoMatch: 'غير موجود في القاعدة. وهذا لا يعني أنه حلال — اسأل.',
   foodBrowseAll: 'تصفّح جميع المصطلحات',

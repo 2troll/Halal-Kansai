@@ -202,8 +202,8 @@ export const en = {
   // Comida
   navFood: 'Food',
   foodTitle: 'Reading Japanese labels and menus',
-  foodTabScan: '🔍 Ingredients',
-  foodTabPhrases: '💬 Show the staff',
+  foodTabScan: 'Ingredients',
+  foodTabPhrases: 'Show the staff',
   foodScanLabel: 'Paste an ingredient list, or type one word',
   foodNoMatch: 'Not in the database. That does not mean it is lawful — ask.',
   foodBrowseAll: 'Browse every term',

@@ -20,6 +20,7 @@ import {
 import { RULES, type Status } from '../ingredients/rules';
 import { PHRASES, type Phrase } from './phrases';
 import { getLang, t } from '../../i18n';
+import { icon } from '../../ui/icons';
 import { nativeScanAvailable, scanBarcodeNative } from '../ingredients/scan-native';
 import { ruleText } from '../ingredients/localize';
 
@@ -28,26 +29,26 @@ type Mode = 'label' | 'phrases';
 /** Etiquetas japonesas reales para enseñar la herramienta sin producto delante. */
 const EXAMPLES: Array<{ name: string; text: string }> = [
   {
-    name: '🍜 カップ麺',
+    name: 'カップ麺',
     text: '原材料名：油揚げめん（小麦粉、植物油脂、食塩）、スープ（ポークエキス、豚脂、しょうゆ、みりん、香辛料）、調味料（アミノ酸等）、カラメル色素、香料',
   },
   {
-    name: '🍞 菓子パン',
+    name: '菓子パン',
     text: '原材料名：小麦粉、砂糖、マーガリン、ショートニング、ゼラチン、卵、乳化剤、香料、L-システイン（本品製造工場では豚肉を含む製品を製造しています）',
   },
   {
     // 鍋つゆ: el caso japonés por excelencia. Parece verdura y caldo, y lleva
     // 料理酒 y ポークエキス en la misma línea.
-    name: '🍲 鍋つゆ',
+    name: '鍋つゆ',
     text: '原材料名：しょうゆ、食塩、ポークエキス、砂糖、料理酒、みりん、かつおぶしエキス、こんぶエキス、調味料（アミノ酸等）、酒精',
   },
   {
     // Konbini: onigiri y sándwiches, lo que se compra a diario.
-    name: '🏪 コンビニ',
+    name: 'コンビニ',
     text: '原材料名：ご飯（国産米）、具材（まぐろ、マヨネーズ）、のり、乳化剤、調味料（アミノ酸等）、pH調整剤、グリシン、酒精',
   },
   {
-    name: '🍶 調味料',
+    name: '調味料',
     text: '原材料名：大豆、食塩、米、昆布エキス、米酢、みりん風調味料、酒精、植物性油脂',
   },
 ];
@@ -194,7 +195,7 @@ function renderLabelMode(body: HTMLElement): void {
     <p class="subtitle">${t('scanSubtitle')}</p>
 
     <div class="scan-actions">
-      <button class="btn" id="scan-camera">📷 ${t('scanCamera')}</button>
+      <button class="btn" id="scan-camera">${icon('camera', 19)}${t('scanCamera')}</button>
       ${EXAMPLES.map(
         (ex, i) => `<button class="btn ghost" data-example="${i}" lang="ja">${ex.name}</button>`,
       ).join('')}
@@ -218,7 +219,7 @@ function renderLabelMode(body: HTMLElement): void {
     ></textarea>
 
     <div class="scan-actions">
-      <button class="btn" id="run-check">🔍 ${t('scanCheck')}</button>
+      <button class="btn" id="run-check">${icon('search', 19)}${t('scanCheck')}</button>
       <button class="btn ghost" id="clear-input">${t('scanClear')}</button>
     </div>
 
@@ -438,8 +439,8 @@ export function renderFood(container: HTMLElement): void {
   container.innerHTML = `
     <h2>${t('foodTitle')}</h2>
     <div class="filters" role="tablist">
-      <button class="btn" role="tab" data-mode="label" aria-selected="${String(mode === 'label')}">${t('foodTabScan')}</button>
-      <button class="btn" role="tab" data-mode="phrases" aria-selected="${String(mode === 'phrases')}">${t('foodTabPhrases')}</button>
+      <button class="btn" role="tab" data-mode="label" aria-selected="${String(mode === 'label')}">${icon('search', 18)}${t('foodTabScan')}</button>
+      <button class="btn" role="tab" data-mode="phrases" aria-selected="${String(mode === 'phrases')}">${icon('speech', 18)}${t('foodTabPhrases')}</button>
     </div>
     <div id="food-body"></div>
   `;

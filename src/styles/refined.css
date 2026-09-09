@@ -1,0 +1,295 @@
+/* ============================================================
+   Capa de acabado: minimalismo de sistema
+   ============================================================
+
+   Va DESPUÉS de main.css y themes.css a propósito. No reescribe la app: le
+   quita cosas. La regla de esta hoja es que cada línea tiene que poder
+   defenderse respondiendo «¿qué problema resuelve para quien la usa?».
+
+   Tres cambios y su porqué:
+
+   1. **Tipografía del sistema.** El display serif daba carácter, pero la app
+      se lee en un supermercado con una mano y en una mezquita a media luz. La
+      tipografía del sistema es la que el usuario ya lee todo el día, trae
+      japonés y árabe de verdad, y no cuesta una descarga de red.
+
+   2. **Se van los degradados.** Un degradado sobre el que hay texto obliga a
+      elegir un color de letra que funcione en los dos extremos, y siempre
+      funciona mal en uno. Superficie plana, contraste comprobable.
+
+   3. **Menos bordes.** Cada caja llevaba borde de 1 o 2 px. Con seis tarjetas
+      en pantalla eran doce líneas compitiendo con el contenido. Se sustituyen
+      por separadores finos y por el propio color de la superficie.
+
+   Lo que NO se toca: el arco de mihrab de la marca, los colores de dictamen
+   (rojo prohibido, ámbar dudoso, verde sin objeción) y los tamaños táctiles.
+   ============================================================ */
+
+:root {
+  /* La del sistema en cada plataforma: SF en Apple, Roboto en Android. */
+  --font-system:
+    -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto,
+    var(--font-jp-sans), system-ui, sans-serif;
+  --font-body: var(--font-system);
+  --font-display: var(--font-system);
+
+  /* Separador fino, como las listas del sistema. */
+  --hairline: color-mix(in srgb, var(--on-surface) 14%, transparent);
+  --radius-card: 14px;
+  --radius-control: 12px;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  letter-spacing: -0.01em;
+}
+
+/* ---------- Cabecera: título grande, sin adornos ---------- */
+
+.header {
+  background: transparent;
+  border: 0;
+  padding: 1rem 1.1rem 0.6rem;
+  align-items: flex-start;
+}
+
+.brand h1 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.brand .tagline {
+  font-size: 0.8rem;
+  opacity: 0.75;
+}
+
+.brand-arch {
+  /* La firma de la marca se queda, pero en trazo y sin relleno de color. */
+  background: transparent;
+  border-width: 1.5px;
+}
+
+/* ---------- Controles del sistema ---------- */
+
+.lang-switch {
+  gap: 0.2rem;
+  background: color-mix(in srgb, var(--on-surface) 8%, transparent);
+  border-radius: 10px;
+  padding: 2px;
+}
+
+.lang-switch button {
+  border: 0;
+  background: transparent;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--on-surface);
+  opacity: 0.7;
+}
+
+.lang-switch button[aria-pressed='true'] {
+  background: var(--night-soft);
+  opacity: 1;
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.12);
+}
+
+.btn-appearance {
+  border: 0;
+  background: color-mix(in srgb, var(--on-surface) 8%, transparent);
+  border-radius: 10px;
+  color: var(--on-surface);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ---------- Tarjetas: superficie plana y esquinas suaves ---------- */
+
+.mihrab-card,
+.verdict {
+  background: var(--emerald);
+  border: 0;
+  border-radius: var(--radius-card);
+  box-shadow: none;
+}
+
+.verdict.haram,
+.verdict.certified-conflict {
+  background: var(--danger);
+}
+
+.verdict.mushbooh,
+.verdict.certified-doubtful {
+  background: #8a6a1f;
+}
+
+.verdict.nothing-recognised {
+  background: color-mix(in srgb, var(--on-surface) 10%, transparent);
+  color: var(--on-surface);
+}
+
+.mihrab-card *,
+.verdict:not(.nothing-recognised) * {
+  color: var(--on-accent);
+}
+
+/* Listas: separadores finos en vez de un borde por fila. */
+.times-list {
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  background: var(--paper);
+}
+
+.times-list li {
+  border-bottom: 1px solid color-mix(in srgb, var(--ink) 10%, transparent);
+}
+
+.times-list li:last-child {
+  border-bottom: 0;
+}
+
+.finding,
+.cert-note,
+.place-card {
+  border: 0;
+  border-radius: var(--radius-card);
+  background: color-mix(in srgb, var(--on-surface) 6%, transparent);
+}
+
+/* El estado del dictamen se ve por una barra lateral, no por un marco. */
+.finding {
+  border-inline-start: 3px solid var(--emerald);
+}
+
+/* ---------- Botones ---------- */
+
+.btn {
+  border: 0;
+  border-radius: var(--radius-control);
+  font-weight: 600;
+  font-size: 0.98rem;
+  padding: 0.8rem 1.1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.btn.stop {
+  background: var(--danger);
+}
+
+select,
+input[type='text'],
+input:not([type='checkbox']),
+textarea {
+  border-radius: var(--radius-control);
+  border: 1px solid var(--hairline);
+  font-family: var(--font-system);
+}
+
+/* ---------- Barra de pestañas: translúcida, como la del sistema ---------- */
+
+.tabbar {
+  background: color-mix(in srgb, var(--night) 82%, transparent);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-top: 1px solid var(--hairline);
+  border-radius: 0;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.tabbar button {
+  border: 0;
+  background: transparent;
+  color: var(--on-surface);
+  opacity: 0.55;
+  gap: 0.15rem;
+  font-size: 0.66rem;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+.tabbar button[aria-selected='true'] {
+  opacity: 1;
+  color: var(--gold);
+}
+
+.tabbar .icon {
+  display: block;
+  margin: 0 auto 1px;
+}
+
+/* ---------- Iconos ---------- */
+
+.icon {
+  flex-shrink: 0;
+  vertical-align: -0.15em;
+}
+
+/* En alto contraste el trazo fino desaparece: se engorda. */
+[data-theme='contrast'] .icon {
+  stroke-width: 2.4;
+}
+
+/* ---------- Subtítulo en vivo ---------- */
+
+.live-caption {
+  border: 0;
+  border-radius: var(--radius-card);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+/* ---------- Chips de ejemplo y filtros ----------
+   Los ejemplos y los filtros son botones secundarios: píldora de contorno,
+   no bloque de color. Sin el contorno se leían como texto suelto y no como
+   algo que se puede pulsar. */
+
+.filters button,
+.btn.ghost {
+  border: 1px solid var(--hairline);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--on-surface);
+  font-weight: 500;
+}
+
+.filters button[aria-pressed='true'] {
+  border-color: transparent;
+}
+
+/* ---------- Correcciones tras verlo en pantalla ---------- */
+
+/* La barra de pestañas es fija y ahora respeta el área segura del iPhone, así
+   que ocupa más alto: el contenido necesita más hueco por abajo o los últimos
+   botones quedan debajo de ella y no se pueden pulsar. */
+main {
+  padding-bottom: calc(6.5rem + env(safe-area-inset-bottom));
+}
+
+/* El arco de mihrab es la firma de la marca y se queda. Aplanar todo menos
+   esto es la diferencia entre minimalismo y no tener identidad. */
+.mihrab-card {
+  border-radius: var(--arch);
+  padding-top: 2rem;
+}
+
+.verdict {
+  border-radius: var(--arch);
+}
+
+/* Iconos de la barra: un poco más de aire y etiqueta que no se pisa. */
+.tabbar button {
+  padding: 0.5rem 0.15rem calc(0.5rem + env(safe-area-inset-bottom));
+  line-height: 1.15;
+  min-width: 0;
+}
+
+.tabbar button .icon {
+  width: 25px;
+  height: 25px;
+}
