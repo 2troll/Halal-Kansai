@@ -4,6 +4,9 @@ import { translateSegment, type TranslatedSegment } from './translate';
 import { disableFridayMode, enableFridayMode } from './wakelock';
 import { t, getLang } from '../../i18n';
 import {
+  getVoiceName,
+  setVoiceName,
+  voicesFor,
   setVoiceEnabled,
   speakTranslation,
   speechOutputSupported,
@@ -114,6 +117,9 @@ export function renderKhutbah(container: HTMLElement): void {
                <input type="checkbox" id="chk-voice" ${voiceEnabled() ? 'checked' : ''} />
                <span>🎧 ${t('voiceOutput')}</span>
              </label>
+             <label id="lbl-voice" ${voiceEnabled() ? '' : 'hidden'}>${t('voicePick')}
+               <select id="sel-voice"></select>
+             </label>
              <p class="note">${t('voiceOutputHint')}</p>`
           : ''
       }
@@ -121,6 +127,7 @@ export function renderKhutbah(container: HTMLElement): void {
       <span class="status-pill" id="status" hidden><span class="dot"></span><span id="status-text"></span></span>
       <p class="note" id="khutbah-note"></p>
     </div>
+    <div class="live-caption" id="live-caption" hidden aria-live="polite"></div>
     <div class="transcript" id="transcript"></div>
   `;
 
@@ -161,9 +168,40 @@ export function renderKhutbah(container: HTMLElement): void {
   selTarget.addEventListener('change', () => localStorage.setItem(PREF_TARGET, selTarget.value));
 
   warmUpVoices();
+
+  const selVoice = container.querySelector<HTMLSelectElement>('#sel-voice');
+  const lblVoice = container.querySelector<HTMLElement>('#lbl-voice');
+
+  /** Rellena la lista con las voces que el aparato tiene para ese idioma. */
+  const fillVoices = (): void => {
+    if (!selVoice) return;
+    const list = voicesFor(selTarget.value);
+    if (list.length === 0) {
+      selVoice.innerHTML = `<option value="">${t('voiceNone')}</option>`;
+      return;
+    }
+    const chosen = getVoiceName();
+    selVoice.innerHTML = list
+      .map(
+        (v, i) =>
+          `<option value="${v.name}" ${v.name === chosen || (!chosen && i === 0) ? 'selected' : ''}>${v.name}</option>`,
+      )
+      .join('');
+  };
+  fillVoices();
+  // La lista llega tarde en algunos navegadores.
+  speechSynthesis?.addEventListener?.('voiceschanged', fillVoices);
+
+  selVoice?.addEventListener('change', () => {
+    setVoiceName(selVoice.value);
+    // Oírla al elegirla: es la única forma de saber si suena bien.
+    speakTranslation(t('voiceOutputTest'), selTarget.value);
+  });
+  selTarget.addEventListener('change', fillVoices);
   const chkVoice = container.querySelector<HTMLInputElement>('#chk-voice');
   chkVoice?.addEventListener('change', () => {
     setVoiceEnabled(chkVoice.checked);
+    if (lblVoice) lblVoice.hidden = !chkVoice.checked;
     // Una frase corta al activarlo: confirma que el auricular está puesto y
     // en el oído correcto antes de que empiece la jutba.
     if (chkVoice.checked) speakTranslation(t('voiceOutputTest'), selTarget.value);
@@ -188,8 +226,14 @@ export function renderKhutbah(container: HTMLElement): void {
     interimEl = null;
   };
 
+  const caption = container.querySelector<HTMLElement>('#live-caption')!;
+
   const addSegment = (seg: TranslatedSegment) => {
     clearInterim();
+    // Subtítulo: la última traducción, grande y fija arriba. Quien no lleve
+    // auricular sigue el sermón leyendo, sin tener que buscar en la lista.
+    caption.textContent = seg.translation;
+    caption.hidden = false;
     transcript.insertAdjacentHTML('afterbegin', segmentCard(seg));
     // Solo la traducción: el árabe original ya lo está diciendo el imán.
     speakTranslation(seg.translation, selTarget.value);

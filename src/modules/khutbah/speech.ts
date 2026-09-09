@@ -91,7 +91,25 @@ export interface SpeechCallbacks {
 }
 
 const SENTENCE_END = /[.!?。؟।…]\s*$/;
-const MAX_BUFFER_CHARS = 160;
+
+/**
+ * Cuándo se manda a traducir lo acumulado.
+ *
+ * Antes solo se soltaba con un signo de puntuación o a los 160 caracteres. El
+ * reconocimiento de árabe casi nunca devuelve puntuación, así que en la
+ * práctica había que llenar los 160: más de veinte segundos de sermón antes
+ * de ver la primera palabra traducida. Inservible en una jutba.
+ *
+ * Ahora manda la PAUSA del orador, que es la unidad natural del habla: en
+ * cuanto deja de llegar texto durante `PAUSE_MS`, se traduce lo que haya.
+ */
+const PAUSE_MS = 1200;
+
+/** Tope duro: si alguien habla seguido sin respirar, no esperamos a la pausa. */
+const MAX_BUFFER_CHARS = 90;
+
+/** Por debajo de esto no se manda: una palabra suelta se traduce fatal. */
+const MIN_FLUSH_CHARS = 12;
 
 export function isSpeechSupported(): boolean {
   // El WebView de la app nativa expone el objeto pero no reconoce nada: en
@@ -106,6 +124,7 @@ export class KhutbahListener {
   private recognition: SpeechRecognitionLike | null = null;
   private buffer = '';
   private active = false;
+  private pauseTimer: ReturnType<typeof setTimeout> | null = null;
 
   constructor(private callbacks: SpeechCallbacks) {}
 
@@ -129,6 +148,7 @@ export class KhutbahListener {
         if (res.isFinal) {
           this.buffer += res[0].transcript;
           this.flushIfSentence();
+          this.armPauseFlush();
         } else {
           interim += res[0].transcript;
         }
@@ -152,6 +172,7 @@ export class KhutbahListener {
 
   stop(): void {
     this.active = false;
+    this.clearPauseTimer();
     this.flush();
     this.recognition?.stop();
     this.recognition = null;
@@ -163,7 +184,25 @@ export class KhutbahListener {
     }
   }
 
+  /** Reinicia la cuenta atrás: se traduce cuando el orador calla, no antes. */
+  private armPauseFlush(): void {
+    this.clearPauseTimer();
+    if (this.buffer.trim().length < MIN_FLUSH_CHARS) return;
+    this.pauseTimer = setTimeout(() => {
+      this.pauseTimer = null;
+      this.flush();
+    }, PAUSE_MS);
+  }
+
+  private clearPauseTimer(): void {
+    if (this.pauseTimer !== null) {
+      clearTimeout(this.pauseTimer);
+      this.pauseTimer = null;
+    }
+  }
+
   private flush(): void {
+    this.clearPauseTimer();
     const text = this.buffer.trim();
     this.buffer = '';
     if (text) this.callbacks.onSentence(text);

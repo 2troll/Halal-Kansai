@@ -189,6 +189,9 @@ export const es: Dict = {
   voiceOutputHint: 'Ponte los auriculares: oyes la traducción mientras habla el imán, con el móvil en el bolsillo.',
   voiceOutputTest: 'La traducción se leerá en voz alta.',
 
+  voicePick: 'Voz',
+  voiceNone: 'No hay ninguna voz instalada para este idioma',
+
   // Comida
   navFood: 'Comer',
   foodTitle: 'Leer etiquetas y cartas en japonés',

@@ -197,6 +197,9 @@ export const ja: Dict = {
   voiceOutputHint: 'イヤホンをお使いください。導師のお話の最中に、携帯をポケットに入れたまま翻訳を聞けます。',
   voiceOutputTest: '翻訳を音声で読み上げます。',
 
+  voicePick: '音声',
+  voiceNone: 'この言語の音声が端末に入っていません',
+
   // Misc
   language: '言語',
   offlineReady: 'オフラインで利用できます',

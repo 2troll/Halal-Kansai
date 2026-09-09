@@ -21,6 +21,17 @@
  */
 
 const PREF_KEY = 'hk-khutbah-voice';
+const PREF_VOICE_NAME = 'hk-khutbah-voice-name';
+
+/**
+ * Voces que el sistema marca como «compactas»: son las robóticas de toda la
+ * vida, y son las que sale eligiendo por defecto si uno no mira. Las buenas
+ * (Siri en iOS, las neuronales de Google en Android) se llaman Enhanced,
+ * Premium, Neural o Natural. Se ordenan para que la primera de la lista sea
+ * la mejor que tenga el aparato, no la primera que devuelva el navegador.
+ */
+const GOOD_VOICE = /enhanced|premium|neural|natural|siri|wavenet|studio/i;
+const POOR_VOICE = /compact|espeak|robot/i;
 
 /** Más de esto y la voz iría tan retrasada que estorbaría. */
 const MAX_QUEUE = 4;
@@ -46,19 +57,41 @@ export function setVoiceEnabled(on: boolean): void {
  * calidad. Si no hay ninguna del idioma pedido, se devuelve null y el motor
  * usa la que tenga: peor acento, pero se entiende.
  */
-function pickVoice(lang: string): SpeechSynthesisVoice | null {
-  const voices = speechSynthesis.getVoices();
-  if (voices.length === 0) return null;
-
+export function voicesFor(lang: string): SpeechSynthesisVoice[] {
+  if (!speechOutputSupported()) return [];
   const short = lang.split('-')[0]!.toLowerCase();
-  const matching = voices.filter((v) => v.lang.toLowerCase().startsWith(short));
-  if (matching.length === 0) return null;
+  return speechSynthesis
+    .getVoices()
+    .filter((v) => v.lang.toLowerCase().startsWith(short))
+    .sort((a, b) => voiceScore(b) - voiceScore(a));
+}
 
-  return (
-    matching.find((v) => v.localService && v.default) ??
-    matching.find((v) => v.localService) ??
-    matching[0]!
-  );
+/** Mayor puntuación = mejor voz. Calidad primero, y local antes que de red. */
+function voiceScore(v: SpeechSynthesisVoice): number {
+  let score = 0;
+  if (GOOD_VOICE.test(v.name)) score += 10;
+  if (POOR_VOICE.test(v.name)) score -= 10;
+  if (v.localService) score += 3; // sin latencia y sin conexión
+  if (v.default) score += 1;
+  return score;
+}
+
+/** La voz elegida por el usuario, o la mejor que haya para ese idioma. */
+function pickVoice(lang: string): SpeechSynthesisVoice | null {
+  const candidates = voicesFor(lang);
+  if (candidates.length === 0) return null;
+
+  const chosen = localStorage.getItem(PREF_VOICE_NAME);
+  return candidates.find((v) => v.name === chosen) ?? candidates[0]!;
+}
+
+export function getVoiceName(): string {
+  return localStorage.getItem(PREF_VOICE_NAME) ?? '';
+}
+
+export function setVoiceName(name: string): void {
+  if (name) localStorage.setItem(PREF_VOICE_NAME, name);
+  else localStorage.removeItem(PREF_VOICE_NAME);
 }
 
 const queue: Array<{ text: string; lang: string }> = [];
@@ -91,9 +124,10 @@ function sayOne(text: string, lang: string): Promise<void> {
     utterance.lang = lang;
     const voice = pickVoice(lang);
     if (voice) utterance.voice = voice;
-    // Un pelo más lento que el habla normal: es contenido religioso y se
-    // escucha una sola vez, sin poder rebobinar.
-    utterance.rate = 0.95;
+    // Ligeramente por encima del habla normal: la traducción entra DESPUÉS
+    // de que el imán haya dicho la frase, así que hay que recuperar terreno
+    // o la voz se va quedando atrás sermón adelante.
+    utterance.rate = 1.05;
     utterance.pitch = 1;
 
     // Si el motor se atasca (pasa en Android tras varios minutos), no dejamos

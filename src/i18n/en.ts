@@ -188,6 +188,9 @@ export const en = {
   voiceOutputHint: 'Put on earphones: you hear the translation while the imam speaks, with the phone in your pocket.',
   voiceOutputTest: 'The translation will be read aloud.',
 
+  voicePick: 'Voice',
+  voiceNone: 'No voice installed for this language',
+
   // Misc
   language: 'Language',
   offlineReady: 'Available offline',
