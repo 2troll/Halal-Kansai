@@ -1,0 +1,432 @@
+/* ============================================================
+   Temas y accesibilidad
+   ============================================================
+
+   Los nombres heredados (--night, --paper, --emerald…) se tratan aquí como
+   ROLES, no como colores literales:
+
+     --night        fondo de la aplicación
+     --night-soft   superficie elevada (tarjetas, barras)
+     --emerald      color de acción principal
+     --emerald-soft acción principal, estado activo
+     --gold         acento y bordes destacados
+     --gold-soft    acento secundario, texto sobre fondo oscuro
+     --paper        superficie clara (listas, cajas de texto)
+     --paper-dim    superficie clara alterna
+     --ink          texto sobre superficie clara
+     --ink-soft     texto secundario sobre superficie clara
+     --danger       prohibido / error
+
+   Así un tema nuevo son quince líneas y no hay que tocar los 977 de main.css.
+
+   Dos ejes independientes, porque son necesidades distintas:
+     data-theme  → el color (gusto, y luz del sitio donde estás)
+     data-text   → el tamaño (la vista, que no se elige)
+
+   Se aplican en <html> antes de pintar (ver appearance/index.ts) para que no
+   haya un fogonazo del tema anterior al abrir.
+   ============================================================ */
+
+/* ---------- Noche: el tema de siempre, para interiores y de noche ---------- */
+:root,
+[data-theme='night'] {
+  --night: #10211d;
+  --night-soft: #1a312b;
+  --emerald: #1d6a55;
+  --emerald-soft: #2a8169;
+  --gold: #c9a24b;
+  --gold-soft: #e0c684;
+  --paper: #f6f1e6;
+  --paper-dim: #efe7d5;
+  --ink: #21302c;
+  --ink-soft: #5c6f69;
+  --danger: #a8503f;
+
+  /* Texto sobre el fondo de la app. Sin esto, un tema claro
+     pinta letra clara sobre fondo claro. */
+  --on-surface: #f6f1e6;
+  --on-surface-dim: #e0c684;
+}
+
+/* ---------- Papel: claro, para leer una etiqueta a pleno sol ---------- */
+[data-theme='paper'] {
+  --night: #f6f1e6;
+  --night-soft: #ffffff;
+  --emerald: #1d6a55;
+  --emerald-soft: #145744;
+  --gold: #9a7620;
+  --gold-soft: #6f5416;
+  --paper: #ffffff;
+  --paper-dim: #f2ece0;
+  --ink: #1b2724;
+  --ink-soft: #55645f;
+  --danger: #97402f;
+
+  /* Texto sobre el fondo de la app. Sin esto, un tema claro
+     pinta letra clara sobre fondo claro. */
+  --on-surface: #1b2724;
+  --on-surface-dim: #55645f;
+}
+
+/* ---------- Arena: claro y cálido, menos deslumbrante que el blanco ---------- */
+[data-theme='sand'] {
+  --night: #efe4d2;
+  --night-soft: #fbf5e9;
+  --emerald: #4a6b3f;
+  --emerald-soft: #3a5731;
+  --gold: #8a6520;
+  --gold-soft: #63481591;
+  --paper: #fffaf0;
+  --paper-dim: #f4ead8;
+  --ink: #2c2418;
+  --ink-soft: #5f5443;
+  --danger: #8f3d2c;
+
+  /* Texto sobre el fondo de la app. Sin esto, un tema claro
+     pinta letra clara sobre fondo claro. */
+  --on-surface: #2c2418;
+  --on-surface-dim: #5f5443;
+}
+
+/* ---------- Índigo: oscuro alternativo, azul de mezquita ---------- */
+[data-theme='indigo'] {
+  --night: #101a2e;
+  --night-soft: #1b2843;
+  --emerald: #2b5c8a;
+  --emerald-soft: #3a76ad;
+  --gold: #c9a24b;
+  --gold-soft: #e3c887;
+  --paper: #f2f4fa;
+  --paper-dim: #e5e9f4;
+  --ink: #1a2233;
+  --ink-soft: #56607a;
+  --danger: #b05446;
+
+  /* Texto sobre el fondo de la app. Sin esto, un tema claro
+     pinta letra clara sobre fondo claro. */
+  --on-surface: #f2f4fa;
+  --on-surface-dim: #e3c887;
+}
+
+/* ---------- Alto contraste: para quien no distingue tonos suaves ----------
+   Negro puro, blanco puro y amarillo. Nada de gradientes ni de grises medios:
+   aquí el objetivo no es que sea bonito, es que se lea. */
+[data-theme='contrast'] {
+  --night: #000000;
+  --night-soft: #000000;
+  --emerald: #005f3d;
+  --emerald-soft: #008a58;
+  --gold: #ffd400;
+  --gold-soft: #ffe866;
+  --paper: #ffffff;
+  --paper-dim: #ffffff;
+  --ink: #000000;
+  --ink-soft: #1f1f1f;
+  --danger: #d32f18;
+
+  /* Texto sobre el fondo de la app. Sin esto, un tema claro
+     pinta letra clara sobre fondo claro. */
+  --on-surface: #ffffff;
+  --on-surface-dim: #ffd400;
+}
+
+[data-theme='contrast'] .mihrab-card,
+[data-theme='contrast'] .verdict {
+  background: #000 !important;
+  border-width: 3px;
+}
+
+[data-theme='contrast'] button,
+[data-theme='contrast'] .btn {
+  border-width: 2px !important;
+}
+
+/* ---------- Tamaño del texto ----------
+   Escala el rem entero: toda la app está en rem, así que suben a la vez el
+   texto, los espacios y los botones. Un botón que crece con la letra sigue
+   siendo pulsable; uno que no crece, deja de serlo. */
+html {
+  font-size: calc(100% * var(--text-scale, 1));
+}
+
+[data-text='large'] {
+  --text-scale: 1.15;
+}
+
+[data-text='xlarge'] {
+  --text-scale: 1.32;
+}
+
+[data-text='xxlarge'] {
+  --text-scale: 1.5;
+}
+
+/* ---------- Accesibilidad transversal ---------- */
+
+/* Objetivo táctil mínimo de 44 px: por debajo, una mano que tiembla falla. */
+button,
+.btn,
+select,
+input[type='checkbox'] {
+  min-height: 44px;
+}
+
+.lang-switch button,
+.tabbar button {
+  min-height: 44px;
+}
+
+/* Foco siempre visible: quien navega con teclado o con conmutador lo necesita. */
+:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Respeta a quien pidió menos movimiento en el sistema. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ============================================================
+   Hoja de apariencia (el panel de ajustes)
+   ============================================================ */
+
+.sheet-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 50;
+}
+
+.sheet {
+  background: var(--night-soft);
+  color: var(--on-surface);
+  width: min(560px, 100%);
+  max-height: 88vh;
+  overflow-y: auto;
+  border-radius: 18px 18px 0 0;
+  border: 1px solid var(--emerald);
+  border-bottom: 0;
+  padding: 1.1rem 1.1rem 2rem;
+}
+
+.sheet h2 {
+  font-family: var(--font-display);
+  margin: 0 0 0.2rem;
+  font-size: 1.3rem;
+  color: var(--on-surface);
+}
+
+.sheet .sheet-sub {
+  margin: 0 0 1.2rem;
+  color: var(--on-surface-dim);
+  font-size: 0.85rem;
+}
+
+.sheet h3 {
+  font-size: 0.95rem;
+  margin: 1.4rem 0 0.6rem;
+  color: var(--on-surface-dim);
+  font-weight: 600;
+}
+
+/* Rejilla de temas: cada opción se ve a sí misma, no dice su nombre a secas.
+   Elegir un color leyendo la palabra «arena» no es elegir: es adivinar. */
+.theme-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.7rem;
+}
+
+.theme-option {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.7rem;
+  border-radius: 12px;
+  border: 2px solid transparent;
+  background: var(--night);
+  color: var(--on-surface);
+  cursor: pointer;
+  font-size: 0.95rem;
+  text-align: start;
+}
+
+.theme-option[aria-pressed='true'] {
+  border-color: var(--gold);
+}
+
+.theme-swatch {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  background: linear-gradient(135deg, var(--sw-bg) 0 50%, var(--sw-accent) 50% 100%);
+}
+
+/* Tamaños de texto: la muestra se ve al tamaño que representa. */
+.size-row {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.size-option {
+  flex: 1 1 90px;
+  padding: 0.7rem 0.4rem;
+  border-radius: 12px;
+  border: 2px solid var(--emerald);
+  background: var(--night);
+  color: var(--on-surface);
+  cursor: pointer;
+  line-height: 1.2;
+}
+
+.size-option[aria-pressed='true'] {
+  border-color: var(--gold);
+  background: var(--emerald);
+}
+
+.size-option .sample {
+  display: block;
+  font-weight: 600;
+}
+
+.size-option[data-size='normal'] .sample {
+  font-size: 1rem;
+}
+.size-option[data-size='large'] .sample {
+  font-size: 1.2rem;
+}
+.size-option[data-size='xlarge'] .sample {
+  font-size: 1.45rem;
+}
+.size-option[data-size='xxlarge'] .sample {
+  font-size: 1.7rem;
+}
+
+.size-option .size-name {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--on-surface-dim);
+  margin-top: 0.25rem;
+}
+
+.sheet-close {
+  width: 100%;
+  margin-top: 1.6rem;
+  padding: 0.85rem;
+  border-radius: 12px;
+  border: 2px solid var(--gold);
+  background: var(--emerald);
+  color: var(--on-surface);
+  font-size: 1.05rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Botón de ajustes en la cabecera */
+.btn-appearance {
+  background: transparent;
+  border: 1px solid var(--emerald);
+  color: var(--on-surface);
+  border-radius: 8px;
+  padding: 0.25rem 0.55rem;
+  font-size: 1rem;
+  cursor: pointer;
+  min-width: 44px;
+}
+
+/* El objetivo táctil de 44px no puede partir una palabra: 日本語 en tres
+   líneas es peor accesibilidad que un botón un poco más bajo. */
+.lang-switch button,
+.btn-appearance {
+  white-space: nowrap;
+  padding-inline: 0.6rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.header {
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+/* La cabecera se apila en pantallas estrechas en vez de comprimir la marca. */
+@media (max-width: 420px) {
+  .brand .tagline {
+    display: none;
+  }
+}
+
+/* ============================================================
+   Texto sobre color de acción
+   ============================================================
+   --on-surface sirve para el texto sobre el FONDO. Lo que se pinta encima del
+   verde o del rojo necesita otro token: en un tema claro, --on-surface es
+   tinta oscura y quedaría oscuro sobre oscuro.
+
+   Los acentos son oscuros en los cinco temas, así que aquí el valor es el
+   mismo para todos y se declara una sola vez. */
+:root {
+  --on-accent: #f6f1e6;
+}
+
+.btn,
+.btn.stop,
+.badge,
+.badge.restaurant,
+.lang-switch button[aria-pressed='true'],
+.filters button[aria-pressed='true'],
+.times-list li.next,
+.size-option[aria-pressed='true'],
+.sheet-close {
+  color: var(--on-accent);
+}
+
+/* Las tarjetas grandes (próximo rezo, veredicto) son un degradado que acaba
+   en el fondo de la app. En un tema claro ese degradado terminaba en blanco y
+   el texto se perdía a media altura, así que ahí se quedan oscuras enteras.
+   La legibilidad manda sobre la coherencia cromática. */
+[data-theme='paper'] .mihrab-card,
+[data-theme='sand'] .mihrab-card,
+[data-theme='paper'] .verdict,
+[data-theme='sand'] .verdict {
+  background: linear-gradient(180deg, var(--emerald) 0%, var(--emerald-soft) 130%);
+  color: var(--on-accent);
+}
+
+[data-theme='paper'] .mihrab-card *,
+[data-theme='sand'] .mihrab-card *,
+[data-theme='paper'] .verdict *,
+[data-theme='sand'] .verdict * {
+  color: var(--on-accent);
+}
+
+/* El veredicto de prohibido conserva el rojo en todos los temas: es la única
+   pantalla que no puede confundirse con ninguna otra. */
+[data-theme='paper'] .verdict.haram,
+[data-theme='sand'] .verdict.haram,
+[data-theme='paper'] .verdict.certified-conflict,
+[data-theme='sand'] .verdict.certified-conflict {
+  background: linear-gradient(180deg, var(--danger) 0%, #7d3527 130%);
+}
+
+/* La cabecera y la barra de pestañas viven sobre el fondo, no sobre acento. */
+.header,
+.tabbar {
+  color: var(--on-surface);
+}

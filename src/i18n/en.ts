@@ -168,6 +168,26 @@ export const en = {
 
   notifyPrayers: 'Notify me at prayer times',
 
+  // Apariencia
+  appearance: 'Appearance',
+  appearanceHint: 'Choose the colours you find easiest to look at, and the text size you read comfortably.',
+  theme: 'Colours',
+  themeNight: 'Night',
+  themePaper: 'Paper',
+  themeSand: 'Sand',
+  themeIndigo: 'Indigo',
+  themeContrast: 'High contrast',
+  textSize: 'Text size',
+  textNormal: 'Normal',
+  textLarge: 'Large',
+  textXLarge: 'Larger',
+  textXXLarge: 'Largest',
+  done: 'Done',
+
+  voiceOutput: 'Read the translation aloud',
+  voiceOutputHint: 'Put on earphones: you hear the translation while the imam speaks, with the phone in your pocket.',
+  voiceOutputTest: 'The translation will be read aloud.',
+
   // Misc
   language: 'Language',
   offlineReady: 'Available offline',

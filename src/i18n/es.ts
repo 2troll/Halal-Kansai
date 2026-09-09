@@ -169,6 +169,26 @@ export const es: Dict = {
 
   notifyPrayers: 'Avisarme a la hora del rezo',
 
+  // Apariencia
+  appearance: 'Apariencia',
+  appearanceHint: 'Elige los colores que mejor te entren por los ojos y el tamaño de letra que leas sin esfuerzo.',
+  theme: 'Colores',
+  themeNight: 'Noche',
+  themePaper: 'Papel',
+  themeSand: 'Arena',
+  themeIndigo: 'Índigo',
+  themeContrast: 'Alto contraste',
+  textSize: 'Tamaño del texto',
+  textNormal: 'Normal',
+  textLarge: 'Grande',
+  textXLarge: 'Más grande',
+  textXXLarge: 'El mayor',
+  done: 'Listo',
+
+  voiceOutput: 'Leer la traducción en voz alta',
+  voiceOutputHint: 'Ponte los auriculares: oyes la traducción mientras habla el imán, con el móvil en el bolsillo.',
+  voiceOutputTest: 'La traducción se leerá en voz alta.',
+
   // Comida
   navFood: 'Comer',
   foodTitle: 'Leer etiquetas y cartas en japonés',

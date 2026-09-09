@@ -163,6 +163,26 @@ export const ar: Dict = {
 
   notifyPrayers: 'نبّهني عند دخول وقت الصلاة',
 
+  // المظهر
+  appearance: 'المظهر',
+  appearanceHint: 'اختر الألوان الأريح لعينك، وحجم الخط الذي تقرأه دون عناء.',
+  theme: 'الألوان',
+  themeNight: 'ليل',
+  themePaper: 'ورق',
+  themeSand: 'رمل',
+  themeIndigo: 'نيلي',
+  themeContrast: 'تباين عالٍ',
+  textSize: 'حجم الخط',
+  textNormal: 'عادي',
+  textLarge: 'كبير',
+  textXLarge: 'أكبر',
+  textXXLarge: 'الأكبر',
+  done: 'تم',
+
+  voiceOutput: 'قراءة الترجمة بصوت مسموع',
+  voiceOutputHint: 'ضع السمّاعات: تسمع الترجمة بينما يتحدّث الإمام، والهاتف في جيبك.',
+  voiceOutputTest: 'ستُقرأ الترجمة بصوت مسموع.',
+
   // الطعام
   navFood: 'الطعام',
   foodTitle: 'قراءة الملصقات وقوائم الطعام اليابانية',

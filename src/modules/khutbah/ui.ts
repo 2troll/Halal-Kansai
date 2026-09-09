@@ -3,6 +3,14 @@ import { KhutbahRoom } from './room';
 import { translateSegment, type TranslatedSegment } from './translate';
 import { disableFridayMode, enableFridayMode } from './wakelock';
 import { t, getLang } from '../../i18n';
+import {
+  setVoiceEnabled,
+  speakTranslation,
+  speechOutputSupported,
+  stopSpeaking,
+  voiceEnabled,
+  warmUpVoices,
+} from './speak';
 
 type Mode = 'local' | 'transmit' | 'join';
 
@@ -57,6 +65,9 @@ function stopAll(): void {
   room?.close();
   room = null;
   running = false;
+  // Al parar, callar de inmediato: si no, la voz sigue diciendo la cola
+  // pendiente después de que el usuario haya pulsado «parar».
+  stopSpeaking();
   void disableFridayMode();
 }
 
@@ -97,6 +108,15 @@ export function renderKhutbah(container: HTMLElement): void {
           ).join('')}
         </select>
       </label>
+      ${
+        speechOutputSupported()
+          ? `<label class="notify-row">
+               <input type="checkbox" id="chk-voice" ${voiceEnabled() ? 'checked' : ''} />
+               <span>🎧 ${t('voiceOutput')}</span>
+             </label>
+             <p class="note">${t('voiceOutputHint')}</p>`
+          : ''
+      }
       <button class="btn" id="btn-listen"></button>
       <span class="status-pill" id="status" hidden><span class="dot"></span><span id="status-text"></span></span>
       <p class="note" id="khutbah-note"></p>
@@ -139,6 +159,15 @@ export function renderKhutbah(container: HTMLElement): void {
   });
   selSource.addEventListener('change', () => localStorage.setItem(PREF_SOURCE, selSource.value));
   selTarget.addEventListener('change', () => localStorage.setItem(PREF_TARGET, selTarget.value));
+
+  warmUpVoices();
+  const chkVoice = container.querySelector<HTMLInputElement>('#chk-voice');
+  chkVoice?.addEventListener('change', () => {
+    setVoiceEnabled(chkVoice.checked);
+    // Una frase corta al activarlo: confirma que el auricular está puesto y
+    // en el oído correcto antes de que empiece la jutba.
+    if (chkVoice.checked) speakTranslation(t('voiceOutputTest'), selTarget.value);
+  });
   inpRoom.addEventListener('change', () => localStorage.setItem(PREF_ROOM, inpRoom.value.trim()));
 
   if (!isSpeechSupported() && mode() !== 'join') {
@@ -162,6 +191,8 @@ export function renderKhutbah(container: HTMLElement): void {
   const addSegment = (seg: TranslatedSegment) => {
     clearInterim();
     transcript.insertAdjacentHTML('afterbegin', segmentCard(seg));
+    // Solo la traducción: el árabe original ya lo está diciendo el imán.
+    speakTranslation(seg.translation, selTarget.value);
   };
 
   const errorText = (code: string): string =>

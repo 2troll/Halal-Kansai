@@ -1,5 +1,7 @@
 import './styles/main.css';
+import './styles/themes.css';
 import { applyDirection, getLang, onLangChange, setLang, t, type Lang } from './i18n';
+import { applyAppearance, openAppearanceSheet } from './modules/appearance';
 
 /** Etiqueta del botón: sigla, salvo el japonés, que se lee de un vistazo. */
 const LANG_LABEL: Record<Lang, string> = { ar: 'AR', en: 'EN', es: 'ES', ja: '日本語' };
@@ -43,6 +45,7 @@ function renderShell(): void {
           <p class="tagline">${t('tagline')}</p>
         </div>
       </div>
+      <button class="btn-appearance" id="btn-appearance" aria-label="${t('appearance')}" title="${t('appearance')}">⚙</button>
       <div class="lang-switch" role="group" aria-label="${t('language')}">
         ${(['ar', 'en', 'es', 'ja'] as Lang[])
           .map(
@@ -62,6 +65,10 @@ function renderShell(): void {
       ).join('')}
     </nav>
   `;
+
+  app.querySelector<HTMLButtonElement>('#btn-appearance')!.addEventListener('click', () => {
+    openAppearanceSheet(() => applyDirection());
+  });
 
   app.querySelectorAll<HTMLButtonElement>('.lang-switch button').forEach((btn) => {
     btn.addEventListener('click', () => setLang(btn.dataset.lang as Lang));
@@ -87,6 +94,7 @@ function renderView(): void {
   RENDERERS[activeTab](view);
 }
 
+applyAppearance();
 applyDirection();
 renderShell();
 onLangChange(renderShell);

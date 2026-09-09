@@ -43,7 +43,7 @@ body {
 body {
   font-family: var(--font-body);
   background: var(--night);
-  color: var(--paper);
+  color: var(--on-surface);
   -webkit-font-smoothing: antialiased;
 }
 
@@ -90,14 +90,14 @@ body {
   font-size: 1.35rem;
   font-weight: 600;
   margin: 0;
-  color: var(--paper);
+  color: var(--on-surface);
   letter-spacing: 0.01em;
 }
 
 .brand .tagline {
   margin: 0;
   font-size: 0.7rem;
-  color: var(--gold-soft);
+  color: var(--on-surface-dim);
 }
 
 .lang-switch {
@@ -108,7 +108,7 @@ body {
 .lang-switch button {
   background: transparent;
   border: 1px solid var(--emerald);
-  color: var(--paper);
+  color: var(--on-surface);
   border-radius: 8px;
   padding: 0.25rem 0.5rem;
   font-size: 0.75rem;
@@ -177,19 +177,19 @@ h2 {
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  color: var(--gold-soft);
+  color: var(--on-surface-dim);
 }
 
 .mihrab-card .big {
   font-family: var(--font-display);
   font-size: 2.4rem;
   margin: 0.2rem 0;
-  color: var(--paper);
+  color: var(--on-surface);
 }
 
 .mihrab-card .small {
   font-size: 0.85rem;
-  color: var(--paper-dim);
+  color: var(--on-accent);
 }
 
 /* ---------- Lista de horarios ---------- */
@@ -218,7 +218,7 @@ h2 {
 
 .times-list li.next {
   background: var(--emerald);
-  color: var(--paper);
+  color: var(--on-surface);
   font-weight: 600;
 }
 
@@ -234,7 +234,7 @@ h2 {
   align-items: center;
   gap: 0.5rem;
   background: var(--emerald);
-  color: var(--paper);
+  color: var(--on-surface);
   border: 1px solid var(--gold);
   border-radius: 12px;
   padding: 0.6rem 1.1rem;
@@ -281,7 +281,7 @@ h2 {
   width: 100%;
   text-align: center;
   font-size: 0.7rem;
-  color: var(--gold-soft);
+  color: var(--on-surface-dim);
 }
 
 .compass-needle {
@@ -327,7 +327,7 @@ h2 {
 .filters button {
   background: transparent;
   border: 1px solid var(--emerald);
-  color: var(--paper);
+  color: var(--on-surface);
   border-radius: 999px;
   padding: 0.3rem 0.85rem;
   font-size: 0.8rem;
@@ -375,12 +375,12 @@ h2 {
   padding: 0.1rem 0.55rem;
   font-size: 0.7rem;
   background: var(--emerald);
-  color: var(--paper);
+  color: var(--on-surface);
 }
 
 .badge.shop {
   background: var(--gold);
-  color: var(--night);
+  color: var(--ink);
 }
 
 .badge.restaurant {
@@ -424,7 +424,7 @@ h2 {
 .suggest-form select,
 .suggest-form textarea {
   background: var(--night);
-  color: var(--paper);
+  color: var(--on-surface);
   border: 1px solid var(--emerald);
   border-radius: 10px;
   padding: 0.55rem 0.7rem;
@@ -451,7 +451,7 @@ h2 {
   border: 1px solid var(--gold);
   border-radius: 12px;
   background: rgba(201, 162, 75, 0.12);
-  color: var(--gold-soft);
+  color: var(--on-surface-dim);
   font-size: 0.78rem;
   padding: 0.6rem 0.9rem;
   margin: 0.6rem 0 1rem;
@@ -473,7 +473,7 @@ h2 {
 .khutbah-controls select {
   width: 100%;
   background: var(--night-soft);
-  color: var(--paper);
+  color: var(--on-surface);
   border: 1px solid var(--emerald);
   border-radius: 10px;
   padding: 0.55rem 0.7rem;
@@ -546,7 +546,7 @@ h2 {
   align-items: center;
   gap: 0.45rem;
   font-size: 0.8rem;
-  color: var(--gold-soft);
+  color: var(--on-surface-dim);
 }
 
 .status-pill .dot {
@@ -636,7 +636,7 @@ h2 {
 
 .btn.ghost {
   background: transparent;
-  color: var(--gold-soft);
+  color: var(--on-surface-dim);
   border-color: var(--emerald);
 }
 
@@ -739,7 +739,7 @@ h2 {
   font-size: 0.72rem;
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  color: var(--gold-soft);
+  color: var(--on-surface-dim);
   margin: 0;
 }
 
@@ -747,12 +747,12 @@ h2 {
   font-family: var(--font-display);
   font-size: 1.4rem;
   margin: 0.3rem 0;
-  color: var(--paper);
+  color: var(--on-surface);
 }
 
 .verdict .small {
   font-size: 0.85rem;
-  color: var(--paper-dim);
+  color: var(--on-accent);
   margin: 0;
 }
 
@@ -763,7 +763,7 @@ h2 {
 }
 
 .note.strong {
-  color: var(--gold-soft);
+  color: var(--on-surface-dim);
   border-inline-start: 3px solid var(--gold);
   padding-inline-start: 0.6rem;
 }
@@ -792,17 +792,17 @@ h2 {
 
 .hit.haram {
   background: var(--danger);
-  color: var(--paper);
+  color: var(--on-surface);
 }
 
 .hit.mushbooh {
   background: var(--gold);
-  color: var(--night);
+  color: var(--ink);
 }
 
 .hit.halal {
   background: #cfe6da;
-  color: var(--night);
+  color: var(--ink);
 }
 
 .finding {
@@ -835,7 +835,7 @@ h2 {
 .finding h3 code {
   font-family: var(--font-body);
   background: var(--paper-dim);
-  color: var(--night);
+  color: var(--ink);
   border-radius: 6px;
   padding: 0.05rem 0.35rem;
   font-size: 0.82rem;
@@ -845,7 +845,7 @@ h2 {
   margin: 0.4rem 0 0;
   font-size: 0.83rem;
   line-height: 1.6;
-  color: var(--paper-dim);
+  color: var(--on-surface-dim);
 }
 
 .badge.haram {
@@ -854,7 +854,7 @@ h2 {
 
 .badge.mushbooh {
   background: var(--gold);
-  color: var(--night);
+  color: var(--ink);
 }
 
 .badge.halal {

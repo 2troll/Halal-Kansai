@@ -177,6 +177,26 @@ export const ja: Dict = {
 
   notifyPrayers: '礼拝の時刻に通知する',
 
+  // 表示設定
+  appearance: '表示設定',
+  appearanceHint: '見やすい配色と、無理なく読める文字の大きさをお選びください。',
+  theme: '配色',
+  themeNight: '夜',
+  themePaper: '紙',
+  themeSand: '砂',
+  themeIndigo: '藍',
+  themeContrast: '高コントラスト',
+  textSize: '文字の大きさ',
+  textNormal: '標準',
+  textLarge: '大',
+  textXLarge: '特大',
+  textXXLarge: '最大',
+  done: '完了',
+
+  voiceOutput: '翻訳を音声で読み上げる',
+  voiceOutputHint: 'イヤホンをお使いください。導師のお話の最中に、携帯をポケットに入れたまま翻訳を聞けます。',
+  voiceOutputTest: '翻訳を音声で読み上げます。',
+
   // Misc
   language: '言語',
   offlineReady: 'オフラインで利用できます',
