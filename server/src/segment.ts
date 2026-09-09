@@ -8,8 +8,8 @@
  * Compartido por POST /api/translate y por el modo transmisor (RoomHub).
  */
 import { freeTranslate } from './free-translate.ts';
-import { aiTranslate, type AiBinding } from './ai-translate.ts';
-import { hasTerms, protectTerms, restoreTerms } from './glossary.ts';
+import { aiTranslate, chatTranslate, type AiBinding } from './ai-translate.ts';
+import { glossaryHints, hasTerms, protectTerms, restoreTerms } from './glossary.ts';
 import { analyzeSegment, type LlmConfig } from './llm.ts';
 import { hasArabic } from './normalize.ts';
 import { getMatcher, type QuranStore } from './store.ts';
@@ -62,6 +62,22 @@ async function applyQuranMatch(
   return true;
 }
 
+/**
+ * Cuánto se espera al modelo bueno antes de conformarse con el rápido.
+ *
+ * Dos segundos y medio: por encima de eso la traducción llega tan tarde que
+ * el imán ya va por otra frase, y entonces estorba más que ayuda.
+ */
+const CHAT_DEADLINE_MS = 2500;
+
+/** Devuelve el valor si llega a tiempo, o null si se pasa del plazo. */
+function withDeadline<T>(promise: Promise<T | null>, ms: number): Promise<T | null> {
+  return Promise.race([
+    promise.catch(() => null),
+    new Promise<null>((resolve) => setTimeout(() => resolve(null), ms)),
+  ]);
+}
+
 /** Camino gratis (sin clave de Anthropic): MT gratuita + verificación coránica. */
 async function buildSegmentFree(
   deps: SegmentDeps,
@@ -83,23 +99,47 @@ async function buildSegmentFree(
 
   // Si no es un verso con traducción oficial, traducimos con MT gratis.
   if (segment.translationSource !== 'tanzil') {
-    // El vocabulario religioso no pasa por el traductor: se sustituye por
-    // marcadores y se restaura después. Ver glossary.ts para el porqué.
+    // CARRERA entre dos motores, no cascada.
+    //
+    // El modelo de lenguaje traduce mucho mejor —«sabed que la oración es el
+    // pilar de la religión» frente a «la oración es religiosa»— pero su
+    // latencia es irregular: medido, entre 1,2 y 7,9 segundos. En una jutba,
+    // ocho segundos es como no traducir.
+    //
+    // Así que se lanzan los dos a la vez y gana la calidad SI llega a tiempo.
+    // El traductor pequeño casi siempre ya ha terminado, así que el respaldo
+    // no cuesta espera. Latencia acotada siempre, calidad casi siempre.
     const guarded = hasTerms(text) ? protectTerms(text) : { text, used: [] };
     const restore = (out: string): string =>
       guarded.used.length > 0 ? restoreTerms(out, guarded.used, target) : out;
 
-    // Orden a propósito: primero el modelo de Cloudflare (misma red, sin
-    // cuota ajena), y solo si no está o falla, los proveedores por IP.
-    const viaAi = deps.ai ? await aiTranslate(deps.ai, guarded.text, source, target) : null;
-    if (viaAi) {
-      segment.translation = restore(viaAi);
+    const chat = deps.ai
+      ? chatTranslate(deps.ai, text, source, target, glossaryHints(text, target))
+      : Promise.resolve(null);
+    const mt = deps.ai
+      ? aiTranslate(deps.ai, guarded.text, source, target)
+      : Promise.resolve(null);
+
+    // Que nadie se queje de una promesa sin gestionar si perdemos la carrera.
+    chat.catch(() => null);
+    mt.catch(() => null);
+
+    const viaChat = await withDeadline(chat, CHAT_DEADLINE_MS);
+
+    if (viaChat) {
+      segment.translation = viaChat;
+      segment.translationSource = 'llm';
     } else {
-      try {
-        segment.translation = restore(await freeTranslate(guarded.text, source, target));
-      } catch {
-        // Sin red o proveedores caídos: mostrar el original (degradación suave).
-        segment.translation = text;
+      const viaMt = await mt.catch(() => null);
+      if (viaMt) {
+        segment.translation = restore(viaMt);
+      } else {
+        try {
+          segment.translation = restore(await freeTranslate(guarded.text, source, target));
+        } catch {
+          // Sin red o proveedores caídos: mostrar el original (degradación suave).
+          segment.translation = text;
+        }
       }
     }
     // Si casó un verso pero sin traducción Tanzil, la MT es "no oficial".

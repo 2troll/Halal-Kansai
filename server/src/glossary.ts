@@ -316,3 +316,26 @@ export function restoreTerms(translated: string, used: UsedTerm[], target: strin
 export function hasTerms(text: string): boolean {
   return BY_LENGTH.some(({ variant }) => text.includes(variant));
 }
+
+/**
+ * Los términos presentes en el texto, listos para meter en el prompt de un
+ * modelo de lenguaje.
+ *
+ * Con un traductor pequeño hay que esconder el término tras un marcador,
+ * porque el modelo no entiende instrucciones. Con un modelo de lenguaje es al
+ * revés: se le DICE cómo se traduce cada término y lo coloca donde toca, con
+ * la gramática correcta. Mejor resultado y sin marcadores que limpiar.
+ */
+export function glossaryHints(text: string, target: string): string[] {
+  const lang = target.split('-')[0]!.toLowerCase();
+  const seen = new Set<GlossaryEntry>();
+  const hints: string[] = [];
+
+  for (const { variant, entry } of BY_LENGTH) {
+    if (seen.has(entry) || !text.includes(variant)) continue;
+    seen.add(entry);
+    hints.push(`${entry.ar[0]} = ${entry.out[lang] ?? entry.out.en!}`);
+  }
+
+  return hints;
+}
