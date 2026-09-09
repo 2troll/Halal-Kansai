@@ -153,6 +153,19 @@ export const en = {
   scanOfflineNote: 'The analysis runs offline, on your phone.',
   scanSource: 'Product data: Open Food Facts (ODbL)',
 
+  // Certificación en la pegatina
+  verdictCertConflictTitle: 'The sticker and the ingredients contradict each other',
+  verdictCertConflictBody:
+    'The label claims halal certification, yet it also names an ingredient forbidden by explicit text. A certification does not override that. Do not rely on the sticker: ask the issuing body before eating this.',
+  verdictCertDoubtfulTitle: 'Certified — the doubtful terms below are what a certifier audits',
+  verdictCertDoubtfulBody:
+    'The label claims halal certification, and nothing forbidden by explicit text was found. The doubtful terms below (the source of gelatin, emulsifiers, fats) are exactly what a certification body verifies at the factory, so they are likely already resolved. Check that the certificate is current and that you trust the issuing body.',
+  certBadgeCertified: 'Certification declared on the label',
+  certBadgeFriendly: 'Not a certification',
+  certFriendlyNote:
+    'This label says “Muslim friendly”, “no pork” or similar. That is the manufacturer\u2019s own claim, not an audited certification: nobody has verified the source of the other ingredients. Read the list below and ask.',
+  certVerifyNote: 'Verify the issuing body and the expiry date. The claim alone is not proof.',
+
   // Misc
   language: 'Language',
   offlineReady: 'Available offline',

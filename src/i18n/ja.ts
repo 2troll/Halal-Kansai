@@ -162,6 +162,19 @@ export const ja: Dict = {
   scanOfflineNote: '判定は端末の中で、オフラインで行われます。',
   scanSource: '商品データ：Open Food Facts（ODbL）',
 
+  // 認証表示
+  verdictCertConflictTitle: '表示と原材料が矛盾しています',
+  verdictCertConflictBody:
+    'ハラール認証を謳いながら、明文で禁じられている原材料も記載されています。認証があってもその事実は変わりません。表示を頼りにせず、認証機関にお問い合わせのうえご判断ください。',
+  verdictCertDoubtfulTitle: '認証あり ― 下記の「疑わしい」語は認証機関が確認する項目です',
+  verdictCertDoubtfulBody:
+    'ハラール認証の表示があり、明文で禁じられた原材料は見つかりませんでした。下記の疑わしい語（ゼラチン・乳化剤・油脂の由来）は、まさに認証機関が工場で確認する項目ですので、すでに解決している可能性が高いです。認証が有効であること、また認証機関が信頼できることをご確認ください。',
+  certBadgeCertified: '認証の表示あり',
+  certBadgeFriendly: 'これは認証ではありません',
+  certFriendlyNote:
+    'この表示は「ムスリムフレンドリー」「ノンポーク」等です。これは製造者の自己申告であり、第三者の認証ではありません。他の原材料の由来は誰も確認しておりません。下記をお読みのうえ、お尋ねください。',
+  certVerifyNote: '認証機関と有効期限をご確認ください。表示だけでは証明になりません。',
+
   // Misc
   language: '言語',
   offlineReady: 'オフラインで利用できます',

@@ -13,10 +13,21 @@
 import { CROSS_CONTAMINATION, RULES, type Rule, type Status, type Trilingual } from './rules';
 import type { Lang } from '../../i18n';
 import { ruleText } from './localize';
+import { readCertification, type CertificationRead } from './certification';
+
+export type { CertificationRead } from './certification';
 
 export type { Rule } from './rules';
 
-export type Verdict = 'haram' | 'mushbooh' | 'no-haram-found' | 'nothing-recognised';
+export type Verdict =
+  | 'haram'
+  /** Pegatina de certificación junto a un ingrediente prohibido: contradicción. */
+  | 'certified-conflict'
+  | 'mushbooh'
+  /** Certificado y con términos dudosos: la auditoría suele resolverlos. */
+  | 'certified-doubtful'
+  | 'no-haram-found'
+  | 'nothing-recognised';
 
 export interface Finding {
   id: string;
@@ -33,6 +44,8 @@ export interface Analysis {
   verdict: Verdict;
   findings: Finding[];
   counts: Record<Status, number>;
+  /** Lo que dice la pegatina, que no es lo mismo que el 原材料名. */
+  certification: CertificationRead;
 }
 
 /**
@@ -217,7 +230,8 @@ export function analyze(label: string): Analysis {
   const counts: Record<Status, number> = { haram: 0, mushbooh: 0, halal: 0 };
   findings.forEach((f) => (counts[f.status] += 1));
 
-  return { verdict: verdictOf(counts), findings, counts };
+  const certification = readCertification(text);
+  return { verdict: verdictOf(counts, certification), findings, counts, certification };
 }
 
 /**
@@ -228,9 +242,16 @@ export function analyze(label: string): Analysis {
  * leer produce exactamente la misma pantalla verde que una etiqueta limpia si
  * uno no tiene cuidado, y eso es peor que no tener app.
  */
-function verdictOf(counts: Record<Status, number>): Verdict {
-  if (counts.haram > 0) return 'haram';
-  if (counts.mushbooh > 0) return 'mushbooh';
+function verdictOf(counts: Record<Status, number>, cert: CertificationRead): Verdict {
+  // La certificación NUNCA levanta un dictamen de prohibido: si la pegatina y
+  // el 原材料名 se contradicen, gana el ingrediente y se avisa del choque.
+  if (counts.haram > 0) return cert.certified ? 'certified-conflict' : 'haram';
+
+  // Con certificación, lo dudoso suele ser precisamente lo que la auditoría
+  // ha comprobado (el origen de la gelatina, del emulgente, del油脂). Se dice
+  // eso, y se sigue sin dar vía libre: hay que verificar el certificado.
+  if (counts.mushbooh > 0) return cert.certified ? 'certified-doubtful' : 'mushbooh';
+
   if (counts.halal > 0) return 'no-haram-found';
   return 'nothing-recognised';
 }

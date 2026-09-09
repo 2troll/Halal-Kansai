@@ -154,6 +154,19 @@ export const es: Dict = {
   offlineReady: 'Disponible sin conexión',
   loading: 'Cargando…',
 
+  // Certificación en la pegatina
+  verdictCertConflictTitle: 'La pegatina y los ingredientes se contradicen',
+  verdictCertConflictBody:
+    'La etiqueta declara certificación halal y a la vez nombra un ingrediente prohibido por texto explícito. Una certificación no anula eso. No te fíes de la pegatina: pregunta a la entidad emisora antes de comerlo.',
+  verdictCertDoubtfulTitle: 'Certificado: lo dudoso de abajo es justo lo que audita una certificadora',
+  verdictCertDoubtfulBody:
+    'La etiqueta declara certificación halal y no se encontró nada prohibido por texto explícito. Los términos dudosos de abajo (el origen de la gelatina, los emulgentes, las grasas) son exactamente lo que una certificadora comprueba en la fábrica, así que es probable que ya estén resueltos. Verifica que el certificado esté vigente y que la entidad emisora te merezca confianza.',
+  certBadgeCertified: 'Certificación declarada en la etiqueta',
+  certBadgeFriendly: 'Esto no es una certificación',
+  certFriendlyNote:
+    'La etiqueta dice «apto para musulmanes», «sin cerdo» o algo parecido. Eso lo afirma el fabricante, no es una certificación auditada: nadie ha comprobado el origen del resto de ingredientes. Lee la lista de abajo y pregunta.',
+  certVerifyNote: 'Verifica la entidad emisora y la fecha de caducidad. La declaración por sí sola no es prueba.',
+
   // Comida
   navFood: 'Comer',
   foodTitle: 'Leer etiquetas y cartas en japonés',

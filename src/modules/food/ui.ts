@@ -50,6 +50,8 @@ const STATUS_LABEL: Record<Status, () => string> = {
 
 const VERDICT_TITLE: Record<Verdict, () => string> = {
   haram: () => t('verdictHaramTitle'),
+  'certified-conflict': () => t('verdictCertConflictTitle'),
+  'certified-doubtful': () => t('verdictCertDoubtfulTitle'),
   mushbooh: () => t('verdictMushboohTitle'),
   'no-haram-found': () => t('verdictNoHaramTitle'),
   'nothing-recognised': () => t('verdictUnknownTitle'),
@@ -57,6 +59,8 @@ const VERDICT_TITLE: Record<Verdict, () => string> = {
 
 const VERDICT_BODY: Record<Verdict, () => string> = {
   haram: () => t('verdictHaramBody'),
+  'certified-conflict': () => t('verdictCertConflictBody'),
+  'certified-doubtful': () => t('verdictCertDoubtfulBody'),
   mushbooh: () => t('verdictMushboohBody'),
   'no-haram-found': () => t('verdictNoHaramBody'),
   'nothing-recognised': () => t('verdictUnknownBody'),
@@ -124,6 +128,19 @@ function ruleHtml(rule: Rule): string {
     </article>`;
 }
 
+/**
+ * Aviso sobre la pegatina. Va ANTES de la lista de ingredientes porque cambia
+ * cómo hay que leerla: no es lo mismo un 乳化剤 en un producto auditado que en
+ * uno que solo dice "ムスリムフレンドリー".
+ */
+function certificationHtml(cert: Analysis['certification']): string {
+  if (!cert.certified && !cert.friendlyOnly) return '';
+  const marks = cert.matched.map((m) => `<code lang="ja">${escapeHtml(m)}</code>`).join(' ');
+  return cert.certified
+    ? `<p class="cert-note certified"><strong>${t('certBadgeCertified')}</strong> ${marks}<br>${t('certVerifyNote')}</p>`
+    : `<p class="cert-note friendly"><strong>${t('certBadgeFriendly')}</strong> ${marks}<br>${t('certFriendlyNote')}</p>`;
+}
+
 function resultHtml(label: string, analysis: Analysis, product: string): string {
   const { verdict, findings, counts } = analysis;
   const tally = [
@@ -141,6 +158,8 @@ function resultHtml(label: string, analysis: Analysis, product: string): string 
       <p class="small">${VERDICT_BODY[verdict]()}</p>
       ${tally ? `<p class="tally">${tally}</p>` : ''}
     </section>
+
+    ${certificationHtml(analysis.certification)}
 
     <p class="note strong">${t('scanNotClearance')}</p>
 
