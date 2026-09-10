@@ -143,6 +143,51 @@ section('La aplicación');
   check('el panel de moderación carga', admin.status === 200, `HTTP ${admin.status}`);
 }
 
+// ───────────────────────────────── La hoja que revisa la certificadora ──
+section('Hoja de revisión de las reglas');
+{
+  // Este enlace está en un correo enviado a JHCPO pidiéndoles que corrijan
+  // los dictámenes. Si un día devuelve 404, o sale sin reglas, se entera
+  // primero una organización certificadora — y a través de un correo nuestro.
+  const res = await fetch(`${BASE}/revision`, { redirect: 'follow' });
+  check('la hoja de revisión responde', res.status === 200, `HTTP ${res.status}`);
+
+  // Es una página que se pinta con JavaScript, así que el HTML no trae las
+  // reglas. Y el build parte el código en varios trozos: los textos viven en
+  // otro archivo distinto del de la página. Se recorren TODOS los que carga.
+  const html = await res.text();
+  const chunks = [...html.matchAll(/["'](\/assets\/[\w.-]+\.js)["']/g)].map((m) => m[1]);
+  check('la página carga sus bundles', chunks.length > 0, `${chunks.length} archivos`);
+
+  let fuente = '';
+  for (const chunk of chunks) {
+    const r = await fetch(BASE + chunk);
+    if (r.ok) fuente += await r.text();
+  }
+
+  // Los tres compromisos que se le enseñan a la certificadora tienen que
+  // seguir ahí: son lo que se prometió por escrito.
+  check(
+    'los tres compromisos siguen en la página',
+    fuente.includes('ファトワー') && fuente.includes('お墨付き'),
+  );
+
+  // Y las reglas: el correo habla de «las 49», y la numeración que use Kato
+  // para corregir depende de que sigan siendo esas.
+  // El minificador usa acentos graves para las cadenas, no comillas dobles:
+  // el patrón tiene que aceptar los dos o la cuenta sale a cero y el aviso
+  // sería falso, que es peor que no comprobar nada.
+  const ids = new Set(
+    [...fuente.matchAll(/id:\s*["'`]([a-z0-9-]+)["'`]/g)].map((m) => m[1]),
+  );
+  check('la hoja sigue trayendo las 49 reglas', ids.size >= 49, `${ids.size} encontradas`);
+
+  // El número de reglas se anuncia en el correo («las 49»): si cambia sin que
+  // nadie avise, la numeración que use Kato para corregir deja de cuadrar.
+  const reglas = await fetch(`${BASE}/`).then((r) => r.text());
+  check('la app sigue publicada junto a la hoja', reglas.includes('<div id="app">'));
+}
+
 // ───────────────────────────────── La promesa de funcionar sin red ──
 section('Funcionar sin conexión');
 {

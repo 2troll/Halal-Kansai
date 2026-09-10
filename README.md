@@ -199,10 +199,16 @@ Todo en plan gratuito, **sin tarjeta y sin ninguna clave de pago**:
 
 ```bash
 npm run deploy      # build + copia de datos + wrangler deploy
-npm run smoke       # 21 comprobaciones contra el despliegue REAL
+npm run smoke       # 30 comprobaciones contra el despliegue REAL
 npm run app:android # compila, sincroniza y abre Android Studio
 npm run app:ios     # ídem con Xcode
 ```
+
+**Hoja de revisión:** `/revision` — las 49 reglas en una página, numeradas y
+en cuatro idiomas. Es lo que se le envió a JHCPO para que corrija los
+dictámenes; el enlace está en un correo suyo, así que la prueba de humo
+comprueba que sigue viva, que trae las 49 y que los tres compromisos siguen
+impresos arriba.
 
 **Panel de moderación:** `/admin.html`, protegido por `ADMIN_TOKEN` (secreto
 de Cloudflare). Para rotarlo:
