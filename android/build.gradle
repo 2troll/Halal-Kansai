@@ -7,6 +7,9 @@ buildscript {
         mavenCentral()
     }
     dependencies {
+        // Kotlin: el widget de pantalla de inicio es codigo Android nativo y
+        // no se puede escribir en la web. Es el lenguaje estandar para esto.
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:2.0.21'
         classpath 'com.android.tools.build:gradle:8.13.0'
         classpath 'com.google.gms:google-services:4.4.4'
 

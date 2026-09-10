@@ -4,4 +4,6 @@
     <string name="title_activity_main">Halal Kansai</string>
     <string name="package_name">app.halalkansai</string>
     <string name="custom_url_scheme">app.halalkansai</string>
+    <string name="widget_empty">Abre la app</string>
+    <string name="widget_description">Próximo rezo</string>
 </resources>

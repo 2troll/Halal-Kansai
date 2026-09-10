@@ -1,6 +1,7 @@
 import { computePrayerTimes, formatTime, type Coordinates, type PrayerTimes } from './calculator';
 import { getLang, t } from '../../i18n';
 import { icon } from '../../ui/icons';
+import { updatePrayerWidget } from '../../native/widget';
 import { isNative } from '../../backend';
 import {
   cancelPrayerNotifications,
@@ -59,6 +60,9 @@ export function renderSalat(container: HTMLElement): void {
     : h > 0
       ? `${h} h ${m} min`
       : `${m} min`;
+
+  // El widget de la pantalla de inicio se alimenta de este mismo cálculo.
+  void updatePrayerWidget(t(next.name), formatTime(times[next.name]), t('city'));
 
   container.innerHTML = `
     <h2>${t('salatTitle')}</h2>
