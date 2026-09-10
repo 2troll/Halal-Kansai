@@ -5,6 +5,12 @@
  * sessionStorage: se pide una vez por sesión de navegador.
  */
 import './styles/main.css';
+// El panel comparte los tokens de color de la app. Sin estos dos, --on-surface
+// queda sin definir y el texto sale negro sobre negro: la página cargaba, pero
+// no se leía nada.
+import './styles/themes.css';
+import './styles/refined.css';
+import { applyAppearance } from './modules/appearance';
 
 interface Suggestion {
   id: string;
@@ -106,3 +112,5 @@ if (getToken()) {
 } else {
   renderLogin();
 }
+
+applyAppearance();

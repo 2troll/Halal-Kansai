@@ -177,31 +177,96 @@ Después del iftar, el siguiente hito es el imsak de **mañana**. Sin tratarlo,
 la cuenta atrás devuelve minutos negativos toda la noche. Hay un test dedicado
 justamente a eso.
 
+## En producción
+
+**https://halal-kansai.2troll-p.workers.dev**
+
+Un único Cloudflare Worker sirve la PWA y la API en el mismo origen. Al no
+haber dos orígenes no hay CORS que configurar, y el modo transmisor de la
+jutba funciona sin ajustes en el cliente.
+
+Todo en plan gratuito, **sin tarjeta y sin ninguna clave de pago**:
+
+| Pieza | Servicio | Nota |
+|---|---|---|
+| PWA + API | Workers | mismo origen |
+| Corán y traducciones Tanzil (27 MB) | Static Assets | fuera del bundle |
+| Salas del modo transmisor | Durable Objects | `new_sqlite_classes` = plan gratis |
+| Cola de moderación de lugares | KV | |
+| Traducción de la jutba | Workers AI | asignación diaria; agotada, cae a MT externa |
+
+### Operación
+
+```bash
+npm run deploy      # build + copia de datos + wrangler deploy
+npm run app:android # compila, sincroniza y abre Android Studio
+npm run app:ios     # ídem con Xcode
+```
+
+**Panel de moderación:** `/admin.html`, protegido por `ADMIN_TOKEN` (secreto
+de Cloudflare). Para rotarlo:
+
+```bash
+npx wrangler secret put ADMIN_TOKEN
+```
+
+Ciclo de un lugar sugerido: la comunidad lo manda desde la pestaña Spots →
+aparece en `/admin.html` → al aprobarlo entra en `/api/places` y sale en el
+mapa de todos. Verificado extremo a extremo.
+
 ## Desarrollo
 
 ```bash
 npm install
 npm run dev         # frontend Vite (proxy /api → localhost:8787)
-npm run dev:server  # API local (requiere ANTHROPIC_API_KEY para /api/translate)
-npm test            # vitest: salat ±2 min, qibla y matching coránico
+npm run dev:server  # API local; sin clave usa el traductor libre
+npm test            # vitest
 npm run lint        # eslint
 npm run build       # type-check + build de producción en dist/
 npm run icons       # regenerar iconos PNG de la PWA
 npm run build:quran # re-descargar Corán + traducciones de Tanzil.net
 ```
 
-### Despliegue del backend (Cloudflare Workers)
+`ANTHROPIC_API_KEY` es **opcional**: sin ella la jutba usa Workers AI y, si
+falla, los proveedores libres. Las aleyas salen siempre de Tanzil.
 
-```bash
-npx wrangler secret put ANTHROPIC_API_KEY   # clave con límite de gasto mensual
-npx wrangler deploy                          # usa wrangler.jsonc
-```
+## Aplicaciones nativas
+
+Una sola base de código (Capacitor). Lo que justifica empaquetarla, frente a
+la PWA: los avisos a la hora del rezo con el móvil bloqueado (imposible en una
+web instalada en iPhone) y la cámara nativa para el código de barras.
+
+- **Android:** APK de 29 MB. Necesita JDK 21 y el SDK de Android.
+- **iOS:** 25 MB, arm64, objetivo iOS 16 (lo exige ML Kit). Requiere Xcode con
+  la plataforma de iOS descargada (`xcodebuild -downloadPlatform iOS`).
+
+### Dos límites conocidos, para no redescubrirlos
+
+1. **ML Kit no publica arm64 para el simulador de iOS.** En un Mac con Apple
+   Silicon la app no se puede probar en el simulador: hay que usar un iPhone.
+2. **El WebView no reconoce voz.** El modo «mi micrófono» de la jutba solo
+   funciona en el navegador; dentro de la app se oculta y queda el modo
+   «unirse a una sala», que es el que se usa en la mezquita.
 
 ## Identidad visual
 
-Paleta: noche `#10211d` · esmeralda `#1d6a55` · oro `#c9a24b` · papel `#f6f1e6`.
-Tipografías: Fraunces (títulos) · Inter (texto) · Amiri (árabe).
-Firma visual: arco mihrab (`border-radius: 999px 999px 14px 14px`).
+Paleta base: noche `#10211d` · esmeralda `#1d6a55` · oro `#c9a24b` · papel
+`#f6f1e6`. Firma visual: arco mihrab (`border-radius: 999px 999px 14px 14px`).
+
+Tipografía del sistema (SF, Roboto, Hiragino según plataforma): es la que el
+usuario ya lee todo el día, trae japonés y árabe de verdad y no cuesta una
+descarga de red.
+
+**Cinco temas** (noche, papel, arena, índigo, alto contraste) y **cuatro
+tamaños de texto**, en dos ejes separados: el color es gusto y luz del sitio,
+el tamaño no se elige. Los nombres de variable heredados (`--night`, `--paper`)
+son **roles**, no colores literales: un tema nuevo son quince líneas en
+`src/styles/themes.css`.
+
+**Sin emojis.** Cada sistema los dibuja distinto, no heredan el color —en alto
+contraste seguían en pastel— y hacen ruido. Se sustituyeron por 17 iconos de
+trazo en `src/ui/icons.ts`, que se tiñen con el tema y engordan solos cuando
+hace falta.
 
 ## Próximas fases
 

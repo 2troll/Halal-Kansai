@@ -1,8 +1,9 @@
 name: CI
 
 on:
+  # Todas las ramas: el trabajo de este proyecto no vive solo en main, y un CI
+  # que solo mira main no avisa de nada hasta que ya es tarde.
   push:
-    branches: [main]
   pull_request:
 
 jobs:
@@ -18,3 +19,4 @@ jobs:
       - run: npm run lint
       - run: npm test
       - run: npm run build
+      # El typecheck ya va dentro de build (tsc --noEmit && vite build).

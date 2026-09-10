@@ -25,6 +25,11 @@
   },
   // Salas del modo transmisor: una instancia por sala.
   // new_sqlite_classes = Durable Objects del plan gratuito.
+  // Cola de moderación de lugares sugeridos por la comunidad. Sin esto,
+  // «sugerir un lugar» devolvía 503 y el panel de moderación estaba muerto:
+  // la función existía en la interfaz y no funcionaba en producción.
+  "kv_namespaces": [{ "binding": "SUGGESTIONS", "id": "1f8bfbfa5b2043e7b87f621d705380e3" }],
+
   // Traducción dentro de Cloudflare. El plan gratuito trae una asignación
   // diaria; agotada, se cae a los proveedores externos. Sin tarjeta.
   "ai": { "binding": "AI" },
