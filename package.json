@@ -1,7 +1,7 @@
 {
   "name": "halal-kansai",
   "version": "0.1.0",
-  "description": "Herramienta diaria gratuita para la comunidad musulmana en Japón: salat, qibla, lugares halal y traducción de la jutba en vivo.",
+  "description": "Herramienta diaria gratuita para la comunidad musulmana en Jap\u00f3n: salat, qibla, lugares halal y traducci\u00f3n de la jutba en vivo.",
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
@@ -16,7 +16,8 @@
     "deploy": "npm run build:worker && npx wrangler deploy",
     "app:build": "npm run build && rm -rf dist/data && npx cap sync",
     "app:android": "npm run app:build && npx cap open android",
-    "app:ios": "npm run app:build && npx cap open ios"
+    "app:ios": "npm run app:build && npx cap open ios",
+    "smoke": "node scripts/smoke.mjs"
   },
   "repository": {
     "type": "git",

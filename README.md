@@ -199,6 +199,7 @@ Todo en plan gratuito, **sin tarjeta y sin ninguna clave de pago**:
 
 ```bash
 npm run deploy      # build + copia de datos + wrangler deploy
+npm run smoke       # 21 comprobaciones contra el despliegue REAL
 npm run app:android # compila, sincroniza y abre Android Studio
 npm run app:ios     # ídem con Xcode
 ```
@@ -209,6 +210,27 @@ de Cloudflare). Para rotarlo:
 ```bash
 npx wrangler secret put ADMIN_TOKEN
 ```
+
+### Pruebas de humo: por qué existen
+
+En un solo día aparecieron siete fallos en producción y **ninguno rompía un
+test, una compilación ni el lint**: el QR que no leía ningún lector, el panel
+de moderación con el texto negro sobre negro, «sugerir un lugar» devolviendo
+503, la sala de transmisión que nunca había traducido una palabra, el aviso
+de caída que no llegaba, el error del proveedor mostrado como si fuera la
+traducción, y el traductor atascado repitiendo una frase ochenta veces.
+
+Los tests unitarios prueban que las piezas funcionan. `npm run smoke` prueba
+que el **sistema desplegado** hace lo que promete, que es otra cosa. Cada
+comprobación corresponde a un fallo que llegó a producción.
+
+```bash
+npm run smoke                          # contra producción
+BASE=http://localhost:5173 npm run smoke
+ADMIN_TOKEN=... npm run smoke          # incluye el ciclo de moderación
+```
+
+Después de cada `npm run deploy`, pasar `npm run smoke`.
 
 Ciclo de un lugar sugerido: la comunidad lo manda desde la pestaña Spots →
 aparece en `/admin.html` → al aprobarlo entra en `/api/places` y sale en el
