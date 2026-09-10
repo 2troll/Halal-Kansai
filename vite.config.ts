@@ -13,6 +13,8 @@ export default defineConfig({
         main: 'index.html',
         // Panel de moderación interno (Fase 3), fuera de la navegación de la PWA.
         admin: 'admin.html',
+        // Hoja de revisión de las 49 reglas, para enviar a una certificadora.
+        revision: 'revision.html',
       },
     },
   },

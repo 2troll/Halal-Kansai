@@ -1,0 +1,167 @@
+/* ============================================================
+   Hoja de revisión de las 49 reglas
+   ============================================================
+   Esto no es la app: es un documento. Se lee de corrido, se imprime y se
+   anota con bolígrafo. Nada de cristal, ni degradados, ni barras fijas.
+   ============================================================ */
+
+body {
+  background: #ffffff;
+  color: #1b2724;
+  max-width: 62rem;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 5rem;
+  line-height: 1.65;
+}
+
+.rev-head h1 {
+  font-size: 1.7rem;
+  margin: 0 0 0.4rem;
+  color: #10211d;
+}
+
+.rev-sub {
+  margin: 0 0 1.5rem;
+  color: #55645f;
+}
+
+/* Los tres compromisos: es contra esto que se juzga cada regla, así que van
+   arriba y destacados, no en una nota al pie. */
+.rev-principios {
+  margin: 0 0 2rem;
+  padding: 1rem 1rem 1rem 2.2rem;
+  background: #f4f7f5;
+  border-inline-start: 4px solid #1d6a55;
+  border-radius: 8px;
+}
+
+.rev-principios li {
+  margin: 0.4rem 0;
+}
+
+.rev-idiomas {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin: 0 0 2rem;
+}
+
+.rev-idiomas a,
+.rev-idiomas button {
+  border: 1px solid #cfd8d4;
+  border-radius: 8px;
+  padding: 0.35rem 0.75rem;
+  color: #1b2724;
+  background: #fff;
+  text-decoration: none;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.rev-idiomas a[aria-current='page'] {
+  background: #1d6a55;
+  border-color: #1d6a55;
+  color: #fff;
+}
+
+.rev-grupo h2 {
+  font-size: 1.15rem;
+  margin: 2.2rem 0 0.6rem;
+  padding-bottom: 0.3rem;
+  border-bottom: 2px solid currentColor;
+}
+
+.rev-grupo.haram h2 { color: #97402f; }
+.rev-grupo.mushbooh h2 { color: #7a5c14; }
+.rev-grupo.halal h2 { color: #1d6a55; }
+
+.rev-cuenta {
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: #55645f;
+}
+
+.rev-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.rev-tabla th {
+  text-align: start;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #55645f;
+  border-bottom: 1px solid #cfd8d4;
+  padding: 0.4rem 0.6rem;
+}
+
+.rev-tabla td {
+  vertical-align: top;
+  padding: 0.6rem;
+  border-bottom: 1px solid #e6ebe9;
+}
+
+/* El número es la referencia para una corrección por correo: «la 23 está
+   mal». Tiene que verse y no partirse de línea. */
+.rev-num {
+  width: 2.5rem;
+  text-align: end;
+  color: #55645f;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.rev-terminos {
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+.rev-pie {
+  margin-top: 3rem;
+  padding-top: 1rem;
+  border-top: 1px solid #cfd8d4;
+  color: #55645f;
+  font-size: 0.9rem;
+}
+
+.rev-contacto {
+  font-weight: 600;
+  color: #1b2724;
+}
+
+/* ---------- Papel ----------
+   Mucha gente revisa impreso, con bolígrafo. Una fila partida entre dos
+   páginas obliga a pasar hojas para leer un dictamen. */
+@media print {
+  body {
+    padding: 0;
+    max-width: none;
+    font-size: 10.5pt;
+  }
+
+  .no-print {
+    display: none;
+  }
+
+  .rev-tabla tr,
+  .rev-principios {
+    break-inside: avoid;
+  }
+
+  .rev-grupo h2 {
+    break-after: avoid;
+  }
+
+  /* La cabecera de la tabla se repite en cada página. */
+  .rev-tabla thead {
+    display: table-header-group;
+  }
+}
+
+/* El halo de color de la app no pinta nada aquí: esto es un documento que se
+   lee de corrido y se imprime, no una pantalla. */
+body::before {
+  display: none;
+}

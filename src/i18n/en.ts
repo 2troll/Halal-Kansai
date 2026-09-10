@@ -206,6 +206,21 @@ export const en = {
   screenExit: 'Exit',
   screenWaiting: 'Waiting for the sermon to begin…',
 
+  // Hoja de revisión
+  revisionTitle: 'Ingredient rules — for review',
+  revisionIntro: 'Every verdict this app can give, in one page. We are asking you to correct it: if a ruling is wrong, tell us the number and we will change it.',
+  revisionP1T: 'Deterministic, not a model.',
+  revisionP1: 'This is a dictionary. The same label always gives the same result, and every ruling can be audited line by line.',
+  revisionP2T: 'It issues no fatwa.',
+  revisionP2: 'Where scholars differ, the app says so, states both positions and leaves the decision to the user and their scholar.',
+  revisionP3T: 'It never gives a clearance.',
+  revisionP3: 'The most favourable thing it can say is “no forbidden ingredient recognised”. It never says a product is halal.',
+  revisionTerms: 'As printed on the package',
+  revisionName: 'Ingredient',
+  revisionWhy: 'Why this ruling',
+  revisionPrint: 'Print',
+  revisionFooter: 'Corrections are welcome on any rule. Please quote the number. Every correction received will be applied and shown back to you.',
+
   // Misc
   language: 'Language',
   offlineReady: 'Available offline',

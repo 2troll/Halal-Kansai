@@ -207,6 +207,21 @@ export const es: Dict = {
   screenExit: 'Salir',
   screenWaiting: 'Esperando a que empiece el sermón…',
 
+  // Hoja de revisión
+  revisionTitle: 'Reglas de ingredientes — para revisión',
+  revisionIntro: 'Todos los dictámenes que esta app puede dar, en una página. Le pedimos que la corrija: si un dictamen está mal, díganos el número y lo cambiamos.',
+  revisionP1T: 'Determinista, no es un modelo.',
+  revisionP1: 'Esto es un diccionario. La misma etiqueta da siempre el mismo resultado y cada dictamen se puede auditar línea a línea.',
+  revisionP2T: 'No emite fatwa.',
+  revisionP2: 'Donde los sabios difieren, la app lo dice, expone las dos posturas y deja la decisión al usuario y a su sabio.',
+  revisionP3T: 'Nunca da vía libre.',
+  revisionP3: 'Lo más favorable que puede decir es «no se reconoció ningún ingrediente prohibido». Jamás dice que un producto sea halal.',
+  revisionTerms: 'Tal como aparece en el envase',
+  revisionName: 'Ingrediente',
+  revisionWhy: 'Por qué ese dictamen',
+  revisionPrint: 'Imprimir',
+  revisionFooter: 'Se agradece cualquier corrección. Indique el número de la regla. Toda corrección recibida se aplica y se le enseña de vuelta.',
+
   // Comida
   navFood: 'Comer',
   foodTitle: 'Leer etiquetas y cartas en japonés',
