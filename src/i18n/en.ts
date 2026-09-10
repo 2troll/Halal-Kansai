@@ -263,4 +263,43 @@ export const en = {
   foodDisclaimer: 'Guidance to help you ask better questions — not a fatwa and not a halal certification. Where scholars differ, we say so and leave the decision to you.',
   foodPhrasesHint: 'Tap a phrase to show it full-screen to the staff.',
   foodClose: 'Close',
+  // Base de konbini (feed del productor)
+  konbiniFound: 'In the konbini database',
+  konbiniCertified: 'Halal certificate in force',
+  konbiniCertifiedBody:
+    'A certificate covers this product and this plant, not the whole brand. Read the scope below.',
+  konbiniConfirmed: 'The manufacturer confirms it in writing',
+  konbiniConfirmedBody:
+    'A written reply from the maker says there are no forbidden ingredients. That is not a certification.',
+  konbiniLabelClear: 'Nothing marked on the label',
+  konbiniLabelClearBody:
+    'No forbidden or doubtful term in the declared list. Shared production lines are outside what this can see.',
+  konbiniAmbiguous: 'Information is missing',
+  konbiniAmbiguousBody: 'One or more terms need an answer from the maker. This is not a rejection.',
+  konbiniExcluded: 'A forbidden ingredient is declared',
+  konbiniExcludedBody: 'The packet itself names an ingredient graded forbidden. No enquiry is needed.',
+  konbiniUnknown: 'Not checked yet',
+  konbiniUnknownBody: 'The product is in the queue. Read the label for now.',
+  konbiniExpired: 'The certificate has lapsed',
+  konbiniExpiredBody:
+    'It had a certificate and it has expired. Until it is renewed, only the label counts.',
+  konbiniSourceCertificate: 'from a halal certificate',
+  konbiniSourceReply: 'from the manufacturer’s written reply',
+  konbiniSourceLabel: 'from the label (原材料名)',
+  konbiniSourceAllergen: 'from the chain’s allergen table',
+  konbiniSourceNone: 'no source recorded',
+  konbiniCheckedOn: 'Checked',
+  konbiniTerms: 'Terms to ask about',
+  konbiniCertBody: 'Issuing body',
+  konbiniCertScope: 'Covers',
+  konbiniCertExpires: 'Valid until',
+  konbiniOfflineCopy: 'Saved copy, no connection',
+  konbiniNeedsUpdate:
+    'The published database is newer than this app. Update the app; the saved copy is being used meanwhile.',
+  konbiniUnknownCode:
+    'This version of the app does not know this code yet. Update it to read the explanation.',
+  konbiniDisclaimer:
+    'This reports ingredients declared on the label. It does not certify anything, and cross-contamination and shared lines are outside its scope.',
+  konbiniReadLabelToo:
+    'The packet in your hand has the last word: if the label differs, trust the label and paste it above.',
 } as const;

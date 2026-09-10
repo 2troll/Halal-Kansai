@@ -139,6 +139,52 @@ la mala voluntad, es que nadie entiende la pregunta.
   normalizado (全角, katakana/hiragana), contaminación cruzada e integridad
   trilingüe de la base (102 en total).
 
+### La base de productos de konbini
+
+El lector de etiquetas resuelve el producto que tienes en la mano. Lo que no
+resolvía es el producto que ya alguien miró: un onigiri de 7-Eleven se compra
+mil veces al día y su etiqueta no cambia entre una compra y otra. Esa mitad la
+pone un repositorio aparte, el **productor** (`~/halal-konbini`), que criba
+ingredientes declarados y publica un único archivo, `dist/products.json`,
+descrito en su `DATA-CONTRACT.md`. Las dos mitades no se conocen: comparten ese
+archivo y nada más.
+
+Al escanear un código de barras se mira primero esa base y después Open Food
+Facts. Es el orden útil: la base de konbini responde **dentro de la tienda sin
+cobertura** (el service worker la guarda desde la instalación), trae el
+veredicto ya resuelto por precedencia —certificado > respuesta del fabricante >
+etiqueta > tabla de alérgenos— y dice **de cuándo** es el dato. Si el producto
+no está, todo sigue como antes.
+
+```sh
+# en el productor
+cd ~/halal-konbini && .venv/bin/halal add 4901234567894 -n "…" -c seven_eleven
+.venv/bin/halal export
+
+# aquí: valida el feed y lo publica en public/feed/products.json
+npm run feed:import
+```
+
+`feed:import` no copia a ciegas: rechaza un `schema_version` que esta app no
+sepa leer, un JAN inválido o repetido, y un producto marcado `ambiguous` o
+`excluded` sin `reason_codes`. Publicar un feed inválido es peor que no tener
+feed, porque el móvil de quien está en la tienda ya se lo ha guardado.
+
+Tres reglas del contrato que la app cumple y conviene no perder
+(`tests/konbini.test.ts` las sujeta):
+
+- **`ambiguous` no es un rechazo.** Significa «falta información» y va en ámbar,
+  nunca en el rojo de `excluded`.
+- **Fuente y fecha en cada ficha.** Un producto comprobado hace ocho meses no es
+  lo mismo que uno de la semana pasada, y un color solo no distingue los dos.
+- **El JAN es la clave.** El nombre cambia con cada renovación del envoltorio.
+
+Los `reason_codes` llegan como códigos, nunca como frases: el productor no
+escribe prosa y esta app los traduce a los cuatro idiomas
+(`src/modules/ingredients/reason-codes.ts`), reutilizando las explicaciones que
+ya tiene el lector de etiquetas. Un código que esta versión no conozca se enseña
+tal cual, con el aviso de actualizar — nunca con una explicación inventada.
+
 ### Los límites, dichos en la propia aplicación
 
 No emitimos fatwa. Donde las escuelas difieren —醤油 y su ~2% de alcohol de

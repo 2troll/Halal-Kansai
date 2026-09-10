@@ -274,4 +274,45 @@ export const ja: Dict = {
     'よりよい質問をするための手引きであり、ファトワーでもハラール認証でもありません。学者の見解が分かれる点はそう明記し、判断はあなたに委ねます。',
   foodPhrasesHint: '文をタップすると全画面で表示され、店員さんに見せられます。',
   foodClose: '閉じる',
+  // Base de konbini (feed del productor)
+  konbiniFound: 'コンビニ商品データベース',
+  konbiniCertified: 'ハラール認証あり（有効）',
+  konbiniCertifiedBody:
+    '認証はこの商品とこの工場が対象で、ブランド全体ではありません。下の対象範囲をご確認ください。',
+  konbiniConfirmed: 'メーカーが書面で確認',
+  konbiniConfirmedBody:
+    '禁止された原材料はないという書面回答があります。認証ではありません。',
+  konbiniLabelClear: '表示に該当する用語なし',
+  konbiniLabelClearBody:
+    '表示された原材料に禁止・要確認の用語はありません。共用ラインまでは分かりません。',
+  konbiniAmbiguous: '情報が足りません',
+  konbiniAmbiguousBody:
+    '一つ以上の用語はメーカーの回答が必要です。「不可」という意味ではありません。',
+  konbiniExcluded: '禁止された原材料が表示されています',
+  konbiniExcludedBody:
+    'パッケージ自体が禁止に分類される原材料を記載しています。問い合わせるまでもありません。',
+  konbiniUnknown: '未確認',
+  konbiniUnknownBody: '確認待ちの商品です。いまは表示をお読みください。',
+  konbiniExpired: '認証の有効期限切れ',
+  konbiniExpiredBody:
+    '認証がありましたが期限が切れています。更新されるまでは表示だけが頼りです。',
+  konbiniSourceCertificate: 'ハラール認証書より',
+  konbiniSourceReply: 'メーカーの書面回答より',
+  konbiniSourceLabel: '原材料名の表示より',
+  konbiniSourceAllergen: 'チェーンのアレルギー表より',
+  konbiniSourceNone: '出典の記録なし',
+  konbiniCheckedOn: '確認日',
+  konbiniTerms: '問い合わせるべき用語',
+  konbiniCertBody: '認証機関',
+  konbiniCertScope: '対象範囲',
+  konbiniCertExpires: '有効期限',
+  konbiniOfflineCopy: '保存済みのデータ（オフライン）',
+  konbiniNeedsUpdate:
+    '公開されているデータベースはこのアプリより新しい版です。アプリを更新してください。それまでは保存済みのデータを使います。',
+  konbiniUnknownCode:
+    'このバージョンのアプリはこのコードをまだ知りません。更新すると説明が表示されます。',
+  konbiniDisclaimer:
+    'これは表示された原材料についての情報です。認証ではなく、コンタミネーションや共用ラインは対象外です。',
+  konbiniReadLabelToo:
+    '手元のパッケージが最終的な判断材料です。表示が違えば表示に従い、上に貼り付けてください。',
 };

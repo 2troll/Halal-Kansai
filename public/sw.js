@@ -8,11 +8,24 @@
    - tiles/fonts CDN  → cache-first con tope de entradas.
    Salat y qibla funcionan 100% offline porque todo su código va en el shell. */
 
-const SHELL_CACHE = 'hk-shell-v3';
-const RUNTIME_CACHE = 'hk-runtime-v3';
+const SHELL_CACHE = 'hk-shell-v4';
+const RUNTIME_CACHE = 'hk-runtime-v4';
 const RUNTIME_MAX_ENTRIES = 120;
 
-const PRECACHE = ['/', '/manifest.webmanifest', '/icons/icon-192.png', '/icons/icon-512.png'];
+/* Base de productos de konbini (contrato de datos §6). No lleva hash en el
+   nombre: si se sirviera cache-first como el resto del shell, se quedaría
+   congelada para siempre y un producto reclasificado no llegaría nunca. */
+const FEED_PATH = '/feed/products.json';
+
+const PRECACHE = [
+  '/',
+  '/manifest.webmanifest',
+  '/icons/icon-192.png',
+  '/icons/icon-512.png',
+  // La base de productos de konbini: se guarda desde la instalación porque el
+  // sitio donde hace falta es el pasillo de una tienda, sin cobertura.
+  FEED_PATH,
+];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(install());
@@ -131,6 +144,33 @@ async function networkFirst(request, cacheName) {
   }
 }
 
+/**
+ * Feed de konbini: se responde con lo guardado y se refresca por detrás.
+ *
+ * Cache-first dejaría el feed congelado; network-first haría esperar a quien
+ * está en la tienda sin cobertura hasta que la petición fallara. Esto da lo
+ * uno y lo otro: respuesta inmediata siempre, y la copia actualizada para la
+ * próxima vez que se abra la app.
+ */
+async function staleWhileRevalidate(request, cacheName) {
+  const cache = await caches.open(cacheName);
+  const cached = await cache.match(request);
+
+  const network = fetch(request)
+    .then((response) => {
+      if (response.ok) cache.put(request, response.clone());
+      return response;
+    })
+    .catch(() => null);
+
+  if (cached) return cached;
+  const fresh = await network;
+  if (fresh) return fresh;
+  // Ni copia ni red: 404 explícito. La app cae a Open Food Facts y a la
+  // lectura manual de la etiqueta, que es exactamente lo que hacía sin feed.
+  return new Response('', { status: 404 });
+}
+
 async function cacheFirst(request, cacheName) {
   const cached = await caches.match(request);
   if (cached) return cached;
@@ -156,6 +196,11 @@ self.addEventListener('fetch', (event) => {
     // y, por tanto, lo único que puede quedarse congelado en una versión vieja.
     if (event.request.mode === 'navigate' || event.request.destination === 'document') {
       event.respondWith(networkFirst(event.request, SHELL_CACHE));
+      return;
+    }
+
+    if (url.pathname === FEED_PATH) {
+      event.respondWith(staleWhileRevalidate(event.request, SHELL_CACHE));
       return;
     }
 

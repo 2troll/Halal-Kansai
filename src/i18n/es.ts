@@ -259,4 +259,45 @@ export const es: Dict = {
   foodDisclaimer: 'Orientación para que pueda preguntar mejor. No es una fatwa ni una certificación halal. Donde los sabios difieren, se dice y la decisión queda en sus manos.',
   foodPhrasesHint: 'Toque una frase para enseñarla a pantalla completa.',
   foodClose: 'Cerrar',
+  // Base de konbini (feed del productor)
+  konbiniFound: 'En la base de konbini',
+  konbiniCertified: 'Certificado halal vigente',
+  konbiniCertifiedBody:
+    'Un certificado cubre este producto y esta planta, no toda la marca. Lea el alcance debajo.',
+  konbiniConfirmed: 'El fabricante lo confirma por escrito',
+  konbiniConfirmedBody:
+    'Hay respuesta escrita del fabricante: sin ingredientes prohibidos. Eso no es una certificación.',
+  konbiniLabelClear: 'Nada marcado en la etiqueta',
+  konbiniLabelClearBody:
+    'Ningún término prohibido ni dudoso en la lista declarada. Las líneas de producción compartidas quedan fuera de lo que esto ve.',
+  konbiniAmbiguous: 'Falta información',
+  konbiniAmbiguousBody:
+    'Uno o más términos necesitan respuesta del fabricante. Esto no es un rechazo.',
+  konbiniExcluded: 'La etiqueta declara un ingrediente prohibido',
+  konbiniExcludedBody:
+    'El propio envase nombra un ingrediente clasificado como prohibido. No hace falta preguntar.',
+  konbiniUnknown: 'Todavía sin comprobar',
+  konbiniUnknownBody: 'El producto está en cola. De momento, lea la etiqueta.',
+  konbiniExpired: 'El certificado ha caducado',
+  konbiniExpiredBody:
+    'Tuvo certificado y ha vencido. Hasta que se renueve, solo cuenta la etiqueta.',
+  konbiniSourceCertificate: 'a partir de un certificado halal',
+  konbiniSourceReply: 'a partir de la respuesta escrita del fabricante',
+  konbiniSourceLabel: 'a partir de la etiqueta (原材料名)',
+  konbiniSourceAllergen: 'a partir de la tabla de alérgenos de la cadena',
+  konbiniSourceNone: 'sin fuente registrada',
+  konbiniCheckedOn: 'Comprobado el',
+  konbiniTerms: 'Términos por los que preguntar',
+  konbiniCertBody: 'Entidad certificadora',
+  konbiniCertScope: 'Alcance',
+  konbiniCertExpires: 'Válido hasta',
+  konbiniOfflineCopy: 'Copia guardada, sin conexión',
+  konbiniNeedsUpdate:
+    'La base publicada es más nueva que esta app. Actualícela; mientras tanto se usa la copia guardada.',
+  konbiniUnknownCode:
+    'Esta versión de la app todavía no conoce este código. Actualícela para ver la explicación.',
+  konbiniDisclaimer:
+    'Esto informa sobre los ingredientes declarados en la etiqueta. No certifica nada, y la contaminación cruzada y las líneas compartidas quedan fuera de su alcance.',
+  konbiniReadLabelToo:
+    'El paquete que tiene en la mano manda: si la etiqueta no coincide, hágale caso a la etiqueta y péguela arriba.',
 };

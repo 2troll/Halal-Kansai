@@ -18,6 +18,8 @@ import {
   type ScanStop,
 } from '../ingredients/scan';
 import { RULES, type Status } from '../ingredients/rules';
+import { lookupKonbini } from '../ingredients/konbini';
+import { konbiniCardHtml } from './konbini-card';
 import { PHRASES, type Phrase } from './phrases';
 import { getLang, t } from '../../i18n';
 import { icon } from '../../ui/icons';
@@ -361,6 +363,20 @@ function renderLabelMode(body: HTMLElement): void {
 
   async function fetchProduct(code: string): Promise<void> {
     say(`${t('scanLookingUp')} (${code})`);
+
+    // Primero la base de konbini: es la que trae un veredicto ya resuelto por
+    // precedencia (certificado > fabricante > etiqueta), la que dice de cuándo
+    // es el dato, y la única que responde dentro de la tienda sin cobertura.
+    // Open Food Facts sigue detrás para todo lo que no cubre.
+    const konbini = await lookupKonbini(code);
+    if (konbini) {
+      productName = konbini.product.name;
+      result.innerHTML = konbiniCardHtml(konbini);
+      say(`${t('scanFound')}: ${konbini.product.name}`);
+      result.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      return;
+    }
+
     const found = await lookupProduct(code);
 
     if (!found.ok) {

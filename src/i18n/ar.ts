@@ -253,4 +253,44 @@ export const ar: Dict = {
   foodDisclaimer: 'إرشاد يساعدك على السؤال بشكل أفضل، وليس فتوى ولا شهادة حلال. وحيث اختلف العلماء نذكر ذلك ونترك القرار لك.',
   foodPhrasesHint: 'اضغط على عبارة لعرضها بملء الشاشة.',
   foodClose: 'إغلاق',
+  // Base de konbini (feed del productor)
+  konbiniFound: 'في قاعدة بيانات الكونبيني',
+  konbiniCertified: 'شهادة حلال سارية',
+  konbiniCertifiedBody:
+    'الشهادة تغطي هذا المنتج وهذا المصنع، لا العلامة التجارية كلّها. اقرأ نطاقها بالأسفل.',
+  konbiniConfirmed: 'الشركة المصنِّعة تؤكّد ذلك كتابةً',
+  konbiniConfirmedBody:
+    'ردّ مكتوب من الشركة يفيد بخلوّه من المكوّنات المحرَّمة. وهذا ليس شهادة حلال.',
+  konbiniLabelClear: 'لا شيء مُعلَّم على الملصق',
+  konbiniLabelClearBody:
+    'لا مكوّن محرَّم ولا مشبوه في القائمة المُعلنة. خطوط الإنتاج المشتركة خارج ما يمكن لهذا أن يراه.',
+  konbiniAmbiguous: 'المعلومات ناقصة',
+  konbiniAmbiguousBody: 'مكوّن أو أكثر يحتاج جوابًا من الشركة. وهذا ليس رفضًا.',
+  konbiniExcluded: 'الملصق يذكر مكوّنًا محرَّمًا',
+  konbiniExcludedBody:
+    'العبوة نفسها تذكر مكوّنًا مصنَّفًا محرَّمًا. لا حاجة إلى الاستفسار.',
+  konbiniUnknown: 'لم يُفحص بعد',
+  konbiniUnknownBody: 'المنتج في قائمة الانتظار. اقرأ الملصق في هذه الأثناء.',
+  konbiniExpired: 'انتهت صلاحية الشهادة',
+  konbiniExpiredBody:
+    'كانت له شهادة وانتهت. حتى تُجدَّد، الملصق وحده هو المعتبر.',
+  konbiniSourceCertificate: 'من شهادة حلال',
+  konbiniSourceReply: 'من ردّ مكتوب من الشركة',
+  konbiniSourceLabel: 'من الملصق (原材料名)',
+  konbiniSourceAllergen: 'من جدول مسبّبات الحساسية للسلسلة',
+  konbiniSourceNone: 'دون مصدر مسجَّل',
+  konbiniCheckedOn: 'فُحص في',
+  konbiniTerms: 'مكوّنات يُسأل عنها',
+  konbiniCertBody: 'الجهة المانحة',
+  konbiniCertScope: 'النطاق',
+  konbiniCertExpires: 'سارية حتى',
+  konbiniOfflineCopy: 'نسخة محفوظة، دون اتصال',
+  konbiniNeedsUpdate:
+    'قاعدة البيانات المنشورة أحدث من هذا التطبيق. حدِّث التطبيق؛ وتُستعمل في هذه الأثناء النسخة المحفوظة.',
+  konbiniUnknownCode:
+    'هذه النسخة من التطبيق لا تعرف هذا الرمز بعد. حدِّثها لقراءة الشرح.',
+  konbiniDisclaimer:
+    'هذا يخبر عن المكوّنات المُعلنة على الملصق. لا يمنح شهادة، والتلوّث المتبادل وخطوط الإنتاج المشتركة خارج نطاقه.',
+  konbiniReadLabelToo:
+    'العبرة بالعبوة التي بين يديك: إن اختلف الملصق فاعتمد الملصق والصقه بالأعلى.',
 };

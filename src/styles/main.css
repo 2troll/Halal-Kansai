@@ -888,6 +888,24 @@ h2 {
   color: inherit;
 }
 
+/* Identidad del producto de konbini: nombre, JAN y cadena, bajo el veredicto.
+   El JAN se enseña siempre porque es la clave real del dato — el nombre cambia
+   con cada renovación del envoltorio. */
+.konbini-id {
+  margin: 0.6rem 0;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.konbini-id code {
+  font-family: var(--font-body);
+  background: var(--paper-dim);
+  color: var(--ink);
+  border-radius: 6px;
+  padding: 0.05rem 0.35rem;
+  font-size: 0.82rem;
+}
+
 .food-verdict {
   padding: 0.85rem 1rem;
   border-radius: 12px;
