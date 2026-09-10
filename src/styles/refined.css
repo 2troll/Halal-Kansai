@@ -616,3 +616,54 @@ body::before {
     flex-direction: column;
   }
 }
+
+/* ---------- Diagnóstico del aparato ----------
+   Se lee de un vistazo y en un sitio con prisa: un punto de color, el nombre
+   de lo que se comprueba y el detalle. Nada más. */
+
+.diag {
+  margin-top: 1.5rem;
+}
+
+.diag > summary {
+  cursor: pointer;
+  font-weight: 600;
+  padding: 0.6rem 0;
+}
+
+.diag-list {
+  list-style: none;
+  margin: 1rem 0 0.8rem;
+  padding: 0;
+}
+
+.diag-list li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.1rem 0.6rem;
+  padding: 0.65rem 0;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.diag-dot {
+  grid-row: span 2;
+  align-self: center;
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.diag-name {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.diag-detail {
+  font-size: 0.85rem;
+  color: var(--on-surface-dim);
+}
+
+/* Color Y forma: quien no distingue el rojo del verde tiene que poder leer
+   el resultado igual, y por eso el detalle siempre dice lo que pasa. */
+.diag-ok .diag-dot { color: #3fa76d; }
+.diag-aviso .diag-dot { color: var(--gold); }
+.diag-fallo .diag-dot { color: var(--danger); }
