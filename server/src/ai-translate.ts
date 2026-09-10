@@ -63,6 +63,8 @@ export async function aiTranslate(
   }
 }
 
+import { isDegenerate } from './quality.ts';
+
 /* ============================================================
    Traducción con modelo de lenguaje
    ============================================================
@@ -147,11 +149,17 @@ export async function chatTranslate(
     glossary,
   ].join('\n');
 
+  // Un fragmento de jutba son una o dos frases. Si llega mucho más, o es un
+  // error del reconocedor o alguien está probando la API: los modelos se
+  // atascan repitiendo con entradas largas y repetitivas (medido: 1.200
+  // caracteres devolvían «¡Hazlo bien!» ochenta veces).
+  const fragment = text.slice(0, 400);
+
   try {
     const out = await ai.run(CHAT_MODEL, {
       messages: [
         { role: 'system', content: system },
-        { role: 'user', content: text },
+        { role: 'user', content: fragment },
       ],
       // Un fragmento de sermón es corto; el tope evita que se enrolle.
       max_tokens: 300,
@@ -175,5 +183,16 @@ function cleanUp(raw: string | undefined): string | null {
   out = out.replace(/^(translation|traducción|翻訳)\s*[:：]\s*/i, '');
   out = out.replace(/^["'«「](.*)["'»」]$/s, '$1');
   out = out.trim();
-  return out.length > 0 ? out : null;
+  if (out.length === 0) return null;
+  return isDegenerate(out) ? null : out;
 }
+
+
+/**
+ * Interior expuesto solo para las pruebas.
+ *
+ * `cleanUp` es la puerta por la que pasa todo lo que devuelve el modelo antes
+ * de llegar a una pantalla, así que merece prueba propia; pero no es API del
+ * módulo y nadie más debería llamarla.
+ */
+export const __testing = { cleanUp };

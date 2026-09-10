@@ -209,6 +209,8 @@ export const ja: Dict = {
   scanPhotoWorking: '原材料名を読み取っています…',
   scanPhotoFailed: '読み取れませんでした。近づいて撮り直すか、下に入力してください。',
 
+  broadcasterLeft: '配信が終了しました。説教を送信していた端末の接続が切れました。',
+
   // Misc
   language: '言語',
   offlineReady: 'オフラインで利用できます',

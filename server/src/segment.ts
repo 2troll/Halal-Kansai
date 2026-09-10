@@ -10,6 +10,7 @@
 import { freeTranslate } from './free-translate.ts';
 import { aiTranslate, chatTranslate, type AiBinding } from './ai-translate.ts';
 import { glossaryHints, hasTerms, protectTerms, restoreTerms } from './glossary.ts';
+import { usableTranslation } from './quality.ts';
 import { analyzeSegment, type LlmConfig } from './llm.ts';
 import { hasArabic } from './normalize.ts';
 import { getMatcher, type QuranStore } from './store.ts';
@@ -130,16 +131,21 @@ async function buildSegmentFree(
       segment.translation = viaChat;
       segment.translationSource = 'llm';
     } else {
-      const viaMt = await mt.catch(() => null);
+      // El respaldo también se revisa: el fallo real fue comprobar solo el
+      // motor grande y caer a uno que devolvía la misma basura sin mirarla.
+      const viaMt = usableTranslation(await mt.catch(() => null));
       if (viaMt) {
         segment.translation = restore(viaMt);
       } else {
+        let libre: string | null;
         try {
-          segment.translation = restore(await freeTranslate(guarded.text, source, target));
+          libre = usableTranslation(await freeTranslate(guarded.text, source, target));
         } catch {
-          // Sin red o proveedores caídos: mostrar el original (degradación suave).
-          segment.translation = text;
+          libre = null;
         }
+        // Sin nada utilizable: el original. Que se vea el árabe es honesto;
+        // que se vea una frase repetida ochenta veces, no.
+        segment.translation = libre ? restore(libre) : text;
       }
     }
     // Si casó un verso pero sin traducción Tanzil, la MT es "no oficial".

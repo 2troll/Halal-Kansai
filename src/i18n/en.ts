@@ -200,6 +200,8 @@ export const en = {
   scanPhotoWorking: 'Reading the label…',
   scanPhotoFailed: 'Could not read the label. Try again closer, or type the list below.',
 
+  broadcasterLeft: 'The broadcast has ended: the phone sending the sermon lost its connection.',
+
   // Misc
   language: 'Language',
   offlineReady: 'Available offline',

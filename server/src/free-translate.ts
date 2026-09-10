@@ -16,7 +16,15 @@ function shortLang(locale: string): string {
   return locale.split('-')[0].toLowerCase();
 }
 
+/** Límite documentado de MyMemory. Pasarse devuelve un error, no una traducción. */
+const MYMEMORY_MAX_CHARS = 500;
+
 async function viaMyMemory(text: string, source: string, target: string): Promise<string | null> {
+  // Mejor no preguntar que preguntar mal: por encima del límite la respuesta
+  // es un mensaje de error, y ese mensaje acababa en la pantalla del usuario
+  // como si fuera la traducción del sermón.
+  if (text.length > MYMEMORY_MAX_CHARS) return null;
+
   const params = new URLSearchParams({ q: text, langpair: `${source}|${target}` });
   // Workers no tiene `process`; en Node sí. Sin email el límite es menor,
   // pero la traducción sigue funcionando.
@@ -26,13 +34,39 @@ async function viaMyMemory(text: string, source: string, target: string): Promis
   const res = await fetch(`https://api.mymemory.translated.net/get?${params}`);
   if (!res.ok) return null;
   const data = (await res.json()) as {
-    responseStatus?: number;
+    responseStatus?: number | string;
     responseData?: { translatedText?: string };
   };
+
+  // MyMemory contesta 200 por HTTP y mete el error DENTRO del JSON. Sin mirar
+  // este campo, «QUERY LENGTH LIMIT EXCEEDED» se enseñaba como traducción.
+  const status = Number(data.responseStatus);
+  if (Number.isFinite(status) && status !== 200) return null;
+
   const out = data.responseData?.translatedText;
-  // MyMemory devuelve mayúsculas tipo "INVALID LANGUAGE PAIR" como "traducción".
-  if (!out || /^[A-Z '".]+$/.test(out)) return null;
-  return out;
+  return looksLikeProviderError(out) ? null : (out ?? null);
+}
+
+/**
+ * ¿Esto es un mensaje de error disfrazado de traducción?
+ *
+ * MyMemory los devuelve en mayúsculas: «INVALID LANGUAGE PAIR», «QUERY LENGTH
+ * LIMIT EXCEEDED. MAX ALLOWED QUERY : 500 CHARS». El filtro anterior solo
+ * aceptaba letras, espacios y comillas, así que el segundo se colaba por
+ * llevar dos puntos y un número.
+ */
+export function looksLikeProviderError(text: string | undefined): boolean {
+  if (!text) return true;
+  const clean = text.trim();
+  if (clean.length === 0) return true;
+
+  // Sin minúsculas y con pinta de aviso en inglés: no es una traducción.
+  const hasLower = /\p{Ll}/u.test(clean);
+  if (!hasLower && /[A-Z]{3,}/.test(clean)) return true;
+
+  return /\b(LIMIT EXCEEDED|INVALID LANGUAGE|NO QUERY SPECIFIED|PLEASE (SELECT|CONTACT))\b/i.test(
+    clean,
+  );
 }
 
 async function viaGoogle(text: string, source: string, target: string): Promise<string | null> {

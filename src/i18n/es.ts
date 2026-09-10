@@ -201,6 +201,8 @@ export const es: Dict = {
   scanPhotoWorking: 'Leyendo la etiqueta…',
   scanPhotoFailed: 'No se pudo leer la etiqueta. Prueba más de cerca, o escribe la lista abajo.',
 
+  broadcasterLeft: 'La transmisión ha terminado: el móvil que enviaba el sermón perdió la conexión.',
+
   // Comida
   navFood: 'Comer',
   foodTitle: 'Leer etiquetas y cartas en japonés',

@@ -14,6 +14,8 @@ export interface RoomCallbacks {
   onListeners(count: number): void;
   /** code: 'roomTaken' | 'roomFull' | 'badRequest' | 'connection' */
   onError(code: string): void;
+  /** Quien transmitía se ha ido: ya no va a llegar nada más. */
+  onBroadcasterLeft?(): void;
   onClose(): void;
 }
 
@@ -58,6 +60,7 @@ export class KhutbahRoom {
       if (msg.type === 'joined') callbacks.onJoined(Number(msg.listeners ?? 0));
       else if (msg.type === 'segment') callbacks.onSegment(msg.segment as TranslatedSegment);
       else if (msg.type === 'listeners') callbacks.onListeners(Number(msg.count ?? 0));
+      else if (msg.type === 'broadcasterLeft') callbacks.onBroadcasterLeft?.();
       else if (msg.type === 'error') callbacks.onError(String(msg.code ?? 'connection'));
     });
 

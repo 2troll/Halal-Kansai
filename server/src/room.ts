@@ -93,16 +93,29 @@ export class RoomHub {
     const room = this.rooms.get(entry.roomId);
     if (!room) return;
 
-    if (entry.member.role === 'transmitter') {
+    const wasTransmitter = entry.member.role === 'transmitter';
+    if (wasTransmitter) {
       room.transmitter = null;
     } else {
       room.receivers.delete(entry.member);
     }
+
     if (!room.transmitter && room.receivers.size === 0) {
       this.rooms.delete(entry.roomId);
-    } else {
-      this.broadcastListeners(entry.roomId);
+      return;
     }
+
+    // Si se cae quien transmite, hay que DECIRLO. En un sótano de mezquita se
+    // pierde la cobertura, y sin este aviso los fieles se quedan mirando el
+    // último subtítulo congelado sin saber que ya no llega nada. Peor que un
+    // error visible: parece que funciona.
+    if (wasTransmitter) {
+      for (const m of room.receivers) {
+        m.conn.send(JSON.stringify({ type: 'broadcasterLeft' }));
+      }
+    }
+
+    this.broadcastListeners(entry.roomId);
   }
 
   private join(conn: RoomConnection, msg: Record<string, unknown>): void {
