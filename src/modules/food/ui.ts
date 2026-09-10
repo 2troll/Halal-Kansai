@@ -22,6 +22,7 @@ import { PHRASES, type Phrase } from './phrases';
 import { getLang, t } from '../../i18n';
 import { icon } from '../../ui/icons';
 import { nativeScanAvailable, scanBarcodeNative } from '../ingredients/scan-native';
+import { ocrAvailable, readLabelPhoto } from '../ingredients/ocr';
 import { ruleText } from '../ingredients/localize';
 
 type Mode = 'label' | 'phrases';
@@ -196,6 +197,11 @@ function renderLabelMode(body: HTMLElement): void {
 
     <div class="scan-actions">
       <button class="btn" id="scan-camera">${icon('camera', 19)}${t('scanCamera')}</button>
+      ${
+        ocrAvailable()
+          ? `<button class="btn" id="scan-photo">${icon('camera', 19)}${t('scanPhoto')}</button>`
+          : ''
+      }
       ${EXAMPLES.map(
         (ex, i) => `<button class="btn ghost" data-example="${i}" lang="ja">${ex.name}</button>`,
       ).join('')}
@@ -297,6 +303,27 @@ function renderLabelMode(body: HTMLElement): void {
 
   body.querySelector<HTMLButtonElement>('#scan-camera')!.addEventListener('click', () => {
     void openCamera();
+  });
+
+  // Fotografiar la etiqueta: sustituye al teclado, no al analizador. El texto
+  // reconocido cae en la misma caja, para que el usuario lo vea y lo corrija
+  // si el reconocedor se ha comido un carácter.
+  body.querySelector<HTMLButtonElement>('#scan-photo')?.addEventListener('click', () => {
+    void (async () => {
+      say(t('scanPhotoWorking'));
+      try {
+        const text = await readLabelPhoto();
+        if (text === null) {
+          say('');
+          return;
+        }
+        input.value = text;
+        say('');
+        run();
+      } catch {
+        say(t('scanPhotoFailed'));
+      }
+    })();
   });
 
   async function openCamera(): Promise<void> {

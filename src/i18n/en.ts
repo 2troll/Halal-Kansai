@@ -196,6 +196,10 @@ export const en = {
 
   micDenied: 'Microphone or speech recognition permission denied.',
 
+  scanPhoto: 'Photograph the label',
+  scanPhotoWorking: 'Reading the label…',
+  scanPhotoFailed: 'Could not read the label. Try again closer, or type the list below.',
+
   // Misc
   language: 'Language',
   offlineReady: 'Available offline',

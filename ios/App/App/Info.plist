@@ -10,6 +10,10 @@
 	<string>To read the barcode on a food package and look up its ingredients. Nothing is recorded or sent anywhere.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>To compute prayer times and the qibla direction for where you are. Your location stays on this device.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>To read the ingredient list from a photo of a food package. The photo stays on your phone.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>To save the photo of the label you just took, if you choose to.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>To turn the Friday sermon into text on this device, so it can be translated for you. The audio never leaves your phone.</string>
 	<key>NSMicrophoneUsageDescription</key>

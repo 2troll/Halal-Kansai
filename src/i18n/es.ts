@@ -197,6 +197,10 @@ export const es: Dict = {
 
   micDenied: 'No se dio permiso al micrófono o al reconocimiento de voz.',
 
+  scanPhoto: 'Fotografiar la etiqueta',
+  scanPhotoWorking: 'Leyendo la etiqueta…',
+  scanPhotoFailed: 'No se pudo leer la etiqueta. Prueba más de cerca, o escribe la lista abajo.',
+
   // Comida
   navFood: 'Comer',
   foodTitle: 'Leer etiquetas y cartas en japonés',

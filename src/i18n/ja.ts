@@ -205,6 +205,10 @@ export const ja: Dict = {
 
   micDenied: 'マイクまたは音声認識の許可がありません。',
 
+  scanPhoto: '原材料名を撮影する',
+  scanPhotoWorking: '原材料名を読み取っています…',
+  scanPhotoFailed: '読み取れませんでした。近づいて撮り直すか、下に入力してください。',
+
   // Misc
   language: '言語',
   offlineReady: 'オフラインで利用できます',
