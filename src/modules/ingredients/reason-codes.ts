@@ -45,6 +45,7 @@ export const REASON_CODES = [
   'MEAT_EXTRACT_UNSPECIFIED',
   'CHICKEN_EXTRACT',
   'BEEF_EXTRACT',
+  'BEEF_GELATIN',
   'ALCOHOL_ADDITIVE',
   'MIRIN_HON',
   'MIRIN_STYLE',
@@ -171,6 +172,17 @@ const CODES: Readonly<Record<ReasonCode, CodeText>> = {
   BEEF_EXTRACT: {
     label: { ar: 'خلاصة لحم بقر', en: 'Beef extract', es: 'Extracto de vacuno', ja: 'ビーフエキス' },
     rule: 'meat-extract',
+  },
+  BEEF_GELATIN: {
+    label: {
+      ar: 'جيلاتين بقري',
+      en: 'Beef gelatin',
+      es: 'Gelatina de vacuno',
+      ja: '牛由来ゼラチン',
+    },
+    // La especie es lícita; lo que no consta es el sacrificio. Es exactamente
+    // lo que explica la regla de la carne no porcina.
+    rule: 'meat-nonpork',
   },
   ALCOHOL_ADDITIVE: {
     label: {

@@ -178,8 +178,8 @@ describe('traída del feed', () => {
 });
 
 describe('códigos del contrato', () => {
-  it('los 29 códigos del esquema tienen nombre y explicación en los cuatro idiomas', () => {
-    expect(REASON_CODES).toHaveLength(29);
+  it('los 30 códigos del esquema tienen nombre y explicación en los cuatro idiomas', () => {
+    expect(REASON_CODES).toHaveLength(30);
     for (const code of REASON_CODES) {
       for (const lang of LANGS) {
         expect(reasonLabel(code, lang), `${code}/${lang}`).not.toBe('');
