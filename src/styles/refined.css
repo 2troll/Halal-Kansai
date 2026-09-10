@@ -293,3 +293,220 @@ main {
   width: 25px;
   height: 25px;
 }
+
+/* ============================================================
+   Acabado de cristal
+   ============================================================
+
+   Superficies translúcidas con desenfoque detrás, como el vidrio esmerilado
+   de una lámpara de mezquita. Da profundidad sin añadir un solo color nuevo:
+   el verde y el oro siguen mandando.
+
+   Dos reglas que no se negocian, porque el cristal mal hecho es un desastre
+   de legibilidad:
+
+   1. **Nada de texto largo sobre cristal.** El desenfoque deja pasar lo que
+      hay detrás, y lo que hay detrás cambia al hacer scroll: un párrafo se
+      vuelve ilegible a mitad del gesto. El cristal es para el marco —barras,
+      tarjetas, chips—, no para el contenido que hay que leer.
+   2. **En alto contraste se apaga entero.** Quien elige ese tema necesita
+      bordes duros y fondos planos, no efectos.
+
+   `backdrop-filter` no existe en algunos navegadores viejos. Se degrada solo:
+   sin él queda un color sólido, que es exactamente lo que había antes.
+   ============================================================ */
+
+:root {
+  /* Velo: el propio fondo del tema, medio transparente. */
+  --glass: color-mix(in srgb, var(--night-soft) 72%, transparent);
+  --glass-strong: color-mix(in srgb, var(--night-soft) 88%, transparent);
+  /* Filo de luz en el borde superior, como el canto de un vidrio. */
+  --glass-edge: color-mix(in srgb, var(--on-surface) 12%, transparent);
+  --glass-blur: saturate(180%) blur(22px);
+  --shadow-soft: 0 1px 2px rgb(0 0 0 / 0.06), 0 8px 24px rgb(0 0 0 / 0.10);
+}
+
+/* La cabecera se vuelve cristal al hacer scroll bajo ella. */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--glass);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border-bottom: 1px solid var(--glass-edge);
+}
+
+.tabbar {
+  background: var(--glass-strong);
+  border-top: 1px solid var(--glass-edge);
+  box-shadow: 0 -1px 24px rgb(0 0 0 / 0.14);
+}
+
+/* Tarjetas: cristal con un filo de luz arriba. */
+.finding,
+.cert-note,
+.place-card,
+.times-list,
+.sheet {
+  background: var(--glass);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-edge);
+  box-shadow: var(--shadow-soft);
+}
+
+/* La lista de rezos mantiene su fondo claro: son cifras que se leen de un
+   vistazo desde lejos, y ahí el contraste gana al efecto. */
+.times-list {
+  background: var(--paper);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+/* El arco y el veredicto llevan color propio: el cristal iría encima del
+   color de dictamen y lo apagaría justo cuando más tiene que verse. */
+.mihrab-card,
+.verdict {
+  box-shadow: var(--shadow-soft);
+}
+
+/* Chips y controles: cristal fino. */
+.lang-switch,
+.btn-appearance,
+.btn.ghost,
+.filters button {
+  background: var(--glass);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-edge);
+}
+
+.lang-switch button[aria-pressed='true'] {
+  background: var(--glass-strong);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.18);
+}
+
+/* El subtítulo en vivo NO es cristal: es lo único que se lee de lejos y en
+   movimiento. Color sólido y punto. */
+.live-caption {
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: none;
+}
+
+/* Un halo muy tenue detrás del contenido, para que el cristal tenga algo que
+   desenfocar. Sin esto el efecto no se aprecia sobre un fondo plano. */
+body::before {
+  content: '';
+  position: fixed;
+  inset: -20%;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      42rem 42rem at 78% -8%,
+      color-mix(in srgb, var(--emerald) 42%, transparent),
+      transparent 70%
+    ),
+    radial-gradient(
+      34rem 34rem at 8% 108%,
+      color-mix(in srgb, var(--gold) 22%, transparent),
+      transparent 70%
+    );
+}
+
+/* ---------- Alto contraste: el cristal se apaga entero ---------- */
+[data-theme='contrast'] {
+  --glass: var(--night-soft);
+  --glass-strong: var(--night-soft);
+  --glass-edge: var(--on-surface);
+  --shadow-soft: none;
+}
+
+[data-theme='contrast'] body::before {
+  display: none;
+}
+
+[data-theme='contrast'] .header,
+[data-theme='contrast'] .tabbar,
+[data-theme='contrast'] .finding,
+[data-theme='contrast'] .sheet,
+[data-theme='contrast'] .lang-switch,
+[data-theme='contrast'] .btn.ghost {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-width: 2px;
+}
+
+/* Quien pidió menos movimiento tampoco quiere fondos que se muevan al hacer
+   scroll: el halo se queda quieto de todas formas, pero lo dejamos explícito. */
+@media (prefers-reduced-motion: reduce) {
+  body::before {
+    background-attachment: initial;
+  }
+}
+
+/* ---------- Ajustes tras verlo en pantalla ---------- */
+
+/* El halo era tan tenue que el cristal no tenía nada que desenfocar y el
+   efecto no se apreciaba. Subido lo justo: tiene que notarse que hay algo
+   detrás, no convertirse en un fondo de pantalla. */
+body::before {
+  background:
+    radial-gradient(
+      46rem 46rem at 80% -10%,
+      color-mix(in srgb, var(--emerald) 70%, transparent),
+      transparent 68%
+    ),
+    radial-gradient(
+      38rem 38rem at 4% 106%,
+      color-mix(in srgb, var(--gold) 34%, transparent),
+      transparent 70%
+    );
+}
+
+/* El arco de mihrab recupera su filo de oro. Aplanarlo del todo le quitaba lo
+   único que hace que esta app se reconozca de un vistazo. */
+.mihrab-card {
+  border: 1px solid color-mix(in srgb, var(--gold) 55%, transparent);
+}
+
+.verdict {
+  border: 1px solid color-mix(in srgb, var(--on-accent) 22%, transparent);
+}
+
+/* La lista de rezos, pegada al arco y con el mismo radio inferior. */
+.times-list {
+  box-shadow: var(--shadow-soft);
+}
+
+
+/* ---------- Correcciones de contraste, medidas ----------
+   Auditoría de contraste sobre el tema claro (ratio real entre el texto y lo
+   que tiene detrás, teniendo en cuenta opacidad y capas translúcidas). Tres
+   fallos, uno de ellos texto invisible. */
+
+/* El idioma activo pintaba crema sobre blanco: ratio 1. Dos capas mías se
+   contradecían — una le daba color de «texto sobre acento» y la otra le
+   quitaba el fondo de acento y lo dejaba de cristal. Se resuelve dándole el
+   acento de verdad, que además es lo que se espera de un control segmentado:
+   lo elegido se ve elegido. */
+.lang-switch button[aria-pressed='true'] {
+  background: var(--emerald);
+  color: var(--on-accent);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+/* Las etiquetas de la barra al 55 % de opacidad daban 3,48. Por debajo de 4,5
+   no cumple el mínimo de accesibilidad, y esta app la usa gente mayor. */
+.tabbar button {
+  opacity: 0.72;
+}
+
+/* El oro sobre fondo claro se queda corto para texto pequeño: se oscurece en
+   los dos temas claros. Sigue siendo oro. */
+[data-theme='paper'],
+[data-theme='sand'] {
+  --gold: #7a5c14;
+}

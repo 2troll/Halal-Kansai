@@ -155,10 +155,11 @@ h2 {
 }
 
 .subtitle {
-  color: var(--ink-soft);
   font-size: 0.78rem;
   margin: 0 0 1rem;
-  color: #9db4ac;
+  /* Token, no color a mano: escrito a pelo quedaba gris verdoso claro sobre
+     crema en el tema claro, ratio 1,95 — ilegible. */
+  color: var(--on-surface-dim);
 }
 
 /* ---------- Tarjeta mihrab (salat destacada) ---------- */
@@ -255,7 +256,7 @@ h2 {
 
 .note {
   font-size: 0.78rem;
-  color: #9db4ac;
+  color: var(--on-surface-dim);
 }
 
 /* ---------- Qibla ---------- */
@@ -439,7 +440,7 @@ h2 {
 
 .suggest-form .attach {
   font-size: 0.82rem;
-  color: #9db4ac;
+  color: var(--on-surface-dim);
   display: flex;
   align-items: center;
   gap: 0.4rem;
@@ -466,7 +467,7 @@ h2 {
 
 .khutbah-controls label {
   font-size: 0.8rem;
-  color: #9db4ac;
+  color: var(--on-surface-dim);
 }
 
 .khutbah-controls input,
@@ -605,7 +606,7 @@ h2 {
   flex: 1;
   background: none;
   border: none;
-  color: #9db4ac;
+  color: var(--on-surface-dim);
   font-size: 0.68rem;
   padding: 0.55rem 0 0.65rem;
   cursor: pointer;
