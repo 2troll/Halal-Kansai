@@ -195,6 +195,8 @@ export const es: Dict = {
   roomQrLabel: 'Código QR para entrar en esta sala',
   roomQrHint: 'Enséñalo a la comunidad: apuntan la cámara y entran en su propio idioma.',
 
+  micDenied: 'No se dio permiso al micrófono o al reconocimiento de voz.',
+
   // Comida
   navFood: 'Comer',
   foodTitle: 'Leer etiquetas y cartas en japonés',

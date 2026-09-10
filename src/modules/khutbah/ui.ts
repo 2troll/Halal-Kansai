@@ -4,6 +4,8 @@ import { translateSegment, type TranslatedSegment } from './translate';
 import { disableFridayMode, enableFridayMode } from './wakelock';
 import { t, getLang } from '../../i18n';
 import { qrSvg } from './qr';
+import { isNative } from '../../backend';
+import { NativeKhutbahListener } from './speech-native';
 import { icon } from '../../ui/icons';
 import {
   getVoiceName,
@@ -19,7 +21,13 @@ import {
 
 type Mode = 'local' | 'transmit' | 'join';
 
-let listener: KhutbahListener | null = null;
+/** Lo unico que la pantalla necesita de un reconocedor, sea cual sea. */
+interface Listener {
+  start(locale: string): void | Promise<void>;
+  stop(): void | Promise<void>;
+}
+
+let listener: Listener | null = null;
 let room: KhutbahRoom | null = null;
 let running = false;
 
@@ -273,14 +281,23 @@ export function renderKhutbah(container: HTMLElement): void {
     code === 'roomTaken' ? t('roomTaken') : code === 'roomFull' ? t('roomFull') : t('connectionLost');
 
   const startListener = (onSentence: (text: string) => void) => {
-    listener = new KhutbahListener({
+    const callbacks = {
       onSentence,
       onInterim: showInterim,
-      onError: (err) => {
-        note.textContent = err === 'unsupported' ? t('speechUnsupported') : `⚠ ${err}`;
+      onError: (err: string) => {
+        note.textContent =
+          err === 'unsupported'
+            ? t('speechUnsupported')
+            : err === 'denied'
+              ? t('micDenied')
+              : `⚠ ${err}`;
       },
-    });
-    listener.start(selSource.value);
+    };
+
+    // Dentro de la app, el reconocedor del propio teléfono; en el navegador,
+    // el de la Web Speech API. La pantalla no necesita saber en cuál está.
+    listener = isNative() ? new NativeKhutbahListener(callbacks) : new KhutbahListener(callbacks);
+    void listener?.start(selSource.value);
   };
 
   const setRunningUi = (statusLabel: string) => {

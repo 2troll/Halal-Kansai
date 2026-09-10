@@ -203,6 +203,8 @@ export const ja: Dict = {
   roomQrLabel: 'このルームに参加するQRコード',
   roomQrHint: '会衆にお見せください。カメラを向けるだけで、それぞれの言語で参加できます。',
 
+  micDenied: 'マイクまたは音声認識の許可がありません。',
+
   // Misc
   language: '言語',
   offlineReady: 'オフラインで利用できます',

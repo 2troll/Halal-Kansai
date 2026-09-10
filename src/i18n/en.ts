@@ -194,6 +194,8 @@ export const en = {
   roomQrLabel: 'QR code to join this room',
   roomQrHint: 'Show this to the congregation: they point their camera at it and join in their own language.',
 
+  micDenied: 'Microphone or speech recognition permission denied.',
+
   // Misc
   language: 'Language',
   offlineReady: 'Available offline',

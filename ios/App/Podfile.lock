@@ -17,6 +17,8 @@ PODS:
     - Capacitor
   - CapacitorStatusBar (8.0.3):
     - Capacitor
+  - CapgoCapacitorSpeechRecognition (8.2.0):
+    - Capacitor
   - GoogleDataTransport (10.1.1):
     - nanopb (~> 3.30910.0)
     - PromisesObjC (~> 2.4)
@@ -74,6 +76,7 @@ DEPENDENCIES:
   - "CapacitorShare (from `../../node_modules/@capacitor/share`)"
   - "CapacitorSplashScreen (from `../../node_modules/@capacitor/splash-screen`)"
   - "CapacitorStatusBar (from `../../node_modules/@capacitor/status-bar`)"
+  - "CapgoCapacitorSpeechRecognition (from `../../node_modules/@capgo/capacitor-speech-recognition`)"
 
 SPEC REPOS:
   trunk:
@@ -108,6 +111,8 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/@capacitor/splash-screen"
   CapacitorStatusBar:
     :path: "../../node_modules/@capacitor/status-bar"
+  CapgoCapacitorSpeechRecognition:
+    :path: "../../node_modules/@capgo/capacitor-speech-recognition"
 
 SPEC CHECKSUMS:
   Capacitor: 8ca6676b3b1147b00f7f3a547ccf68defd658d55
@@ -119,6 +124,7 @@ SPEC CHECKSUMS:
   CapacitorShare: 0c58305114538568059bfc07111f22dcb9cb2a82
   CapacitorSplashScreen: 7bf61c2001557ff9e195e601c6b87344480d3c65
   CapacitorStatusBar: eca7bc2b58d9f886f1ef9edb66e57a9b29c121af
+  CapgoCapacitorSpeechRecognition: 00177b8d101f53952c726df03e554ea62e8038fe
   GoogleDataTransport: a24e58982ab3ba2f64d79613e027fe7f57e88539
   GoogleMLKit: ddd51d7dff36ff28defa69afedd9cdce684fd857
   GoogleToolboxForMac: d1a2cbf009c453f4d6ded37c105e2f67a32206d8
@@ -131,6 +137,6 @@ SPEC CHECKSUMS:
   nanopb: fad817b59e0457d11a5dfbde799381cd727c1275
   PromisesObjC: 752c3227f599e3467650e47ea36f433eeb10c273
 
-PODFILE CHECKSUM: 28fc18a3f2555d8a41ccfa2f8c68ff530461ff80
+PODFILE CHECKSUM: f9f0b2fd58ab8ff969b237279191e728b3528afa
 
 COCOAPODS: 1.17.0

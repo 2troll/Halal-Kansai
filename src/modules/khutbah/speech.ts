@@ -112,11 +112,11 @@ const MAX_BUFFER_CHARS = 90;
 const MIN_FLUSH_CHARS = 12;
 
 export function isSpeechSupported(): boolean {
-  // El WebView de la app nativa expone el objeto pero no reconoce nada: en
-  // iOS no existe motor, y en Android el de Chrome no está disponible dentro
-  // del contenedor. Decirlo aquí evita un botón que no hace nada; el modo
-  // «unirse a una sala» sí funciona en la app y es el que se usa en la mezquita.
-  if (isNative()) return false;
+  // Dentro de la app el WebView expone el objeto pero no reconoce nada: en
+  // iOS no hay motor y en Android el de Chrome no está disponible ahí. Pero
+  // la app ya no depende de eso: usa el reconocedor del propio teléfono
+  // (ver speech-native.ts), así que el modo «mi micrófono» sí está.
+  if (isNative()) return true;
   return 'webkitSpeechRecognition' in window || 'SpeechRecognition' in window;
 }
 
