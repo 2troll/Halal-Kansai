@@ -8,6 +8,7 @@
 import { buildSegment } from './segment.ts';
 import { RoomHub, type RoomConnection } from './room.ts';
 import { WorkersAssetsStore } from './store.ts';
+import type { AiBinding } from './ai-translate.ts';
 
 interface WorkersWebSocket {
   accept(): void;
@@ -20,6 +21,14 @@ declare const WebSocketPair: new () => Record<string, WorkersWebSocket>;
 
 interface DOEnv {
   ASSETS: { fetch(request: Request | string): Promise<Response> };
+  /**
+   * Workers AI. Sin esto, la sala de transmisión NO traducía: caía al
+   * proveedor externo, que limita por IP y desde Cloudflare está siempre
+   * agotado, y acababa mostrando el árabe original a toda la mezquita.
+   * El fallo era mudo: la sala funcionaba, los oyentes se conectaban, y lo
+   * que les llegaba era el sermón sin traducir.
+   */
+  AI?: AiBinding;
   ANTHROPIC_API_KEY: string;
   ANTHROPIC_MODEL?: string;
 }
@@ -30,8 +39,9 @@ export class KhutbahRoomDO {
   constructor(_state: unknown, env: DOEnv) {
     const store = new WorkersAssetsStore(env.ASSETS);
     const llm = { apiKey: env.ANTHROPIC_API_KEY, model: env.ANTHROPIC_MODEL };
+    const ai = env.AI;
     this.hub = new RoomHub({
-      translate: (text, source, target) => buildSegment({ llm, store }, text, source, target),
+      translate: (text, source, target) => buildSegment({ llm, store, ai }, text, source, target),
     });
   }
 
