@@ -1,5 +1,5 @@
 import { computePrayerTimes, formatTime, type Coordinates, type PrayerTimes } from './calculator';
-import { getLang, t } from '../../i18n';
+import { getLang, t, type Lang } from '../../i18n';
 import { icon } from '../../ui/icons';
 import { updatePrayerWidget } from '../../native/widget';
 import { isNative } from '../../backend';
@@ -51,15 +51,7 @@ export function renderSalat(container: HTMLElement): void {
   const next = nextPrayerOf(times, now);
   const h = Math.floor(next.minutesLeft / 60);
   const m = next.minutesLeft % 60;
-  // El japonés no usa las abreviaturas latinas: 1時間5分, no "1 h 5 min".
-  const ja = getLang() === 'ja';
-  const countdown = ja
-    ? h > 0
-      ? `${h}時間${m}分`
-      : `${m}分`
-    : h > 0
-      ? `${h} h ${m} min`
-      : `${m} min`;
+  const countdown = formatCountdown(h, m, getLang());
 
   // El widget de la pantalla de inicio se alimenta de este mismo cálculo.
   void updatePrayerWidget(t(next.name), formatTime(times[next.name]), t('city'));
@@ -125,6 +117,24 @@ export function renderSalat(container: HTMLElement): void {
       { enableHighAccuracy: false, timeout: 10000 },
     );
   });
+}
+
+/**
+ * La cuenta atrás, en el idioma de quien mira.
+ *
+ * Dos cosas que no se pueden hacer con «h» y «min» y ya está:
+ *
+ * - El japonés no usa abreviaturas latinas: es 8時間35分.
+ * - En árabe, además de estar sin traducir, el sentido de escritura le daba
+ *   la vuelta al orden y se leía «بعد 5 min 20 h»: primero los minutos y
+ *   después las horas. Con las palabras en árabe el problema desaparece,
+ *   porque ya no hay un trozo latino suelto dentro de un texto de derecha a
+ *   izquierda.
+ */
+function formatCountdown(h: number, m: number, lang: Lang): string {
+  if (lang === 'ja') return h > 0 ? `${h}時間${m}分` : `${m}分`;
+  if (lang === 'ar') return h > 0 ? `${h} ساعة و${m} دقيقة` : `${m} دقيقة`;
+  return h > 0 ? `${h} h ${m} min` : `${m} min`;
 }
 
 export function getCoords(): Coordinates {
