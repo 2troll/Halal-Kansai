@@ -5,7 +5,7 @@
  *
  * Tipos mínimos declarados a mano para no depender de @cloudflare/workers-types.
  */
-import { buildSegment } from './segment.ts';
+import { buildSegment, ROOM_DEADLINE_MS } from './segment.ts';
 import { RoomHub, type RoomConnection } from './room.ts';
 import { WorkersAssetsStore } from './store.ts';
 import type { AiBinding } from './ai-translate.ts';
@@ -41,7 +41,8 @@ export class KhutbahRoomDO {
     const llm = { apiKey: env.ANTHROPIC_API_KEY, model: env.ANTHROPIC_MODEL };
     const ai = env.AI;
     this.hub = new RoomHub({
-      translate: (text, source, target) => buildSegment({ llm, store, ai }, text, source, target),
+      translate: (text, source, target) =>
+        buildSegment({ llm, store, ai }, text, source, target, ROOM_DEADLINE_MS),
     });
   }
 

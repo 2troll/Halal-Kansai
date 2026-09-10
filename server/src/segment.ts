@@ -66,10 +66,24 @@ async function applyQuranMatch(
 /**
  * Cuánto se espera al modelo bueno antes de conformarse con el rápido.
  *
- * Dos segundos y medio: por encima de eso la traducción llega tan tarde que
- * el imán ya va por otra frase, y entonces estorba más que ayuda.
+ * Dos segundos y medio para quien escucha por su cuenta: por encima de eso la
+ * traducción llega tan tarde que el imán ya va por otra frase.
  */
 const CHAT_DEADLINE_MS = 2500;
+
+/**
+ * En una sala hay más margen, y hace falta.
+ *
+ * La sala traduce a todos los idiomas presentes a la vez. Con cinco idiomas
+ * son cinco llamadas compitiendo, cada una tarda más, y con el plazo corto el
+ * modelo bueno perdía la carrera una y otra vez: a la mezquita con más países
+ * —justo la que más lo necesita— le tocaba sistemáticamente la traducción
+ * peor. Medido con la prueba de humo: fallaba de forma repetida con tres
+ * idiomas.
+ *
+ * Segundo y medio más. Se está leyendo un subtítulo, no conversando.
+ */
+export const ROOM_DEADLINE_MS = 4000;
 
 /** Devuelve el valor si llega a tiempo, o null si se pasa del plazo. */
 function withDeadline<T>(promise: Promise<T | null>, ms: number): Promise<T | null> {
@@ -85,6 +99,7 @@ async function buildSegmentFree(
   text: string,
   source: string,
   target: string,
+  deadlineMs: number = CHAT_DEADLINE_MS,
 ): Promise<TranslatedSegment> {
   const segment: TranslatedSegment = {
     kind: 'speech',
@@ -125,7 +140,7 @@ async function buildSegmentFree(
     chat.catch(() => null);
     mt.catch(() => null);
 
-    const viaChat = await withDeadline(chat, CHAT_DEADLINE_MS);
+    const viaChat = await withDeadline(chat, deadlineMs);
 
     if (viaChat) {
       segment.translation = viaChat;
@@ -161,10 +176,11 @@ export async function buildSegment(
   text: string,
   source: string,
   target: string,
+  deadlineMs: number = CHAT_DEADLINE_MS,
 ): Promise<TranslatedSegment> {
   // Sin clave de Anthropic → traducción gratuita (mantiene versos verificados).
   if (!deps.llm.apiKey) {
-    return buildSegmentFree(deps, text, source, target);
+    return buildSegmentFree(deps, text, source, target, deadlineMs);
   }
 
   const analysis = await analyzeSegment(deps.llm, text, source, target);

@@ -40,6 +40,28 @@ let passed = 0;
 let skipped = 0;
 const failures = [];
 
+/**
+ * Comprobación que puede fallar por lentitud puntual, no por estar rota.
+ *
+ * El motor grande compite contra un plazo de 2,5 s: de vez en cuando lo pasa
+ * y se usa el de respaldo, que es el comportamiento DISEÑADO. Medido, 4 de 4
+ * salieron con el bueno, pero una vez cayó.
+ *
+ * Se reintenta antes de dar rojo. Así «rojo» sigue significando roto —que es
+ * lo único que hace útil a una prueba de humo— y no «hoy iba lento».
+ */
+async function checkEventually(name, intento, intentos = 3) {
+  for (let i = 0; i < intentos; i++) {
+    const { ok, detail } = await intento();
+    if (ok) {
+      check(name, true);
+      return;
+    }
+    if (i === intentos - 1) check(name, false, `${detail} (tras ${intentos} intentos)`);
+    else await wait(3000);
+  }
+}
+
 function checkDeployed(name, ok, detail = '') {
   if (LOCAL) {
     skipped++;
@@ -61,6 +83,17 @@ function check(name, ok, detail = '') {
 
 function section(title) {
   console.log(`\n${title}`);
+}
+
+/**
+ * Un rojo tiene que decir POR QUÉ. «undefined» no vale: la primera vez que
+ * esta suite se puso roja de verdad, el motivo era un 429 de nuestro propio
+ * límite de peticiones, y el mensaje no lo decía.
+ */
+function describe(r) {
+  if (r.status === 429) return 'HTTP 429 — límite de peticiones, no un fallo';
+  if (r.status !== 200) return `HTTP ${r.status} ${JSON.stringify(r.body).slice(0, 60)}`;
+  return r.body.translationSource ?? JSON.stringify(r.body).slice(0, 60);
 }
 
 async function translate(text, target, source = 'ar-SA') {
@@ -113,12 +146,13 @@ section('La aplicación');
 // ─────────────────────────────────────────────────── Traducción ──
 section('Traducción de la jutba');
 {
-  const verso = await translate('الحمد لله رب العالمين', 'es');
-  check(
-    'una aleya sale de Tanzil, no de un traductor',
-    verso.body.translationSource === 'tanzil' && verso.body.verified === true,
-    verso.body.translationSource,
-  );
+  await checkEventually('una aleya sale de Tanzil, no de un traductor', async () => {
+    const r = await translate('الحمد لله رب العالمين', 'es');
+    return {
+      ok: r.body.translationSource === 'tanzil' && r.body.verified === true,
+      detail: describe(r),
+    };
+  });
 
   const frase = await translate('اعلموا أن الصلاة عمود الدين', 'es');
   check(
@@ -126,18 +160,23 @@ section('Traducción de la jutba');
     !!frase.body.translation && !frase.body.translation.includes('الصلاة'),
     frase.body.translation?.slice(0, 40),
   );
-  checkDeployed(
-    'usa el modelo bueno, no el de respaldo',
-    frase.body.translationSource === 'llm',
-    frase.body.translationSource,
-  );
 
-  const zakat = await translate('ومن أدى الزكاة طهر ماله', 'ja');
-  checkDeployed(
-    'el glosario impone ザカート (y no ヤクザ)',
-    /ザカート/.test(zakat.body.translation ?? '') && !/ヤクザ/.test(zakat.body.translation ?? ''),
-    zakat.body.translation?.slice(0, 40),
-  );
+  if (LOCAL) {
+    skipped += 2;
+    console.log('  · usa el modelo bueno (no aplica en local)');
+    console.log('  · el glosario impone ザカート (no aplica en local)');
+  } else {
+    await checkEventually('usa el modelo bueno, no el de respaldo', async () => {
+      const r = await translate('اعلموا أن الصلاة عمود الدين', 'es');
+      return { ok: r.body.translationSource === 'llm', detail: describe(r) };
+    });
+
+    await checkEventually('el glosario impone ザカート (y no ヤクザ)', async () => {
+      const r = await translate('ومن أدى الزكاة طهر ماله', 'ja');
+      const t = r.body.translation ?? '';
+      return { ok: /ザカート/.test(t) && !/ヤクザ/.test(t), detail: t.slice(0, 40) };
+    });
+  }
 
   // El fallo del «QUERY LENGTH LIMIT EXCEEDED» y el del atasco repetido.
   const largo = await translate('السلام عليكم '.repeat(90), 'es');
@@ -170,7 +209,26 @@ section('Sala de transmisión');
   const ja = seg(rx[1]);
   check('la sala TRADUCE (no reenvía el árabe)', !!es && !/الزكاة/.test(es.translation), es?.translation?.slice(0, 40));
   check('cada oyente lo recibe en SU idioma', !!ja && ja.translation !== es?.translation, ja?.translation?.slice(0, 30));
-  checkDeployed('la sala usa el modelo bueno', es?.translationSource === 'llm', es?.translationSource);
+  if (LOCAL) {
+    skipped++;
+    console.log('  · la sala usa el modelo bueno (no aplica en local)');
+  } else {
+    await checkEventually(
+      'la sala usa el modelo bueno',
+      async () => {
+        const otro = rid('smoke');
+        const t2 = await room(otro, 'transmitter', 'ar');
+        const r2 = await room(otro, 'receiver', 'es');
+        t2.ws.send(JSON.stringify({ type: 'segment', text: 'اعلموا أن الصلاة عمود الدين' }));
+        await wait(9000);
+        const g = r2.events.filter((e) => e.type === 'segment').at(-1)?.segment;
+        t2.ws.close();
+        r2.ws.close();
+        return { ok: g?.translationSource === 'llm', detail: g?.translationSource ?? 'sin segmento' };
+      },
+      2,
+    );
+  }
 
   // Dos transmisores en la misma sala.
   const dup = await room(id, 'transmitter', 'ar');
