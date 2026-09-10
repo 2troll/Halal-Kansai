@@ -143,6 +143,42 @@ section('La aplicación');
   check('el panel de moderación carga', admin.status === 200, `HTTP ${admin.status}`);
 }
 
+// ───────────────────────────────── La promesa de funcionar sin red ──
+section('Funcionar sin conexión');
+{
+  const sw = await fetch(`${BASE}/sw.js`);
+  const src = await sw.text();
+  check('el service worker se sirve', sw.status === 200, `HTTP ${sw.status}`);
+
+  // El fallo real: un icono desapareció al regenerarlos, la lista de precarga
+  // seguía nombrándolo, y `addAll` —que es todo-o-nada— dejaba la caché VACÍA
+  // sin avisar. La app llevaba prometiendo en pantalla que funciona sin
+  // conexión mientras no tenía nada guardado.
+  const lista = src.match(/const PRECACHE = \[([^\]]+)\]/)?.[1] ?? '';
+  const rutas = [...lista.matchAll(/'([^']+)'/g)].map((m) => m[1]);
+  check('la lista de precarga no está vacía', rutas.length > 0);
+
+  const rotas = [];
+  for (const ruta of rutas) {
+    const r = await fetch(BASE + ruta, { method: 'HEAD' });
+    if (!r.ok) rotas.push(`${ruta} → ${r.status}`);
+  }
+  check('todo lo que se precarga existe', rotas.length === 0, rotas.join(', '));
+
+  // El HTML tiene que apuntar a archivos que existan: un favicon roto es un
+  // 404 en cada carga, y fue justo el que tumbó la caché entera.
+  const html = await (await fetch(BASE + '/')).text();
+  const refs = [...html.matchAll(/(?:src|href)="([^"]+\.(?:js|css|png|svg|webmanifest))"/g)]
+    .map((m) => m[1])
+    .filter((u) => !u.startsWith('http'));
+  const faltan = [];
+  for (const ref of refs) {
+    const r = await fetch(new URL(ref, BASE + '/').href, { method: 'HEAD' });
+    if (!r.ok) faltan.push(`${ref} → ${r.status}`);
+  }
+  check('el HTML no referencia nada que falte', faltan.length === 0, faltan.join(', '));
+}
+
 // ─────────────────────────────────────────────────── Traducción ──
 section('Traducción de la jutba');
 {
