@@ -202,6 +202,10 @@ export const en = {
 
   broadcasterLeft: 'The broadcast has ended: the phone sending the sermon lost its connection.',
 
+  screenMode: 'Show on a screen',
+  screenExit: 'Exit',
+  screenWaiting: 'Waiting for the sermon to begin…',
+
   // Misc
   language: 'Language',
   offlineReady: 'Available offline',

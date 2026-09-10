@@ -197,6 +197,10 @@ export const ar: Dict = {
 
   broadcasterLeft: 'انتهى البث: انقطع اتصال الهاتف الذي يرسل الخطبة.',
 
+  screenMode: 'العرض على شاشة',
+  screenExit: 'خروج',
+  screenWaiting: 'في انتظار بدء الخطبة…',
+
   // الطعام
   navFood: 'الطعام',
   foodTitle: 'قراءة الملصقات وقوائم الطعام اليابانية',

@@ -4,6 +4,7 @@ import { translateSegment, type TranslatedSegment } from './translate';
 import { disableFridayMode, enableFridayMode } from './wakelock';
 import { t, getLang } from '../../i18n';
 import { qrSvg } from './qr';
+import { closeScreenMode, openScreenMode, screenModeOpen } from './screen';
 import { isNative } from '../../backend';
 import { NativeKhutbahListener } from './speech-native';
 import { icon } from '../../ui/icons';
@@ -136,6 +137,7 @@ export function renderKhutbah(container: HTMLElement): void {
           : ''
       }
       <button class="btn" id="btn-listen"></button>
+      <button class="btn ghost" id="btn-screen">${icon('guide', 19)}${t('screenMode')}</button>
       <span class="status-pill" id="status" hidden><span class="dot"></span><span id="status-text"></span></span>
       <p class="note" id="khutbah-note"></p>
     </div>
@@ -205,6 +207,20 @@ export function renderKhutbah(container: HTMLElement): void {
     }
   };
 
+  container.querySelector<HTMLButtonElement>('#btn-screen')?.addEventListener('click', () => {
+    if (screenModeOpen()) {
+      closeScreenMode();
+      proyectar = null;
+      return;
+    }
+    // El código de sala solo tiene sentido si se está transmitiendo: proyectar
+    // un QR de una sala que no existe manda a la comunidad a ninguna parte.
+    const code = mode() === 'transmit' && running ? inpRoom.value.trim().toLowerCase() : '';
+    proyectar = openScreenMode(code, () => {
+      proyectar = null;
+    });
+  });
+
   warmUpVoices();
 
   const selVoice = container.querySelector<HTMLSelectElement>('#sel-voice');
@@ -266,12 +282,16 @@ export function renderKhutbah(container: HTMLElement): void {
 
   const caption = container.querySelector<HTMLElement>('#live-caption')!;
 
+  /** Actualiza la proyección, si está abierta. */
+  let proyectar: ((texto: string) => void) | null = null;
+
   const addSegment = (seg: TranslatedSegment) => {
     clearInterim();
     // Subtítulo: la última traducción, grande y fija arriba. Quien no lleve
     // auricular sigue el sermón leyendo, sin tener que buscar en la lista.
     caption.textContent = seg.translation;
     caption.hidden = false;
+    proyectar?.(seg.translation);
     transcript.insertAdjacentHTML('afterbegin', segmentCard(seg));
     // Solo la traducción: el árabe original ya lo está diciendo el imán.
     speakTranslation(seg.translation, selTarget.value);

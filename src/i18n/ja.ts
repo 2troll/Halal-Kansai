@@ -211,6 +211,10 @@ export const ja: Dict = {
 
   broadcasterLeft: '配信が終了しました。説教を送信していた端末の接続が切れました。',
 
+  screenMode: '画面に映す',
+  screenExit: '終了',
+  screenWaiting: '説教の開始をお待ちください…',
+
   // Misc
   language: '言語',
   offlineReady: 'オフラインで利用できます',

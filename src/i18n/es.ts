@@ -203,6 +203,10 @@ export const es: Dict = {
 
   broadcasterLeft: 'La transmisión ha terminado: el móvil que enviaba el sermón perdió la conexión.',
 
+  screenMode: 'Proyectar en una pantalla',
+  screenExit: 'Salir',
+  screenWaiting: 'Esperando a que empiece el sermón…',
+
   // Comida
   navFood: 'Comer',
   foodTitle: 'Leer etiquetas y cartas en japonés',

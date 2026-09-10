@@ -510,3 +510,109 @@ body::before {
 [data-theme='sand'] {
   --gold: #7a5c14;
 }
+
+/* La cabecera y la barra son CRISTAL, no gasa.
+   Al 72 % se leía el texto de la página por debajo del título mientras se
+   hacía scroll: las dos líneas se cruzaban y parecía roto. Es exactamente el
+   fallo contra el que avisa el comentario de arriba, y aun así lo cometí.
+   Una barra fija tiene que tapar: se ve que hay algo detrás, no QUÉ hay. */
+.header,
+.tabbar {
+  background: color-mix(in srgb, var(--night) 94%, transparent);
+}
+
+/* Las tarjetas sí pueden ser más translúcidas: no tienen texto deslizándose
+   por debajo, solo el halo del fondo. */
+.finding,
+.cert-note,
+.place-card,
+.sheet {
+  background: color-mix(in srgb, var(--night-soft) 82%, transparent);
+}
+
+/* ============================================================
+   Modo pantalla: la traducción proyectada para toda la sala
+   ============================================================
+   Aquí no hay cristal ni degradados a propósito. Esto se proyecta en una
+   pared o en una televisión, muchas veces con la luz de la sala encendida y
+   visto desde el fondo. Lo único que importa es el contraste y el tamaño.
+   ============================================================ */
+
+.screen-mode {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: #04100c;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  padding: 4vh 5vw;
+  text-align: center;
+}
+
+/* Escala con el ancho: legible en un móvil apoyado y en un televisor. */
+.screen-caption {
+  margin: 0;
+  font-size: clamp(2rem, 6.5vw, 5.5rem);
+  line-height: 1.35;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  max-width: 22ch;
+  text-wrap: balance;
+}
+
+.screen-join {
+  position: absolute;
+  inset-block-end: 4vh;
+  inset-inline-end: 4vw;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.screen-join svg {
+  width: clamp(90px, 9vw, 150px);
+  height: auto;
+  border-radius: 10px;
+  padding: 0.4rem;
+  background: #fff;
+}
+
+.screen-room {
+  margin: 0;
+  font-size: clamp(1rem, 1.6vw, 1.6rem);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--gold-soft);
+}
+
+/* Discreto: en una proyección, un botón grande de salir distrae más que
+   ayuda, y quien lo necesita ya sabe dónde está. */
+.screen-exit {
+  position: absolute;
+  inset-block-start: 3vh;
+  inset-inline-end: 4vw;
+  background: transparent;
+  border: 1px solid rgb(255 255 255 / 0.35);
+  color: rgb(255 255 255 / 0.75);
+  border-radius: 999px;
+  padding: 0.5rem 1.1rem;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.screen-exit:hover {
+  border-color: rgb(255 255 255 / 0.7);
+  color: #fff;
+}
+
+@media (orientation: portrait) {
+  /* En vertical el QR va debajo, no en una esquina: no hay sitio al lado. */
+  .screen-join {
+    position: static;
+    flex-direction: column;
+  }
+}
