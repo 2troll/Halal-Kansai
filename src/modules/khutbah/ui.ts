@@ -332,8 +332,12 @@ export function renderKhutbah(container: HTMLElement): void {
 
   const paintMeter = () => {
     meterFill.style.width = `${Math.round(lastReading.level * 100)}%`;
-    meterBox.dataset.state = noMatch ? 'nomatch' : lastReading.state;
-    meterState.textContent = noMatch
+    // Si ya no entra sonido, el aviso del idioma sobra: se calló el imán, o
+    // se acabó el sermón. Decir «oigo una voz» cuando no se oye nada es
+    // justo el tipo de mensaje que hace desconfiar de todos los demás.
+    const wrongLanguage = noMatch && lastReading.state !== 'silence';
+    meterBox.dataset.state = wrongLanguage ? 'nomatch' : lastReading.state;
+    meterState.textContent = wrongLanguage
       ? `${t('micNoMatch')} ${sourceLabel()}. ${t('micNoMatchHint')}`
       : lastReading.state === 'good'
         ? t('micGood')
