@@ -1,6 +1,6 @@
 import { KhutbahListener, SOURCE_LOCALES, TARGET_LANGS, isSpeechSupported } from './speech';
 import { KhutbahRoom } from './room';
-import { translateSegment, type TranslatedSegment } from './translate';
+import { refineTranslation, translateSegment, type TranslatedSegment } from './translate';
 import { disableFridayMode, enableFridayMode } from './wakelock';
 import { t, getLang } from '../../i18n';
 import { qrSvg } from './qr';
@@ -365,8 +365,30 @@ export function renderKhutbah(container: HTMLElement): void {
     caption.hidden = false;
     proyectar?.(seg.translation);
     transcript.insertAdjacentHTML('afterbegin', segmentCard(seg));
+    const card = transcript.firstElementChild;
     // Solo la traducción: el árabe original ya lo está diciendo el imán.
     speakTranslation(seg.translation, selTarget.value);
+
+    // Y ahora, la buena. Lo que se acaba de enseñar viene del traductor
+    // rápido; el bueno tarda tres o cuatro segundos más y merece la pena
+    // esperarlo APARTE, sin retrasar lo que ya se está leyendo. Las aleyas
+    // no se tocan: su traducción es la oficial de Tanzil.
+    if (seg.kind === 'quran' || seg.translationSource === 'llm') return;
+    const target = selTarget.value;
+    void refineTranslation(seg.original, selSource.value, target).then((better) => {
+      if (!better || better === seg.translation) return;
+      // El idioma pudo cambiar mientras tanto: no pisar la pantalla con una
+      // traducción al idioma de antes.
+      if (selTarget.value !== target) return;
+      const line = card?.querySelector('div');
+      if (line) line.textContent = better;
+      // El subtítulo grande solo se corrige si sigue siendo esta frase: si el
+      // imán ya va por la siguiente, cambiarla sería peor que dejarla.
+      if (caption.textContent === seg.translation) {
+        caption.textContent = better;
+        proyectar?.(better);
+      }
+    });
   };
 
   const errorText = (code: string): string =>

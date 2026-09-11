@@ -15,10 +15,20 @@
  * nadie la mirase.
  */
 
+/**
+ * Cobertura a partir de la cual una repetición ya no es un recurso retórico
+ * sino un traductor atascado.
+ */
+const REPEAT_COVERAGE = 0.6;
+
 /** ¿Se ha atascado el traductor repitiendo? */
 export function isDegenerate(text: string): boolean {
   const clean = text.trim();
-  if (clean.length < 40) return false;
+  // Veinte caracteres, no cuarenta: en japonés y en chino cada carácter es
+  // una sílaba entera, y «何のために、何のために、何のために…» —una respuesta
+  // real de producción, traduciendo una jutba indonesia— cabía por debajo
+  // del listón anterior y llegaba entera a la pantalla.
+  if (clean.length < 20) return false;
 
   // Un trozo corto repetido muchas veces seguidas: la firma del atasco.
   for (let size = 3; size <= 25; size++) {
@@ -33,6 +43,27 @@ export function isDegenerate(text: string): boolean {
   // que la repetición no empieza justo al principio.
   const words = clean.split(/\s+/).filter(Boolean);
   if (words.length >= 12 && new Set(words).size <= words.length / 4) return true;
+
+  // Y lo mismo sin depender de los espacios.
+  //
+  // Las dos comprobaciones de arriba cuentan palabras sueltas, y el japonés
+  // —que es el idioma al que más se traduce aquí— no las separa: para ellas
+  // «何のために、何のために、何のために…» es UNA palabra larguísima y por lo
+  // tanto variada. Esto busca el trozo que más se repite y mira cuánto del
+  // texto ocupa; si un mismo trozo cubre la mayor parte, el traductor se
+  // atascó, escriba el idioma con espacios o sin ellos.
+  for (const size of [2, 3, 4, 5, 6, 8, 10]) {
+    if (clean.length < size * 3) break;
+    const counts = new Map<string, number>();
+    for (let i = 0; i + size <= clean.length; i++) {
+      const gram = clean.slice(i, i + size);
+      if (!gram.trim()) continue;
+      counts.set(gram, (counts.get(gram) ?? 0) + 1);
+    }
+    for (const [, times] of counts) {
+      if (times >= 3 && (times * size) / clean.length >= REPEAT_COVERAGE) return true;
+    }
+  }
 
   return false;
 }

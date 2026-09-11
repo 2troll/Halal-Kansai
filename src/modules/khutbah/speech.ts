@@ -33,21 +33,26 @@ interface SpeechRecognitionLike {
  * para quien nunca ha tocado el desplegable, y escuchar una jutba en árabe
  * con el reconocedor puesto en urdu no devuelve ni una palabra — devuelve
  * resultados vacíos, que en pantalla se ven igual que una aplicación rota.
- * La jutba se da en árabe; después, en Japón, en japonés y en inglés.
+ *
+ * El orden es el de las mezquitas de Kansai, no el que uno supondría: la
+ * parte ritual va en árabe, y el sermón lo dan en urdu (comunidad
+ * paquistaní), en indonesio o malayo, y a veces en inglés. En japonés casi
+ * nunca, aunque la mezquita esté en Japón: el japonés es la lengua a la que
+ * se TRADUCE, no en la que se predica.
  */
 export const SOURCE_LOCALES: Array<{ code: string; label: string }> = [
   { code: 'ar-SA', label: 'العربية' },
-  { code: 'ja-JP', label: '日本語' },
-  { code: 'en-US', label: 'English' },
   { code: 'ur-PK', label: 'اردو (Urdu)' },
   { code: 'id-ID', label: 'Bahasa Indonesia' },
+  { code: 'ms-MY', label: 'Bahasa Melayu' },
+  { code: 'en-US', label: 'English' },
   { code: 'bn-BD', label: 'বাংলা (Bangla)' },
+  { code: 'ja-JP', label: '日本語' },
   { code: 'hi-IN', label: 'हिन्दी (Hindi)' },
   { code: 'ne-NP', label: 'नेपाली (Nepali)' },
   { code: 'ta-IN', label: 'தமிழ் (Tamil)' },
   { code: 'si-LK', label: 'සිංහල (Sinhala)' },
   { code: 'tr-TR', label: 'Türkçe' },
-  { code: 'ms-MY', label: 'Bahasa Melayu' },
   { code: 'fa-IR', label: 'فارسی' },
   { code: 'vi-VN', label: 'Tiếng Việt' },
   { code: 'th-TH', label: 'ไทย' },

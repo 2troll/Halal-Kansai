@@ -11,6 +11,9 @@ import { cors } from 'hono/cors';
 import type { LlmConfig } from './llm.ts';
 import { CONFIDENCE_THRESHOLD, type VerseRef } from './match.ts';
 import { buildSegment } from './segment.ts';
+import { chatTranslate } from './ai-translate.ts';
+import { glossaryHints } from './glossary.ts';
+import { usableTranslation } from './quality.ts';
 import { getMatcher, type QuranStore } from './store.ts';
 import { parseSuggestion, type SuggestionStatus, type SuggestionStore } from './suggestions.ts';
 import type { AiBinding } from './ai-translate.ts';
@@ -168,6 +171,51 @@ export function createApp(config: AppConfig): Hono {
     } catch {
       return c.json({ error: 'translation failed' }, 502);
     }
+  });
+
+  /**
+   * La misma frase, mejor traducida, unos segundos después.
+   *
+   * El problema que resuelve. Hay dos traductores: uno pequeño que contesta
+   * en un segundo y otro bueno que tarda entre tres y cinco. Con una carrera
+   * entre los dos, el bueno perdía SIEMPRE —medido en producción con árabe,
+   * urdu e indonesio—, así que la mezquita leía la traducción del pequeño
+   * sin que nadie lo hubiera decidido: «la oración es la columna de la
+   * religión, y el Día de la Resurrección será el primero de ellos».
+   *
+   * Alargar el plazo no vale: castiga a todas las frases para salvar
+   * algunas. Así que la pantalla enseña enseguida lo que haya y pide aparte
+   * la versión buena; cuando llega, sustituye a la anterior. Es lo que hacen
+   * los subtítulos de las conferencias, y es honesto: primero entiendes, y
+   * un momento después lo entiendes bien.
+   *
+   * No toca el Corán: una aleya verificada ya trae la traducción oficial de
+   * Tanzil, que no hay que mejorar.
+   */
+  app.post('/api/refine', async (c) => {
+    if (!allowRequest(clientIp(c.req.raw.headers))) {
+      return c.json({ error: 'rate limit' }, 429);
+    }
+    if (!config.ai) return c.json({ error: 'unavailable' }, 503);
+
+    const body = await c.req
+      .json<{ text?: string; source?: string; target?: string }>()
+      .catch(() => null);
+    if (!body?.text || !body.target) {
+      return c.json({ error: 'text y target requeridos' }, 400);
+    }
+    const text = body.text.slice(0, 400);
+    const target = body.target.slice(0, 8);
+    const source = (body.source ?? 'unknown').slice(0, 12);
+
+    const out = usableTranslation(
+      await chatTranslate(config.ai, text, source, target, glossaryHints(text, target)).catch(
+        () => null,
+      ),
+    );
+    // Sin mejora que ofrecer se dice, y la pantalla se queda como está.
+    if (!out) return c.json({ error: 'no-refinement' }, 404);
+    return c.json({ translation: out, translationSource: 'llm' });
   });
 
   return app;

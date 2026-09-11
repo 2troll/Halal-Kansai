@@ -10,6 +10,7 @@
  */
 import { describe, expect, it } from 'vitest';
 import { __testing } from '../server/src/ai-translate';
+import { isDegenerate } from '../server/src/quality';
 
 const { cleanUp } = __testing;
 
@@ -48,5 +49,26 @@ describe('respuestas atascadas del modelo', () => {
     expect(cleanUp('')).toBeNull();
     expect(cleanUp('   ')).toBeNull();
     expect(cleanUp(undefined)).toBeNull();
+  });
+});
+
+describe('atascos en idiomas que no separan palabras', () => {
+  it('detecta la repetición en japonés', () => {
+    // Respuesta real de producción traduciendo una jutba indonesa: el
+    // traductor pequeño se atascó y esto llegó entero a la pantalla, porque
+    // las comprobaciones contaban palabras separadas por espacios y el
+    // japonés no las tiene.
+    expect(isDegenerate('何のために、何のために、何のために、何のために、何のために、何のために')).toBe(true);
+    expect(isDegenerate('私は私は私は私は私は私は私は私は私は私は私は')).toBe(true);
+  });
+
+  it('no confunde el paralelismo del sermón con un atasco', () => {
+    // Un jatib repite a propósito, y eso hay que respetarlo: la frase es
+    // correcta y tiene que llegar tal cual.
+    expect(
+      isDegenerate('私たちが祈りを捧げるのは何のためか、断食をするのは何のためか、礼拝を行うのは何のためか'),
+    ).toBe(false);
+    expect(isDegenerate('アッラーを畏れなさい、そして正義をもって行いなさい。')).toBe(false);
+    expect(isDegenerate('兄弟たちよ、礼拝は宗教の柱であり、成功の鍵です。')).toBe(false);
   });
 });

@@ -57,6 +57,33 @@ async function postSegment(
   });
 }
 
+/**
+ * Pide la versión buena de una traducción ya mostrada.
+ *
+ * Devuelve null si no hay nada mejor que ofrecer, si tarda demasiado o si el
+ * servidor no puede: la pantalla se queda entonces con lo que ya tenía, que
+ * es correcto aunque sea más plano. Esto nunca debe estropear un subtítulo
+ * que ya se está leyendo.
+ */
+export async function refineTranslation(
+  text: string,
+  sourceLocale: string,
+  targetLang: string,
+): Promise<string | null> {
+  try {
+    const res = await fetch(apiUrl('/api/refine'), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text, source: sourceLocale, target: targetLang }),
+    });
+    if (!res.ok) return null;
+    const body = (await res.json()) as { translation?: string };
+    return body.translation?.trim() || null;
+  } catch {
+    return null;
+  }
+}
+
 export async function translateSegment(
   text: string,
   sourceLocale: string,

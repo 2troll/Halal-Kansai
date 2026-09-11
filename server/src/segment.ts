@@ -66,8 +66,18 @@ async function applyQuranMatch(
 /**
  * Cuánto se espera al modelo bueno antes de conformarse con el rápido.
  *
- * Dos segundos y medio para quien escucha por su cuenta: por encima de eso la
- * traducción llega tan tarde que el imán ya va por otra frase.
+ * Estaba en dos segundos y medio, y medido en producción el modelo bueno
+ * tardaba entre 2,7 y 3,5 segundos: perdía SIEMPRE. Es decir, el respaldo se
+ * había convertido en el traductor de la aplicación sin que nadie lo
+ * decidiera, y la diferencia se nota en la pantalla — «la oración es la
+ * columna de la religión, y el Día de la Resurrección será el primero de
+ * ellos» es lo que devolvía el pequeño.
+ *
+ * Alargar el plazo tampoco valía: con cuatro segundos el árabe y el urdu
+ * seguían perdiendo, y ahora era la pantalla entera la que iba tarde. La
+ * solución está en otra parte (POST /api/refine): se enseña deprisa lo que
+ * haya y la versión buena sustituye a la anterior cuando llega. Aquí abajo
+ * el plazo vuelve a ser corto, porque lo que se pide aquí es rapidez.
  */
 const CHAT_DEADLINE_MS = 2500;
 
