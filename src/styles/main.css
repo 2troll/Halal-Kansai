@@ -995,6 +995,54 @@ body.sheet-open { overflow: hidden; }
   accent-color: var(--gold);
 }
 
+/* Nivel del micrófono: lo único que distingue «está sordo» de «no es este
+   idioma» cuando la pantalla se queda sin texto. Va antes del subtítulo
+   porque durante los primeros segundos es lo único que hay que mirar. */
+.mic-meter {
+  margin: 0.6rem 0 0.2rem;
+}
+
+.mic-bar {
+  height: 8px;
+  border-radius: 99px;
+  background: color-mix(in srgb, var(--ink) 12%, transparent);
+  overflow: hidden;
+}
+
+.mic-bar > span {
+  display: block;
+  height: 100%;
+  width: 0;
+  border-radius: 99px;
+  background: var(--emerald);
+  transition: width 0.1s linear;
+}
+
+.mic-meter[data-state='silence'] .mic-bar > span,
+.mic-meter[data-state='unavailable'] .mic-bar > span {
+  background: color-mix(in srgb, var(--ink) 35%, transparent);
+}
+
+.mic-meter[data-state='weak'] .mic-bar > span,
+.mic-meter[data-state='nomatch'] .mic-bar > span {
+  background: var(--gold);
+}
+
+.mic-state {
+  margin: 0.35rem 0 0;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: var(--ink-soft, var(--ink));
+}
+
+/* Cuando oye de sobra y aun así no saca palabras, el aviso no puede pasar
+   desapercibido: es el que dice que hay que cambiar el idioma. */
+.mic-meter[data-state='nomatch'] .mic-state,
+.mic-meter[data-state='silence'] .mic-state {
+  color: var(--gold);
+  font-weight: 500;
+}
+
 /* Subtítulo en vivo: la última traducción, grande y quieta.
    Con auricular se escucha; sin auricular, se lee esto. Va arriba del todo y
    no se mueve, porque un texto que salta mientras lo lees no se puede leer. */

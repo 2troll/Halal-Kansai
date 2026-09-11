@@ -4,7 +4,7 @@
  * - Cloudflare Workers: lee del binding de Static Assets (env.ASSETS),
  *   porque 29 MB de traducciones no caben en el bundle del worker.
  */
-import type { QuranMatcher } from './match.ts';
+import type { QuranIndex, QuranMatcher } from './match.ts';
 
 export interface TranslationFile {
   meta: { language: string; translator: string; source: string; license: string };
@@ -13,6 +13,12 @@ export interface TranslationFile {
 
 export interface QuranStore {
   loadUthmani(): Promise<Record<string, string>>;
+  /**
+   * Índice de búsqueda precalculado (tools/build-quran-index.mjs). Opcional:
+   * sin él se construye en caliente, que funciona en Node y en las pruebas
+   * pero se pasa del presupuesto de CPU de Cloudflare.
+   */
+  loadIndex?(): Promise<QuranIndex | null>;
   /** null si no hay traducción Tanzil para ese idioma (→ fallback LLM). */
   loadTranslation(lang: string): Promise<TranslationFile | null>;
 }
@@ -30,6 +36,15 @@ export class NodeStore implements QuranStore {
   async loadUthmani(): Promise<Record<string, string>> {
     const { readFile } = await import('node:fs/promises');
     return JSON.parse(await readFile(`${this.dataDir}/quran-uthmani.json`, 'utf8'));
+  }
+
+  async loadIndex(): Promise<QuranIndex | null> {
+    const { readFile } = await import('node:fs/promises');
+    try {
+      return JSON.parse(await readFile(`${this.dataDir}/quran-index.json`, 'utf8'));
+    } catch {
+      return null; // se construirá en caliente
+    }
   }
 
   async loadTranslation(lang: string): Promise<TranslationFile | null> {
@@ -73,6 +88,10 @@ export class WorkersAssetsStore implements QuranStore {
     return data;
   }
 
+  async loadIndex(): Promise<QuranIndex | null> {
+    return this.fetchJson<QuranIndex>('/data/quran-index.json');
+  }
+
   async loadTranslation(lang: string): Promise<TranslationFile | null> {
     if (!LANG_RE.test(lang)) return null;
     if (this.translations.has(lang)) return this.translations.get(lang) ?? null;
@@ -89,7 +108,11 @@ export function getMatcher(store: QuranStore): Promise<QuranMatcher> {
   if (!matcherPromise) {
     matcherPromise = (async () => {
       const { QuranMatcher } = await import('./match.ts');
-      return new QuranMatcher(await store.loadUthmani());
+      const [uthmani, index] = await Promise.all([
+        store.loadUthmani(),
+        store.loadIndex?.() ?? null,
+      ]);
+      return new QuranMatcher(uthmani, index ?? undefined);
     })();
   }
   return matcherPromise;

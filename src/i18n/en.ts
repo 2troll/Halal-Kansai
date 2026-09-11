@@ -196,6 +196,21 @@ export const en = {
 
   micDenied: 'Microphone or speech recognition permission denied.',
 
+  // El viernes, cuando la pantalla se queda muda, esto es lo único que
+  // distingue «el micrófono está sordo» de «no es este idioma».
+  micLevelLabel: 'Microphone',
+  micGood: 'I can hear the khutbah.',
+  micWeak: 'The sound is very faint — move the phone closer to the loudspeaker.',
+  micSilence: 'I hear nothing. Move the phone closer to the loudspeaker.',
+  micUnavailable: 'The microphone level cannot be measured on this device.',
+  micNoMatch: 'I hear a voice but recognise no words in',
+  micNoMatchHint: 'If the imam is speaking another language, change "Khutbah language" above.',
+  errNetwork: 'No connection: speech recognition needs the internet.',
+  errAudioCapture: 'The microphone is not available — another app may be using it.',
+  errLangUnsupported: 'This device cannot recognise the chosen khutbah language.',
+  errStart: 'Speech recognition would not start. Stop and start again.',
+  earphonesNote: 'Earphones are not needed to read the translation. They are only for hearing it read aloud.',
+
   scanPhoto: 'Photograph the label',
   scanPhotoWorking: 'Reading the label…',
   scanPhotoFailed: 'Could not read the label. Try again closer, or type the list below.',

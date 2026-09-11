@@ -10,6 +10,7 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { buildIndex } from './build-quran-index.mjs';
 
 const DATA_DIR = resolve(dirname(fileURLToPath(import.meta.url)), '../server/data');
 
@@ -66,6 +67,9 @@ async function main() {
   if (count !== 6236) throw new Error(`Esperaba 6236 aleyas, obtuve ${count}`);
   writeFileSync(join(DATA_DIR, 'quran-uthmani.json'), JSON.stringify(uthmani));
   console.log(`✓ quran-uthmani.json (${count} aleyas)`);
+
+  writeFileSync(join(DATA_DIR, 'quran-index.json'), JSON.stringify(buildIndex(uthmani)));
+  console.log('✓ quran-index.json (índice de búsqueda precalculado)');
 
   // Las traducciones en formato txt vienen sin prefijo sura|aleya:
   // una aleya por línea en el orden canónico del texto Uthmani.

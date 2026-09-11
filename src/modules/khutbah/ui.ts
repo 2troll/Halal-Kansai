@@ -7,6 +7,7 @@ import { qrSvg } from './qr';
 import { closeScreenMode, openScreenMode, screenModeOpen } from './screen';
 import { isNative } from '../../backend';
 import { NativeKhutbahListener } from './speech-native';
+import { MicMeter, type MicReading } from './mic-level';
 import { icon } from '../../ui/icons';
 import {
   getVoiceName,
@@ -31,6 +32,7 @@ interface Listener {
 let listener: Listener | null = null;
 let room: KhutbahRoom | null = null;
 let running = false;
+let meter: MicMeter | null = null;
 
 const PREF_SOURCE = 'hk-khutbah-source';
 const PREF_TARGET = 'hk-khutbah-target';
@@ -76,6 +78,8 @@ function segmentCard(seg: TranslatedSegment): string {
 function stopAll(): void {
   listener?.stop();
   listener = null;
+  meter?.stop();
+  meter = null;
   room?.close();
   room = null;
   running = false;
@@ -88,7 +92,7 @@ function stopAll(): void {
 export function renderKhutbah(container: HTMLElement): void {
   if (running) stopAll();
 
-  const savedSource = localStorage.getItem(PREF_SOURCE) ?? 'ur-PK';
+  const savedSource = localStorage.getItem(PREF_SOURCE) ?? SOURCE_LOCALES[0].code;
   const savedTarget = localStorage.getItem(PREF_TARGET) ?? getLang();
   // Enlace de un QR escaneado: entra directo a esa sala, sin teclear nada.
   const invited = new URLSearchParams(location.search).get('room');
@@ -136,12 +140,17 @@ export function renderKhutbah(container: HTMLElement): void {
              <p class="note">${t('voiceOutputHint')}</p>`
           : ''
       }
+      <p class="note">${t('earphonesNote')}</p>
       <button class="btn" id="btn-listen"></button>
       <button class="btn ghost" id="btn-screen">${icon('guide', 19)}${t('screenMode')}</button>
       <span class="status-pill" id="status" hidden><span class="dot"></span><span id="status-text"></span></span>
       <p class="note" id="khutbah-note"></p>
     </div>
     <div class="room-qr" id="room-qr" hidden></div>
+    <div class="mic-meter" id="mic-meter" hidden>
+      <div class="mic-bar"><span id="mic-fill"></span></div>
+      <p class="mic-state" id="mic-state" aria-live="polite"></p>
+    </div>
     <div class="live-caption" id="live-caption" hidden aria-live="polite"></div>
     <div class="transcript" id="transcript"></div>
   `;
@@ -170,6 +179,8 @@ export function renderKhutbah(container: HTMLElement): void {
     btn.innerHTML = idleButtonLabel();
     btn.classList.remove('stop');
     status.hidden = true;
+    const box = container.querySelector<HTMLElement>('#mic-meter');
+    if (box) box.hidden = true;
     const qr = container.querySelector<HTMLElement>('#room-qr');
     if (qr) qr.hidden = true;
   };
@@ -300,17 +311,67 @@ export function renderKhutbah(container: HTMLElement): void {
   const errorText = (code: string): string =>
     code === 'roomTaken' ? t('roomTaken') : code === 'roomFull' ? t('roomFull') : t('connectionLost');
 
+  const meterBox = container.querySelector<HTMLElement>('#mic-meter')!;
+  const meterFill = container.querySelector<HTMLElement>('#mic-fill')!;
+  const meterState = container.querySelector<HTMLElement>('#mic-state')!;
+
+  /**
+   * Lo que ve quien está sentado en la sala.
+   *
+   * Hay tres fallos distintos que antes se veían exactamente igual (una
+   * pantalla en blanco): el micrófono no oye nada, oye pero el sermón no es
+   * en el idioma elegido, o falta un permiso. Aquí se separan, y cada uno
+   * dice qué hacer. `noMatch` manda sobre el nivel: si está entrando sonido
+   * de sobra y aun así no sale ni una palabra, el problema es el idioma.
+   */
+  let lastReading: MicReading = { level: 0, state: 'unavailable' };
+  let noMatch = false;
+
+  const sourceLabel = (): string =>
+    SOURCE_LOCALES.find((l) => l.code === selSource.value)?.label ?? selSource.value;
+
+  const paintMeter = () => {
+    meterFill.style.width = `${Math.round(lastReading.level * 100)}%`;
+    meterBox.dataset.state = noMatch ? 'nomatch' : lastReading.state;
+    meterState.textContent = noMatch
+      ? `${t('micNoMatch')} ${sourceLabel()}. ${t('micNoMatchHint')}`
+      : lastReading.state === 'good'
+        ? t('micGood')
+        : lastReading.state === 'weak'
+          ? t('micWeak')
+          : lastReading.state === 'silence'
+            ? t('micSilence')
+            : t('micUnavailable');
+  };
+
   const startListener = (onSentence: (text: string) => void) => {
     const callbacks = {
       onSentence,
       onInterim: showInterim,
+      onNoMatch: () => {
+        noMatch = true;
+        paintMeter();
+      },
+      onHeard: () => {
+        if (!noMatch) return;
+        noMatch = false;
+        paintMeter();
+      },
       onError: (err: string) => {
         note.textContent =
           err === 'unsupported'
             ? t('speechUnsupported')
             : err === 'denied'
               ? t('micDenied')
-              : `⚠ ${err}`;
+              : err === 'network'
+                ? t('errNetwork')
+                : err === 'audioCapture'
+                  ? t('errAudioCapture')
+                  : err === 'langUnsupported'
+                    ? t('errLangUnsupported')
+                    : err === 'start'
+                      ? t('errStart')
+                      : `⚠ ${err}`;
       },
     };
 
@@ -318,6 +379,17 @@ export function renderKhutbah(container: HTMLElement): void {
     // el de la Web Speech API. La pantalla no necesita saber en cuál está.
     listener = isNative() ? new NativeKhutbahListener(callbacks) : new KhutbahListener(callbacks);
     void listener?.start(selSource.value);
+
+    // El medidor va aparte del reconocedor a propósito: es lo único que
+    // sigue informando cuando el reconocedor no devuelve nada.
+    noMatch = false;
+    meterBox.hidden = false;
+    paintMeter();
+    meter = new MicMeter();
+    void meter.start((reading) => {
+      lastReading = reading;
+      paintMeter();
+    });
   };
 
   const setRunningUi = (statusLabel: string) => {

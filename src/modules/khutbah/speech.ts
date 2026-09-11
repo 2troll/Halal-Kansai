@@ -26,13 +26,21 @@ interface SpeechRecognitionLike {
   stop(): void;
 }
 
-/** Locales de origen probados en Chrome Android (spec §5). */
+/**
+ * Locales de origen probados en Chrome Android (spec §5).
+ *
+ * El orden importa más de lo que parece: el primero es el que sale elegido
+ * para quien nunca ha tocado el desplegable, y escuchar una jutba en árabe
+ * con el reconocedor puesto en urdu no devuelve ni una palabra — devuelve
+ * resultados vacíos, que en pantalla se ven igual que una aplicación rota.
+ * La jutba se da en árabe; después, en Japón, en japonés y en inglés.
+ */
 export const SOURCE_LOCALES: Array<{ code: string; label: string }> = [
+  { code: 'ar-SA', label: 'العربية' },
+  { code: 'ja-JP', label: '日本語' },
+  { code: 'en-US', label: 'English' },
   { code: 'ur-PK', label: 'اردو (Urdu)' },
   { code: 'id-ID', label: 'Bahasa Indonesia' },
-  { code: 'ja-JP', label: '日本語' },
-  { code: 'ar-SA', label: 'العربية' },
-  { code: 'en-US', label: 'English' },
   { code: 'bn-BD', label: 'বাংলা (Bangla)' },
   { code: 'hi-IN', label: 'हिन्दी (Hindi)' },
   { code: 'ne-NP', label: 'नेपाली (Nepali)' },
@@ -88,6 +96,16 @@ export interface SpeechCallbacks {
   /** Texto provisional (interim) para feedback inmediato. */
   onInterim: (text: string) => void;
   onError: (error: string) => void;
+  /**
+   * El reconocedor está devolviendo resultados vacíos: oye algo y no saca
+   * palabras. Casi siempre es que el sermón no está en el idioma elegido, o
+   * que el teléfono está demasiado lejos del altavoz. Sin esto, la pantalla
+   * se queda muda y parece que la aplicación está rota (ocurrió en la
+   * mezquita, con el sermón empezado, y no había forma de saber qué pasaba).
+   */
+  onNoMatch?: () => void;
+  /** Ha entrado texto de verdad: se acabó cualquier aviso anterior. */
+  onHeard?: () => void;
 }
 
 const SENTENCE_END = /[.!?。؟।…]\s*$/;
@@ -111,6 +129,40 @@ const MAX_BUFFER_CHARS = 90;
 /** Por debajo de esto no se manda: una palabra suelta se traduce fatal. */
 const MIN_FLUSH_CHARS = 12;
 
+/**
+ * Cuántos resultados finales vacíos seguidos hacen falta para avisar.
+ *
+ * Uno suelto es normal: una tos, una pausa, un ruido. Tres seguidos ya no:
+ * está entrando sonido y no sale ni una palabra, y eso hay que decirlo.
+ */
+const EMPTY_FINALS_TO_WARN = 3;
+
+/** Espera antes de volver a arrancar el reconocedor cuando Chrome lo corta. */
+const RESTART_MS = 250;
+
+/**
+ * Nombres del navegador → nombres que la pantalla sabe explicar.
+ *
+ * `not-allowed` no le dice nada a nadie en mitad de un sermón; «falta el
+ * permiso del micrófono» sí.
+ */
+function errorCode(error: string): string {
+  switch (error) {
+    case 'not-allowed':
+    case 'service-not-allowed':
+      return 'denied';
+    case 'audio-capture':
+      return 'audioCapture';
+    case 'network':
+      return 'network';
+    case 'language-not-supported':
+    case 'bad-grammar':
+      return 'langUnsupported';
+    default:
+      return error;
+  }
+}
+
 export function isSpeechSupported(): boolean {
   // Dentro de la app el WebView expone el objeto pero no reconoce nada: en
   // iOS no hay motor y en Android el de Chrome no está disponible ahí. Pero
@@ -125,6 +177,9 @@ export class KhutbahListener {
   private buffer = '';
   private active = false;
   private pauseTimer: ReturnType<typeof setTimeout> | null = null;
+  private restartTimer: ReturnType<typeof setTimeout> | null = null;
+  /** Resultados finales vacíos seguidos: oye algo y no saca palabras. */
+  private emptyFinals = 0;
 
   constructor(private callbacks: SpeechCallbacks) {}
 
@@ -146,7 +201,18 @@ export class KhutbahListener {
       for (let i = ev.resultIndex; i < ev.results.length; i++) {
         const res = ev.results[i];
         if (res.isFinal) {
-          this.buffer += res[0].transcript;
+          const text = res[0].transcript.trim();
+          if (!text) {
+            // Resultado final vacío: oyó algo y no reconoció nada.
+            this.emptyFinals++;
+            if (this.emptyFinals >= EMPTY_FINALS_TO_WARN) this.callbacks.onNoMatch?.();
+            continue;
+          }
+          this.emptyFinals = 0;
+          this.callbacks.onHeard?.();
+          // Sin el separador, el final de una frase se pegaba al principio de
+          // la siguiente y salían palabras inventadas («ايهايها»).
+          this.buffer += (this.buffer ? ' ' : '') + text;
           this.flushIfSentence();
           this.armPauseFlush();
         } else {
@@ -158,20 +224,42 @@ export class KhutbahListener {
 
     rec.onerror = (ev) => {
       if (ev.error === 'no-speech' || ev.error === 'aborted') return; // benignos
-      this.callbacks.onError(ev.error);
+      this.callbacks.onError(errorCode(ev.error));
     };
 
-    // Chrome corta la sesión periódicamente: reiniciar mientras estemos activos.
+    // Chrome corta la sesión periódicamente: reiniciar mientras estemos
+    // activos. Volver a arrancar en el acto lanza InvalidStateError si el
+    // motor aún no ha soltado el micrófono, y entonces la escucha moría en
+    // silencio hasta que alguien volvía a pulsar el botón.
     rec.onend = () => {
-      if (this.active) rec.start();
+      if (!this.active) return;
+      this.restartTimer = setTimeout(() => {
+        this.restartTimer = null;
+        if (!this.active) return;
+        try {
+          rec.start();
+        } catch {
+          // Ya estaba arrancado, o el motor no está listo: se reintenta en
+          // el siguiente onend, que llegará.
+        }
+      }, RESTART_MS);
     };
 
     this.recognition = rec;
-    rec.start();
+    try {
+      rec.start();
+    } catch {
+      this.callbacks.onError('start');
+    }
   }
 
   stop(): void {
     this.active = false;
+    this.emptyFinals = 0;
+    if (this.restartTimer !== null) {
+      clearTimeout(this.restartTimer);
+      this.restartTimer = null;
+    }
     this.clearPauseTimer();
     this.flush();
     this.recognition?.stop();

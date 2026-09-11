@@ -197,6 +197,19 @@ export const es: Dict = {
 
   micDenied: 'No se dio permiso al micrófono o al reconocimiento de voz.',
 
+  micLevelLabel: 'Micrófono',
+  micGood: 'Estoy oyendo la jutba.',
+  micWeak: 'El sonido llega muy flojo: acerca el teléfono al altavoz.',
+  micSilence: 'No oigo nada. Acerca el teléfono al altavoz.',
+  micUnavailable: 'En este aparato no se puede medir el nivel del micrófono.',
+  micNoMatch: 'Oigo una voz, pero no reconozco palabras en',
+  micNoMatchHint: 'Si el imán habla en otro idioma, cámbialo arriba en «Idioma de la jutba».',
+  errNetwork: 'Sin conexión: el reconocimiento de voz necesita internet.',
+  errAudioCapture: 'El micrófono no está disponible: puede que lo esté usando otra aplicación.',
+  errLangUnsupported: 'Este aparato no reconoce el idioma de jutba elegido.',
+  errStart: 'El reconocimiento de voz no arrancó. Para y vuelve a empezar.',
+  earphonesNote: 'No hacen falta auriculares para leer la traducción. Solo sirven para oírla en voz alta.',
+
   scanPhoto: 'Fotografiar la etiqueta',
   scanPhotoWorking: 'Leyendo la etiqueta…',
   scanPhotoFailed: 'No se pudo leer la etiqueta. Prueba más de cerca, o escribe la lista abajo.',

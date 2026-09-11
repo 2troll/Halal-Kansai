@@ -58,21 +58,79 @@ interface IndexedVerse {
   normalized: string;
 }
 
+/**
+ * Índice precalculado en el build (tools/build-quran-data.mjs).
+ *
+ * Normalizar las 6.236 aleyas cuesta 20 ms de CPU y construir el índice de
+ * palabras otros 10. En Cloudflare, donde cada petición tiene 10 ms de CPU,
+ * eso es el 300 % del presupuesto antes de traducir una sola palabra. Hecho
+ * en el build y leído ya hecho, el mismo trabajo cuesta 3 ms de JSON.parse.
+ */
+export interface QuranIndex {
+  /** "sura:ayah" en el mismo orden que `norm`. */
+  keys: string[];
+  /** Texto normalizado de cada aleya. */
+  norm: string[];
+  /** Palabra normalizada → posiciones en `keys`. */
+  words: Record<string, number[]>;
+}
+
+/** Longitud mínima de palabra para entrar en el índice: menos no discrimina. */
+export const INDEX_WORD_MIN = 4;
+
+/** Cuántas aleyas candidatas se comparan a fondo, como mucho. */
+const MAX_CANDIDATES = 30;
+
+/** Palabras de una frase que sirven para buscar (normalizada ya). */
+export function indexableWords(normalized: string): string[] {
+  return [...new Set(normalized.split(/\s+/).filter((w) => w.length >= INDEX_WORD_MIN))];
+}
+
 export class QuranMatcher {
   private verses: IndexedVerse[] = [];
   private byKey = new Map<string, IndexedVerse>();
+  /** Palabra → aleyas donde aparece. Evita comparar contra las 6.236. */
+  private wordIndex = new Map<string, number[]>();
 
-  /** @param uthmani mapa "sura:ayah" → texto Uthmani (quran-uthmani.json) */
-  constructor(uthmani: Record<string, string>) {
+  /**
+   * @param uthmani mapa "sura:ayah" → texto Uthmani (quran-uthmani.json)
+   * @param index índice precalculado; si falta se construye aquí (Node, tests)
+   */
+  constructor(uthmani: Record<string, string>, index?: QuranIndex) {
+    const normByKey = index ? new Map(index.keys.map((k, i) => [k, index.norm[i]])) : null;
+
     for (const [key, text] of Object.entries(uthmani)) {
       const [sura, ayah] = key.split(':').map(Number);
       const verse: IndexedVerse = {
         ref: { sura, ayah },
         uthmani: text,
-        normalized: normalizeArabic(text),
+        normalized: normByKey?.get(key) ?? normalizeArabic(text),
       };
       this.verses.push(verse);
       this.byKey.set(key, verse);
+    }
+
+    if (index) {
+      const pos = new Map(index.keys.map((k, i) => [k, i]));
+      // El índice viene ordenado por `keys`; this.verses sigue el orden de
+      // `uthmani`. Se traduce una vez, aquí, y no en cada búsqueda.
+      const remap = this.verses.map((v) => pos.get(`${v.ref.sura}:${v.ref.ayah}`) ?? -1);
+      const backwards = new Map<number, number>();
+      remap.forEach((indexPos, versePos) => backwards.set(indexPos, versePos));
+      for (const [word, positions] of Object.entries(index.words)) {
+        this.wordIndex.set(
+          word,
+          positions.map((p) => backwards.get(p) ?? -1).filter((p) => p >= 0),
+        );
+      }
+    } else {
+      this.verses.forEach((verse, i) => {
+        for (const word of indexableWords(verse.normalized)) {
+          const list = this.wordIndex.get(word);
+          if (list) list.push(i);
+          else this.wordIndex.set(word, [i]);
+        }
+      });
     }
   }
 
@@ -119,9 +177,16 @@ export class QuranMatcher {
       }
     }
 
-    // Escaneo completo con prefiltro por longitud: una aleya mucho más corta
-    // que el fragmento no puede contenerlo.
-    for (const verse of this.verses) {
+    // Prefiltro por palabras compartidas.
+    //
+    // Antes esto era un escaneo completo: distancia de edición contra las
+    // 6.236 aleyas, 170 ms de CPU por frase. El plan gratuito de Cloudflare
+    // da 10 ms, así que el servidor devolvía 503 a media jutba y el móvil
+    // enseñaba el árabe sin traducir. Una cita comparte necesariamente
+    // palabras literales con su aleya, así que basta comparar a fondo las
+    // que comparten alguna: de 6.236 a treinta, y de 170 ms a menos de uno.
+    for (const idx of this.candidates(query)) {
+      const verse = this.verses[idx];
       if (verse.normalized.length < query.length * 0.4) continue;
       consider(verse);
     }
@@ -129,6 +194,35 @@ export class QuranMatcher {
     if (best === null) return null;
     const found = best as { verse: IndexedVerse; confidence: number };
     return found.confidence >= CONFIDENCE_THRESHOLD ? this.toResult(found) : null;
+  }
+
+  /**
+   * Aleyas que comparten palabras con el fragmento, las que más primero.
+   *
+   * Con dos palabras en común basta para mirar una aleya de cerca; con una
+   * sola se mira igualmente si el fragmento es corto, que es cuando el
+   * jatib recita media aleya y no hay más de donde agarrarse.
+   */
+  private candidates(query: string): number[] {
+    const words = indexableWords(query);
+    if (words.length === 0) return [];
+
+    const hits = new Map<number, number>();
+    for (const word of words) {
+      for (const idx of this.wordIndex.get(word) ?? []) {
+        hits.set(idx, (hits.get(idx) ?? 0) + 1);
+      }
+    }
+    if (hits.size === 0) return [];
+
+    const minHits = words.length >= 4 ? 2 : 1;
+    const enough = [...hits].filter(([, count]) => count >= minHits);
+    // Fragmento corto o con palabras raras: no descartamos por el mínimo.
+    const pool = enough.length > 0 ? enough : [...hits];
+    return pool
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, MAX_CANDIDATES)
+      .map(([idx]) => idx);
   }
 
   private toResult(b: { verse: IndexedVerse; confidence: number }): MatchResult {

@@ -29,16 +29,54 @@ export interface TranslatedSegment {
 
 
 
+/**
+ * Un fallo suelto del servidor no puede costar una frase del sermón.
+ *
+ * El servidor devolvía 503 de forma intermitente (se pasaba del presupuesto
+ * de CPU buscando citas coránicas) y cada 503 se veía en el móvil como una
+ * frase en árabe sin traducir. La causa está corregida en el servidor; esto
+ * queda como red: un reintento corto salva el fallo pasajero —una antena
+ * mala en la mezquita también los provoca— sin retrasar el sermón.
+ */
+const RETRY_MS = 400;
+
+/** Errores que merece la pena reintentar: el servidor puede estar ocupado. */
+function worthRetrying(status: number): boolean {
+  return status === 429 || status >= 500;
+}
+
+async function postSegment(
+  text: string,
+  sourceLocale: string,
+  targetLang: string,
+): Promise<Response> {
+  return fetch(apiUrl('/api/translate'), {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ text, source: sourceLocale, target: targetLang }),
+  });
+}
+
 export async function translateSegment(
   text: string,
   sourceLocale: string,
   targetLang: string,
 ): Promise<TranslatedSegment> {
-  const res = await fetch(apiUrl('/api/translate'), {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ text, source: sourceLocale, target: targetLang }),
-  });
+  let res: Response;
+  try {
+    res = await postSegment(text, sourceLocale, targetLang);
+  } catch (err) {
+    // Sin red: un reintento por si fue el cambio de celda al entrar en la sala.
+    await new Promise((r) => setTimeout(r, RETRY_MS));
+    res = await postSegment(text, sourceLocale, targetLang).catch(() => {
+      throw err;
+    });
+  }
+
+  if (!res.ok && worthRetrying(res.status)) {
+    await new Promise((r) => setTimeout(r, RETRY_MS));
+    res = await postSegment(text, sourceLocale, targetLang);
+  }
   if (!res.ok) throw new Error(`translate backend: HTTP ${res.status}`);
   return (await res.json()) as TranslatedSegment;
 }
