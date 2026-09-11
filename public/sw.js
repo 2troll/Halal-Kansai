@@ -8,14 +8,19 @@
    - tiles/fonts CDN  → cache-first con tope de entradas.
    Salat y qibla funcionan 100% offline porque todo su código va en el shell. */
 
-const SHELL_CACHE = 'hk-shell-v4';
-const RUNTIME_CACHE = 'hk-runtime-v4';
+const SHELL_CACHE = 'hk-shell-v5';
+const RUNTIME_CACHE = 'hk-runtime-v5';
 const RUNTIME_MAX_ENTRIES = 120;
 
 /* Base de productos de konbini (contrato de datos §6). No lleva hash en el
    nombre: si se sirviera cache-first como el resto del shell, se quedaría
    congelada para siempre y un producto reclasificado no llegaría nunca. */
 const FEED_PATH = '/feed/products.json';
+
+/* El recolector de audio del reconocedor local. Sin hash en el nombre: la
+   versión va en la consulta, y hay que subirla al tocar el fichero o los
+   navegadores seguirán con el viejo. Debe coincidir con whisper-local.ts. */
+const WORKLET_PATH = '/vad-worklet.js?v=1';
 
 const PRECACHE = [
   '/',
@@ -25,6 +30,11 @@ const PRECACHE = [
   // La base de productos de konbini: se guarda desde la instalación porque el
   // sitio donde hace falta es el pasillo de una tienda, sin cobertura.
   FEED_PATH,
+  // El recolector de audio de la jutba. Va aparte del resto del código (tiene
+  // que correr en el hilo de audio) y no lleva hash en el nombre, así que sin
+  // esto no estaría disponible sin conexión — que es justo donde hace falta,
+  // dentro de una mezquita de hormigón.
+  WORKLET_PATH,
 ];
 
 self.addEventListener('install', (event) => {

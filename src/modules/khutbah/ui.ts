@@ -8,6 +8,12 @@ import { closeScreenMode, openScreenMode, screenModeOpen } from './screen';
 import { isNative } from '../../backend';
 import { NativeKhutbahListener } from './speech-native';
 import { MicMeter, type MicReading } from './mic-level';
+import {
+  WhisperKhutbahListener,
+  webGpuAvailable,
+  type WhisperSize,
+  type WhisperStatus,
+} from './whisper-local';
 import { icon } from '../../ui/icons';
 import {
   getVoiceName,
@@ -38,6 +44,26 @@ const PREF_SOURCE = 'hk-khutbah-source';
 const PREF_TARGET = 'hk-khutbah-target';
 const PREF_MODE = 'hk-khutbah-mode';
 const PREF_ROOM = 'hk-khutbah-room';
+const PREF_ENGINE = 'hk-khutbah-engine';
+const PREF_WHISPER_SIZE = 'hk-khutbah-whisper-size';
+
+type Engine = 'browser' | 'whisper';
+
+/**
+ * Qué motor sale elegido cuando nadie ha tocado nada.
+ *
+ * En iPhone el reconocimiento del navegador no es de fiar —y es el aparato
+ * desde el que probó la certificadora—, así que ahí se empieza directamente
+ * por Whisper en el propio teléfono. En Android y escritorio se empieza por
+ * el del navegador, que es instantáneo y no descarga nada.
+ */
+function defaultEngine(): Engine {
+  const saved = localStorage.getItem(PREF_ENGINE);
+  if (saved === 'browser' || saved === 'whisper') return saved;
+  const ua = navigator.userAgent;
+  const isApple = /iPad|iPhone|iPod/.test(ua) || (/Macintosh/.test(ua) && 'ontouchend' in document);
+  return isApple || !isSpeechSupported() ? 'whisper' : 'browser';
+}
 
 function segmentCard(seg: TranslatedSegment): string {
   if (seg.kind === 'quran') {
@@ -97,6 +123,11 @@ export function renderKhutbah(container: HTMLElement): void {
   // Enlace de un QR escaneado: entra directo a esa sala, sin teclear nada.
   const invited = new URLSearchParams(location.search).get('room');
   const savedMode = (invited ? 'join' : (localStorage.getItem(PREF_MODE) ?? 'local')) as Mode;
+  const savedEngine = defaultEngine();
+  // Sin aceleración gráfica el modelo normal va demasiado lento para seguir
+  // un sermón, así que en esos aparatos se empieza por el pequeño.
+  const savedSize = (localStorage.getItem(PREF_WHISPER_SIZE) ??
+    (webGpuAvailable() ? 'base' : 'tiny')) as WhisperSize;
   const savedRoom = invited ?? localStorage.getItem(PREF_ROOM) ?? '';
 
   container.innerHTML = `
@@ -140,6 +171,19 @@ export function renderKhutbah(container: HTMLElement): void {
              <p class="note">${t('voiceOutputHint')}</p>`
           : ''
       }
+      <label>${t('engineLabel')}
+        <select id="sel-engine">
+          <option value="browser" ${savedEngine === 'browser' ? 'selected' : ''}>${t('engineBrowser')}</option>
+          <option value="whisper" ${savedEngine === 'whisper' ? 'selected' : ''}>${t('engineWhisper')}</option>
+        </select>
+      </label>
+      <label id="lbl-whisper-size" ${savedEngine === 'whisper' ? '' : 'hidden'}>${t('whisperSize')}
+        <select id="sel-whisper-size">
+          <option value="tiny" ${savedSize === 'tiny' ? 'selected' : ''}>${t('whisperTiny')}</option>
+          <option value="base" ${savedSize === 'base' ? 'selected' : ''}>${t('whisperBase')}</option>
+        </select>
+      </label>
+      <p class="note" id="engine-note" ${savedEngine === 'whisper' ? '' : 'hidden'}>${t('engineWhisperHint')}</p>
       <p class="note">${t('earphonesNote')}</p>
       <button class="btn" id="btn-listen"></button>
       <button class="btn ghost" id="btn-screen">${icon('guide', 19)}${t('screenMode')}</button>
@@ -150,6 +194,7 @@ export function renderKhutbah(container: HTMLElement): void {
     <div class="mic-meter" id="mic-meter" hidden>
       <div class="mic-bar"><span id="mic-fill"></span></div>
       <p class="mic-state" id="mic-state" aria-live="polite"></p>
+      <p class="mic-state whisper-state" id="whisper-state" aria-live="polite" hidden></p>
     </div>
     <div class="live-caption" id="live-caption" hidden aria-live="polite"></div>
     <div class="transcript" id="transcript"></div>
@@ -165,6 +210,22 @@ export function renderKhutbah(container: HTMLElement): void {
   const lblSource = container.querySelector<HTMLElement>('#lbl-source')!;
   const selSource = container.querySelector<HTMLSelectElement>('#sel-source')!;
   const selTarget = container.querySelector<HTMLSelectElement>('#sel-target')!;
+  const selEngine = container.querySelector<HTMLSelectElement>('#sel-engine')!;
+  const selSize = container.querySelector<HTMLSelectElement>('#sel-whisper-size')!;
+  const lblSize = container.querySelector<HTMLElement>('#lbl-whisper-size')!;
+  const engineNote = container.querySelector<HTMLElement>('#engine-note')!;
+
+  const engine = (): Engine => selEngine.value as Engine;
+
+  selEngine.addEventListener('change', () => {
+    localStorage.setItem(PREF_ENGINE, engine());
+    const isWhisper = engine() === 'whisper';
+    lblSize.hidden = !isWhisper;
+    engineNote.hidden = !isWhisper;
+  });
+  selSize.addEventListener('change', () =>
+    localStorage.setItem(PREF_WHISPER_SIZE, selSize.value),
+  );
 
   const mode = (): Mode => selMode.value as Mode;
 
@@ -348,6 +409,33 @@ export function renderKhutbah(container: HTMLElement): void {
             : t('micUnavailable');
   };
 
+  /**
+   * Lo que pasa con el modelo, dicho en la pantalla.
+   *
+   * La primera vez hay que descargar ochenta megas, y sin decirlo la
+   * aplicación parece colgada justo cuando el imán está subiendo al minbar.
+   */
+  const whisperState = container.querySelector<HTMLElement>('#whisper-state')!;
+
+  const showWhisperStatus = (s: WhisperStatus): void => {
+    whisperState.hidden = false;
+    if (s.kind === 'loading') {
+      meterBox.hidden = false;
+      whisperState.textContent = `${t('whisperLoading')} · ${s.pct}%`;
+      return;
+    }
+    if (s.kind === 'ready') {
+      const how = s.device === 'webgpu' ? t('whisperOnGpu') : t('whisperOnCpu');
+      whisperState.textContent = `${t('whisperReady')} — ${how}`;
+      return;
+    }
+    if (s.kind === 'thinking') {
+      whisperState.textContent = t('whisperThinking');
+      return;
+    }
+    whisperState.hidden = true;
+  };
+
   const startListener = (onSentence: (text: string) => void) => {
     const callbacks = {
       onSentence,
@@ -379,9 +467,15 @@ export function renderKhutbah(container: HTMLElement): void {
       },
     };
 
-    // Dentro de la app, el reconocedor del propio teléfono; en el navegador,
-    // el de la Web Speech API. La pantalla no necesita saber en cuál está.
-    listener = isNative() ? new NativeKhutbahListener(callbacks) : new KhutbahListener(callbacks);
+    // Tres motores, una sola interfaz: el del teléfono dentro de la app, el
+    // del navegador, y Whisper ejecutándose aquí mismo. La pantalla no
+    // necesita saber en cuál está.
+    listener =
+      engine() === 'whisper'
+        ? new WhisperKhutbahListener(callbacks, showWhisperStatus, selSize.value as WhisperSize)
+        : isNative()
+          ? new NativeKhutbahListener(callbacks)
+          : new KhutbahListener(callbacks);
     void listener?.start(selSource.value);
 
     // El medidor va aparte del reconocedor a propósito: es lo único que

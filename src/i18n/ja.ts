@@ -218,6 +218,20 @@ export const ja: Dict = {
   errStart: '音声認識を開始できませんでした。停止してから、もう一度開始してください。',
   earphonesNote: '翻訳を読むためにイヤホンは必要ありません。音声で聞く場合にのみ使います。',
 
+  engineLabel: '音声認識',
+  engineBrowser: 'ブラウザで認識（高速・インターネットが必要）',
+  engineWhisper: 'この端末で認識（オフライン可・広い場所に強い）',
+  engineWhisperHint:
+    '初回のみ約80MBを取得し、以後は端末内に残ります。フトバの音声が端末の外に出ることはありません。',
+  whisperLoading: 'この端末で認識の準備をしています',
+  whisperReady: '準備完了。この端末で動作しています',
+  whisperThinking: '文字起こし中…',
+  whisperOnGpu: 'グラフィック処理あり',
+  whisperOnCpu: 'グラフィック処理なし（低速ですが動作します）',
+  whisperSize: 'モデル',
+  whisperTiny: '小（80MB・古い端末向け）',
+  whisperBase: '標準（150MB・訛りに強い）',
+
   scanPhoto: '原材料名を撮影する',
   scanPhotoWorking: '原材料名を読み取っています…',
   scanPhotoFailed: '読み取れませんでした。近づいて撮り直すか、下に入力してください。',

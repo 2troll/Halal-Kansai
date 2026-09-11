@@ -1028,6 +1028,11 @@ body.sheet-open { overflow: hidden; }
   background: var(--gold);
 }
 
+.whisper-state {
+  color: var(--emerald);
+  font-weight: 500;
+}
+
 .mic-state {
   margin: 0.35rem 0 0;
   font-size: 0.9rem;
@@ -1038,7 +1043,12 @@ body.sheet-open { overflow: hidden; }
 /* Cuando oye de sobra y aun así no saca palabras, el aviso no puede pasar
    desapercibido: es el que dice que hay que cambiar el idioma. */
 .mic-meter[data-state='nomatch'] .mic-state,
-.mic-meter[data-state='silence'] .mic-state {
+.mic-meter[data-state='silence'] .whisper-state {
+  color: var(--emerald);
+  font-weight: 500;
+}
+
+.mic-state {
   color: var(--gold);
   font-weight: 500;
 }

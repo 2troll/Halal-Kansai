@@ -211,6 +211,22 @@ export const en = {
   errStart: 'Speech recognition would not start. Stop and start again.',
   earphonesNote: 'Earphones are not needed to read the translation. They are only for hearing it read aloud.',
 
+  // Whisper en el aparato: el motor que funciona en iPhone, sin conexión y
+  // con la reverberación de una sala grande.
+  engineLabel: 'Recognition',
+  engineBrowser: 'Browser (fast, needs internet)',
+  engineWhisper: 'On this phone (works offline, better in a hall)',
+  engineWhisperHint:
+    'Downloads once (about 80 MB) and then stays on the phone. The audio of the khutbah never leaves your device.',
+  whisperLoading: 'Preparing the recogniser on this phone',
+  whisperReady: 'Ready, running on this phone',
+  whisperThinking: 'Transcribing…',
+  whisperOnGpu: 'with graphics acceleration',
+  whisperOnCpu: 'without graphics acceleration — slower, but it works',
+  whisperSize: 'Model',
+  whisperTiny: 'Small (80 MB, older phones)',
+  whisperBase: 'Standard (150 MB, better with accents)',
+
   scanPhoto: 'Photograph the label',
   scanPhotoWorking: 'Reading the label…',
   scanPhotoFailed: 'Could not read the label. Try again closer, or type the list below.',

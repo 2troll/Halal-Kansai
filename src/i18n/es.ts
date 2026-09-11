@@ -210,6 +210,20 @@ export const es: Dict = {
   errStart: 'El reconocimiento de voz no arrancó. Para y vuelve a empezar.',
   earphonesNote: 'No hacen falta auriculares para leer la traducción. Solo sirven para oírla en voz alta.',
 
+  engineLabel: 'Reconocimiento',
+  engineBrowser: 'Del navegador (rápido, necesita internet)',
+  engineWhisper: 'En este teléfono (sin conexión, mejor en una sala)',
+  engineWhisperHint:
+    'Se descarga una vez (unos 80 MB) y se queda en el teléfono. El audio de la jutba no sale del aparato.',
+  whisperLoading: 'Preparando el reconocedor en este teléfono',
+  whisperReady: 'Listo, funcionando en este teléfono',
+  whisperThinking: 'Transcribiendo…',
+  whisperOnGpu: 'con aceleración gráfica',
+  whisperOnCpu: 'sin aceleración gráfica: más lento, pero funciona',
+  whisperSize: 'Modelo',
+  whisperTiny: 'Pequeño (80 MB, teléfonos modestos)',
+  whisperBase: 'Normal (150 MB, mejor con acento)',
+
   scanPhoto: 'Fotografiar la etiqueta',
   scanPhotoWorking: 'Leyendo la etiqueta…',
   scanPhotoFailed: 'No se pudo leer la etiqueta. Prueba más de cerca, o escribe la lista abajo.',
