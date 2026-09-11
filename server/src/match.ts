@@ -18,6 +18,11 @@ export interface MatchResult {
   confidence: number;
   /** Texto Uthmani literal de la base de datos. */
   uthmani: string;
+  /**
+   * Si la cita venía embebida en el sermón, las palabras reconocidas como
+   * recitación. Sirve para no atribuir a la aleya el sermón que la rodea.
+   */
+  quoted?: string;
 }
 
 /** Confianza mínima para marcar una cita como verificada. */
@@ -80,6 +85,17 @@ export const INDEX_WORD_MIN = 4;
 
 /** Cuántas aleyas candidatas se comparan a fondo, como mucho. */
 const MAX_CANDIDATES = 30;
+
+/**
+ * Palabras seguidas que hacen falta para dar por citada una aleya dentro de
+ * una frase de sermón. Con tres, cualquier «الحمد لله رب» convertiría medio
+ * sermón en Corán; atribuir al Libro lo que no está en él es peor que no
+ * detectar la cita.
+ */
+const MIN_QUOTE_WORDS = 4;
+
+/** Confianza exigida al tramo citado, más alta que la del texto completo. */
+const EMBEDDED_THRESHOLD = 0.85;
 
 /** Palabras de una frase que sirven para buscar (normalizada ya). */
 export function indexableWords(normalized: string): string[] {
@@ -193,7 +209,21 @@ export class QuranMatcher {
 
     if (best === null) return null;
     const found = best as { verse: IndexedVerse; confidence: number };
-    return found.confidence >= CONFIDENCE_THRESHOLD ? this.toResult(found) : null;
+    if (found.confidence >= CONFIDENCE_THRESHOLD) return this.toResult(found);
+
+    // El fragmento entero no casa, pero puede llevar una cita dentro.
+    const queryWords = query.split(/\s+/);
+    let embedded: { verse: IndexedVerse; confidence: number; quoted: string } | null = null;
+    for (const idx of this.candidates(query)) {
+      const verse = this.verses[idx];
+      const hit = this.embeddedMatch(queryWords, verse);
+      if (hit && (!embedded || hit.confidence > embedded.confidence)) {
+        embedded = { verse, ...hit };
+      }
+    }
+    return embedded && embedded.confidence >= EMBEDDED_THRESHOLD
+      ? this.toResult(embedded)
+      : null;
   }
 
   /**
@@ -225,11 +255,62 @@ export class QuranMatcher {
       .map(([idx]) => idx);
   }
 
-  private toResult(b: { verse: IndexedVerse; confidence: number }): MatchResult {
+  private toResult(b: { verse: IndexedVerse; confidence: number; quoted?: string }): MatchResult {
     return {
       ref: b.verse.ref,
       confidence: Math.round(b.confidence * 1000) / 1000,
       uthmani: b.verse.uthmani,
+      ...(b.quoted ? { quoted: b.quoted } : {}),
     };
+  }
+
+  /**
+   * La cita que va DENTRO del sermón, que es como se cita de verdad.
+   *
+   * «Hermanos, vivimos tiempos de fitna, y dijo nuestro Señor: *Allah ordena
+   * la justicia y la excelencia*, así que temed a Allah…». Comparar esa frase
+   * entera con la aleya no funciona: sobra sermón por los dos lados y la
+   * confianza se hunde por debajo de cualquier umbral útil, de modo que la
+   * cita pasaba desapercibida y se traducía como habla corriente, sin texto
+   * Uthmani y sin referencia. Medido: de cuatro formas de citar, esta era la
+   * única que fallaba.
+   *
+   * Así que se busca el tramo de palabras seguidas del fragmento que están en
+   * la aleya, y se puntúa SOLO ese tramo. Se tolera una palabra intrusa en
+   * medio, porque el reconocimiento de voz mete alguna.
+   */
+  private embeddedMatch(
+    queryWords: string[],
+    verse: IndexedVerse,
+  ): { confidence: number; quoted: string } | null {
+    const verseWords = new Set(verse.normalized.split(/\s+/));
+
+    let best: string[] = [];
+    let run: string[] = [];
+    let gaps = 0;
+    for (const word of queryWords) {
+      if (verseWords.has(word)) {
+        run.push(word);
+        continue;
+      }
+      // Una palabra que no es de la aleya: se perdona una vez por tramo.
+      if (run.length > 0 && gaps === 0) {
+        gaps = 1;
+        run.push(word);
+        continue;
+      }
+      if (run.length > best.length) best = run;
+      run = [];
+      gaps = 0;
+    }
+    if (run.length > best.length) best = run;
+
+    // El tramo no puede acabar en la palabra intrusa que le perdonamos.
+    while (best.length > 0 && !verseWords.has(best[best.length - 1])) best.pop();
+    if (best.length < MIN_QUOTE_WORDS) return null;
+
+    const quoted = best.join(' ');
+    const dist = semiGlobalDistance(quoted, verse.normalized);
+    return { confidence: 1 - dist / quoted.length, quoted };
   }
 }

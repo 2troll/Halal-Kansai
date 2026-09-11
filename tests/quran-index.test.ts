@@ -28,6 +28,26 @@ const CITAS: Array<[string, string]> = [
 const HABLA = [
   'ايها الاخوه الكرام اليوم نتحدث عن الصبر في حياه المسلم وعن اهميه الصدق',
   'نسال الله ان يوفقنا جميعا لما يحب ويرضى في هذا اليوم المبارك',
+  // Sermón con vocabulario coránico de sobra: la tentación de marcarlo como
+  // cita es máxima, y atribuir al Libro lo que no está en él es lo único
+  // que esta aplicación no puede permitirse.
+  'الحمد لله نحمده ونستعينه ونستغفره ونعوذ بالله من شرور انفسنا',
+  'اتقوا الله في اولادكم وفي جيرانكم وفي اعمالكم يا عباد الله',
+  'ان المسلم الحق هو من سلم الناس من لسانه ويده كما علمنا نبينا',
+  'والصلاه والسلام على رسول الله وعلى اله وصحبه اجمعين',
+];
+
+/** Así se cita de verdad: la aleya va dentro de la frase, no sola. */
+const CITAS_EMBEBIDAS: Array<[string, string]> = [
+  [
+    'قال الله تعالى في كتابه الكريم يا ايها الذين امنوا اتقوا الله حق تقاته ولا تموتن الا وانتم مسلمون',
+    '3:102',
+  ],
+  [
+    'ايها الاخوه الكرام نحن في زمن كثرت فيه الفتن وقد قال ربنا ان الله يامر بالعدل والاحسان وايتاء ذي القربى فاتقوا الله في انفسكم وفي اهليكم',
+    '16:90',
+  ],
+  ['ونختم بقول الله تعالى ان مع العسر يسرا', '94:6'],
 ];
 
 describe('índice coránico precalculado', () => {
@@ -55,11 +75,23 @@ describe('índice coránico precalculado', () => {
     for (const frase of HABLA) expect(matcher.match(frase)).toBeNull();
   });
 
+  it('reconoce la aleya citada dentro de la frase del sermón', () => {
+    // Era el único de los cuatro modos de citar que fallaba: con sermón por
+    // delante y por detrás, la confianza del fragmento entero se hundía y la
+    // cita se traducía como habla corriente, sin texto Uthmani ni referencia.
+    const matcher = new QuranMatcher(uthmani, fichero);
+    for (const [frase, referencia] of CITAS_EMBEBIDAS) {
+      const r = matcher.match(frase);
+      expect(r, `no detectó ${referencia} en: ${frase.slice(0, 40)}…`).not.toBeNull();
+      expect(`${r!.ref.sura}:${r!.ref.ayah}`).toBe(referencia);
+    }
+  });
+
   it('cada búsqueda cabe en el presupuesto de CPU de Cloudflare', () => {
     // 10 ms por petición, y la traducción todavía tiene que caber. El
     // escaneo completo de las 6.236 aleyas gastaba 170.
     const matcher = new QuranMatcher(uthmani, fichero);
-    const frases = [...CITAS.map(([t]) => t), ...HABLA];
+    const frases = [...CITAS.map(([t]) => t), ...CITAS_EMBEBIDAS.map(([t]) => t), ...HABLA];
     const t0 = performance.now();
     for (const frase of frases) matcher.match(frase);
     const porFrase = (performance.now() - t0) / frases.length;
