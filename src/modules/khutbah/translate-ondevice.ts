@@ -58,6 +58,7 @@ interface MlkitTranslationPlugin {
     targetLanguage: string;
   }): Promise<{ text: string }>;
   downloadModel?(opts: { language: string }): Promise<void>;
+  getDownloadedModels?(): Promise<{ languages: string[] }>;
 }
 
 /**
@@ -144,16 +145,72 @@ export async function translateSegmentSmart(
 }
 
 /**
+ * Qué idiomas hacen falta para traducir de `source` a `target`.
+ *
+ * Pura y testeable: es la lista que hay que tener descargada para que la jutba
+ * funcione sin conexión. Se descartan los que ML Kit no soporta, porque para
+ * esos se cae al servidor de todos modos.
+ */
+export function modelsNeeded(sourceLocale: string, targetLocale: string): string[] {
+  const langs = [toMlkitLang(sourceLocale), toMlkitLang(targetLocale)];
+  return [...new Set(langs)].filter((l) => MLKIT_SUPPORTED.has(l));
+}
+
+/**
+ * De los que hacen falta, cuáles faltan todavía.
+ *
+ * Separado de la descarga a propósito: así se puede saber si el teléfono está
+ * preparado SIN bajar nada, que es lo que interesa el jueves por la noche.
+ */
+export function missingModels(needed: string[], downloaded: string[]): string[] {
+  const have = new Set(downloaded.map((l) => l.toLowerCase()));
+  return needed.filter((l) => !have.has(l));
+}
+
+/** Qué idiomas tiene ya el teléfono. Lista vacía si no se puede saber. */
+async function downloadedLangs(plugin: MlkitTranslationPlugin): Promise<string[]> {
+  if (!plugin.getDownloadedModels) return [];
+  try {
+    const { languages } = await plugin.getDownloadedModels();
+    return Array.isArray(languages) ? languages : [];
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * ¿Puede este teléfono traducir la jutba sin conexión ahora mismo?
+ *
+ * Sirve para avisar antes del viernes en vez de descubrirlo con el imán ya
+ * hablando. `false` también cuando no es la app nativa, que es la verdad: en un
+ * navegador no hay ML Kit.
+ */
+export async function modelsReady(sourceLocale: string, targetLocale: string): Promise<boolean> {
+  const plugin = loadPlugin();
+  if (!plugin) return false;
+  const needed = modelsNeeded(sourceLocale, targetLocale);
+  if (needed.length === 0) return false;
+  return missingModels(needed, await downloadedLangs(plugin)).length === 0;
+}
+
+/**
  * Pre-descarga los modelos de un par de idiomas para que la primera frase del
  * viernes no espere a la descarga. Silencioso: si no se puede, no pasa nada.
  * Llamar al elegir idioma de destino, idealmente con WiFi.
+ *
+ * Antes pedía la descarga de los dos idiomas cada vez que se tocaba un
+ * desplegable. ML Kit no vuelve a bajar lo que ya tiene, pero cada llamada
+ * cruza el puente nativo y despierta al plugin sin motivo; ahora se pregunta
+ * primero qué hay y solo se piden los que faltan.
  */
 export async function ensureModels(sourceLocale: string, targetLocale: string): Promise<void> {
   const plugin = loadPlugin();
   if (!plugin?.downloadModel) return;
-  const langs = [toMlkitLang(sourceLocale), toMlkitLang(targetLocale)];
-  for (const language of langs) {
-    if (!MLKIT_SUPPORTED.has(language)) continue;
+  const faltan = missingModels(
+    modelsNeeded(sourceLocale, targetLocale),
+    await downloadedLangs(plugin),
+  );
+  for (const language of faltan) {
     try {
       await plugin.downloadModel({ language });
     } catch {
