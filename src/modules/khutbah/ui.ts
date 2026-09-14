@@ -1,6 +1,6 @@
 import { KhutbahListener, SOURCE_LOCALES, TARGET_LANGS, isSpeechSupported } from './speech';
 import { KhutbahRoom } from './room';
-import { refineTranslation, type TranslatedSegment } from './translate';
+import { refineTranslation, shouldRefine, type TranslatedSegment } from './translate';
 import { translateSegmentSmart, ensureModels } from './translate-ondevice';
 import { disableFridayMode, enableFridayMode } from './wakelock';
 import { t, getLang } from '../../i18n';
@@ -403,17 +403,7 @@ export function renderKhutbah(container: HTMLElement): void {
     // rápido; el bueno tarda tres o cuatro segundos más y merece la pena
     // esperarlo APARTE, sin retrasar lo que ya se está leyendo. Las aleyas
     // no se tocan: su traducción es la oficial de Tanzil.
-    // Ni tampoco si la tradujo el propio móvil: pedir refinado al servidor por
-    // cada frase son cientos de peticiones en una jutba de una hora, y devuelve
-    // la app a depender de la red justo de lo que queríamos librarla. Con ML Kit
-    // funcionando, el sermón entero se traduce sin salir del aparato.
-    if (
-      seg.kind === 'quran' ||
-      seg.translationSource === 'llm' ||
-      seg.translationSource === 'ondevice'
-    ) {
-      return;
-    }
+    if (!shouldRefine(seg)) return;
     const target = selTarget.value;
     void refineTranslation(seg.original, selSource.value, target).then((better) => {
       if (!better || better === seg.translation) return;

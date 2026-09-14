@@ -17,12 +17,13 @@
  *    lo traduce ML Kit: las aleyas siguen saliendo literales de Tanzil (ese es
  *    el texto sagrado y no se deja a una MT pequeña).
  *
- * Diseño a prueba de build: el plugin se carga con import() de especificador
- * VARIABLE, así que `tsc`/Vite no intentan resolverlo en tiempo de compilación
- * y el proyecto compila aunque el paquete todavía no esté instalado. Cuando
- * Luigi ejecute `npm i @capacitor-mlkit/translation && npx cap sync`, empieza a
- * funcionar en el móvil sin tocar nada más.
+ * Cómo se habla con el plugin: por su NOMBRE nativo, con `registerPlugin` de
+ * `@capacitor/core`. Ver la nota larga junto a `Translation`, más abajo: el
+ * import dinámico que había antes no funcionaba dentro de la app y hacía que
+ * esta ruta no se ejecutara nunca.
  */
+import { registerPlugin } from '@capacitor/core';
+
 import { isNative } from '../../backend';
 import { translateSegment, type TranslatedSegment } from './translate';
 
@@ -59,27 +60,29 @@ interface MlkitTranslationPlugin {
   downloadModel?(opts: { language: string }): Promise<void>;
 }
 
-let cached: MlkitTranslationPlugin | null | undefined;
+/**
+ * El plugin nativo, por su nombre registrado.
+ *
+ * Antes esto se resolvía con `await import('@capacitor-mlkit/translation')` y
+ * un especificador VARIABLE, para que el proyecto compilase aunque el paquete
+ * no estuviera instalado. El efecto secundario era fatal y además silencioso:
+ * Vite deja ese import tal cual, y dentro de la app —origen
+ * `capacitor://localhost`— un especificador desnudo no se puede resolver. La
+ * llamada lanzaba, el `catch` se la tragaba y la app caía al servidor SIEMPRE.
+ * Resultado: la traducción on-device no llegó a ejecutarse ni una sola vez,
+ * tampoco en el móvil, y no había forma de notarlo salvo mirando la red.
+ *
+ * `registerPlugin` viene de `@capacitor/core`, que ya entra en el bundle, y
+ * habla con el plugin nativo por su nombre ('Translation'). Es exactamente lo
+ * que hace por dentro el JS del propio plugin. En un navegador normal devuelve
+ * un objeto que lanza «not implemented» al llamarlo; de eso se encarga el
+ * try/catch de cada llamada, y por eso en web se sigue cayendo al servidor.
+ */
+const Translation = registerPlugin<MlkitTranslationPlugin>('Translation');
 
-/** Carga perezosa del plugin. null si no es nativo o el plugin no está. */
-async function loadPlugin(): Promise<MlkitTranslationPlugin | null> {
-  if (cached !== undefined) return cached;
-  if (!isNative()) {
-    cached = null;
-    return null;
-  }
-  try {
-    // Especificador VARIABLE a propósito: evita que tsc/Vite resuelvan el
-    // módulo en build (y que fallen si aún no está instalado).
-    const spec = '@capacitor-mlkit/translation';
-    const mod = (await import(/* @vite-ignore */ spec)) as {
-      Translation?: MlkitTranslationPlugin;
-    };
-    cached = mod.Translation ?? null;
-  } catch {
-    cached = null;
-  }
-  return cached;
+/** El plugin si estamos dentro de la app nativa; null en un navegador. */
+function loadPlugin(): MlkitTranslationPlugin | null {
+  return isNative() ? Translation : null;
 }
 
 /**
@@ -95,7 +98,7 @@ export async function translateOnDevice(
   if (!text.trim()) return null;
   if (!mlkitCanTranslate(sourceLocale, targetLocale)) return null;
 
-  const plugin = await loadPlugin();
+  const plugin = loadPlugin();
   if (!plugin) return null;
 
   try {
@@ -146,7 +149,7 @@ export async function translateSegmentSmart(
  * Llamar al elegir idioma de destino, idealmente con WiFi.
  */
 export async function ensureModels(sourceLocale: string, targetLocale: string): Promise<void> {
-  const plugin = await loadPlugin();
+  const plugin = loadPlugin();
   if (!plugin?.downloadModel) return;
   const langs = [toMlkitLang(sourceLocale), toMlkitLang(targetLocale)];
   for (const language of langs) {

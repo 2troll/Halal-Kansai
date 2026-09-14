@@ -46,7 +46,7 @@ Tres piezas, y su estado:
 | Pieza | Cómo | Estado |
 |---|---|---|
 | **Transcripción** | Whisper dentro del móvil (`@huggingface/transformers`) | ✅ Ya existe, offline y gratis. Se mantiene. |
-| **Traducción del habla** | Google ML Kit on-device (`@capacitor-mlkit/translation`) | 🟡 Implementado en esta rama (falta `npm install` + probar en móvil). |
+| **Traducción del habla** | Google ML Kit on-device (`@capacitor-mlkit/translation`) | ✅ Instalado y sincronizado (Android + iOS). Compila para iPhone real. Falta probarlo en un móvil (viernes). |
 | **Texto del Corán** | Tanzil (texto literal, nunca IA) | ✅ Ya existe. La verificación vive hoy en el servidor (mejora offline futura, ver §6). |
 | **Datos de lugares/mezquitas** | Cloudflare D1 (plan gratis) + caché en el móvil | 🔶 Recomendación + plan (hoy usa un JSON estático + KV). |
 
@@ -203,6 +203,12 @@ un móvil real con `npm run app:android` y `npm run app:ios`. La primera
 traducción de cada par de idiomas descarga el modelo (~30 MB) — hazlo con WiFi.
 
 ---
+
+> ⚠️ **El simulador de iOS no sirve para probar la traducción.** Los pods de
+> ML Kit traen `EXCLUDED_ARCHS[sdk=iphonesimulator*] = arm64`, así que en un Mac
+> con Apple Silicon el simulador compila pero SIN ML Kit dentro. Hay que probar
+> en un iPhone físico. (Comprobado el 14/09/2026: build de simulador sin
+> símbolos de ML Kit; build de `iphoneos` correcto.)
 
 ## 7. Decisiones tomadas y roadmap
 

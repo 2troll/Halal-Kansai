@@ -31,6 +31,21 @@ export interface TranslatedSegment {
 }
 
 
+/**
+ * ¿Merece la pena pedirle al servidor una versión mejor de esta frase?
+ *
+ * No, en tres casos:
+ *  - **Aleya coránica**: su traducción es la oficial de Tanzil. No se toca.
+ *  - **Ya la tradujo el modelo grande** del servidor: no hay nada mejor detrás.
+ *  - **La tradujo ML Kit en el propio móvil**: pedir refinado devolvería la app
+ *    a depender de la red justo de lo que queríamos librarla, y en una jutba de
+ *    una hora son varios cientos de peticiones. Con on-device funcionando, el
+ *    sermón entero se traduce sin salir del aparato.
+ */
+export function shouldRefine(seg: TranslatedSegment): boolean {
+  if (seg.kind === 'quran') return false;
+  return seg.translationSource !== 'llm' && seg.translationSource !== 'ondevice';
+}
 
 /**
  * Un fallo suelto del servidor no puede costar una frase del sermón.

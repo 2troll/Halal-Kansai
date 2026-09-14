@@ -50,6 +50,13 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-feature android:name="android.hardware.camera" android:required="false" />
 
+    <!-- Escuchar la jutba. Lo declara tambien el plugin de voz y el
+         fusionador lo arrastraria, pero el permiso de la funcion principal no
+         puede depender del manifest de una dependencia: si manana se cambia de
+         plugin, el microfono deja de pedirse y solo se descubre un viernes.
+         El audio se procesa en el aparato y no se graba ni se sube. -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
     <!-- Horas de rezo y qibla del sitio donde estas. La ubicacion no sale
          del telefono: el calculo es local. -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />

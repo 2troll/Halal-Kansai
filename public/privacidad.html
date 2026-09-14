@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacidad · Halal Kansai</title>
+<style>
+  :root { --bg:#10211d; --card:#16302a; --ink:#eef3f1; --dim:#a9c0b8; --gold:#d8b26a; --line:#26473f; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink);
+         font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; }
+  .wrap { max-width:760px; margin:0 auto; padding-block:32px; padding-inline:20px; }
+  h1 { font-size:1.7rem; margin:0 0 4px; color:var(--gold); }
+  h2 { font-size:1.12rem; margin:30px 0 8px; color:var(--gold); }
+  .sub { color:var(--dim); margin:0 0 24px; font-size:.92rem; }
+  .box { background:var(--card); border:1px solid var(--line); border-radius:12px;
+         padding:16px 18px; margin:18px 0; }
+  .box strong { color:var(--gold); }
+  ul { padding-inline-start:22px; margin:8px 0; }
+  li { margin:6px 0; }
+  nav { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:26px; }
+  nav button { background:var(--card); color:var(--ink); border:1px solid var(--line);
+               border-radius:999px; padding:7px 15px; font-size:.9rem; cursor:pointer; }
+  nav button[aria-current="true"] { background:var(--gold); color:#10211d; border-color:var(--gold); font-weight:600; }
+  section[hidden] { display:none !important; }
+  [dir="rtl"] { text-align:right; }
+  footer { margin-top:36px; padding-top:16px; border-top:1px solid var(--line);
+           color:var(--dim); font-size:.86rem; }
+  a { color:var(--gold); }
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav>
+  <button data-lang="es" aria-current="true">Español</button>
+  <button data-lang="en">English</button>
+  <button data-lang="ja">日本語</button>
+  <button data-lang="ar">العربية</button>
+</nav>
+
+<!-- ───────────────────────── ESPAÑOL ───────────────────────── -->
+<section id="es">
+  <h1>Política de privacidad</h1>
+  <p class="sub">Halal Kansai · Actualizada el 14 de septiembre de 2026</p>
+
+  <div class="box">
+    <strong>En una frase:</strong> Halal Kansai no tiene cuentas, no lleva anuncios,
+    no lleva analítica y no vende nada a nadie. <strong>El audio del sermón nunca
+    sale de tu teléfono.</strong>
+  </div>
+
+  <h2>Lo que la app NO hace</h2>
+  <ul>
+    <li>No hay que registrarse. No pedimos nombre, correo ni teléfono.</li>
+    <li>No hay anuncios ni redes publicitarias.</li>
+    <li>No hay analítica ni rastreo: ni Google Analytics, ni Firebase, ni nada parecido.</li>
+    <li>No se vende ni se cede ningún dato. No hay nada que vender.</li>
+    <li>No se graba el sermón, ni se guarda, ni se sube a ningún sitio.</li>
+  </ul>
+
+  <h2>El micrófono y la traducción de la jutba</h2>
+  <p>
+    El micrófono solo se enciende cuando tú pulsas para empezar, y se apaga cuando paras.
+    El audio se convierte en texto <strong>dentro de tu teléfono</strong> y se traduce
+    también dentro de tu teléfono. <strong>El audio no se graba ni se envía a ningún
+    servidor.</strong>
+  </p>
+  <p>
+    Una excepción honesta: si tu par de idiomas no se puede traducir en el aparato, la app
+    envía <strong>el texto ya transcrito</strong> —nunca el audio— a nuestro servidor para
+    traducirlo, y no lo guarda. Si usas el <em>modo sala</em> (varias personas siguiendo el
+    mismo sermón con un código), el texto traducido pasa por nuestro servidor para llegar a
+    los demás móviles; no se almacena cuando la sala termina.
+  </p>
+
+  <h2>Tu ubicación</h2>
+  <p>
+    Se usa para calcular las horas de oración y la dirección de la quibla. El cálculo se hace
+    <strong>en el propio teléfono</strong>: tu ubicación no se envía a nuestros servidores.
+    Puedes negar el permiso e introducir la ciudad a mano.
+  </p>
+
+  <h2>Cámara y fotos</h2>
+  <p>
+    Solo para leer la lista de ingredientes o el código de barras de un envase. El texto se
+    lee <strong>en el propio teléfono</strong> y la foto no se sube. Al escanear un código de
+    barras, ese código se consulta en <a href="https://world.openfoodfacts.org">Open Food
+    Facts</a>, una base de datos pública y abierta, para saber qué producto es.
+  </p>
+
+  <h2>El mapa y los lugares halal</h2>
+  <p>
+    Los mapas vienen de <a href="https://www.openstreetmap.org">OpenStreetMap</a>; como con
+    cualquier mapa, tu dirección IP llega a su servidor al cargar las imágenes. Si
+    <strong>sugieres un lugar</strong>, lo que escribas (nombre, dirección, notas) se envía y
+    se guarda para poder revisarlo antes de publicarlo. No escribas ahí datos personales.
+  </p>
+
+  <h2>Descargas la primera vez</h2>
+  <p>
+    Para funcionar sin conexión, la app descarga una vez el modelo de reconocimiento de voz
+    (desde Hugging Face) y los modelos de traducción (desde Google, ML Kit). Se quedan en tu
+    teléfono. Después, la jutba funciona sin internet. Hazlo con WiFi.
+  </p>
+
+  <h2>Menores</h2>
+  <p>La app no está dirigida a menores de 13 años y no recoge datos de nadie, de ninguna edad.</p>
+
+  <h2>Cambios y contacto</h2>
+  <p>
+    Si esta política cambia, se actualiza la fecha de arriba. Para cualquier duda:
+    <a href="mailto:pagos.euros73@gmail.com">pagos.euros73@gmail.com</a>
+  </p>
+</section>
+
+<!-- ───────────────────────── ENGLISH ───────────────────────── -->
+<section id="en" hidden>
+  <h1>Privacy Policy</h1>
+  <p class="sub">Halal Kansai · Last updated 14 September 2026</p>
+
+  <div class="box">
+    <strong>In one sentence:</strong> Halal Kansai has no accounts, no ads, no analytics and
+    sells nothing to anyone. <strong>Sermon audio never leaves your phone.</strong>
+  </div>
+
+  <h2>What the app does NOT do</h2>
+  <ul>
+    <li>No sign-up. We never ask for your name, email or phone number.</li>
+    <li>No advertising and no ad networks.</li>
+    <li>No analytics and no tracking — no Google Analytics, no Firebase, nothing.</li>
+    <li>No data is sold or shared. There is nothing to sell.</li>
+    <li>The sermon is never recorded, stored or uploaded.</li>
+  </ul>
+
+  <h2>Microphone and sermon translation</h2>
+  <p>
+    The microphone turns on only when you press start, and off when you stop. Audio is turned
+    into text <strong>on your phone</strong> and translated <strong>on your phone</strong>.
+    <strong>Audio is never recorded or sent to any server.</strong>
+  </p>
+  <p>
+    One honest exception: if your language pair cannot be translated on the device, the app
+    sends <strong>the already-transcribed text</strong> — never the audio — to our server to
+    translate it, and does not store it. If you use <em>room mode</em> (several people
+    following one sermon with a code), the translated text passes through our server to reach
+    the other phones; it is not kept once the room ends.
+  </p>
+
+  <h2>Your location</h2>
+  <p>
+    Used to compute prayer times and the qibla direction. The calculation happens
+    <strong>on your phone</strong>: your location is not sent to our servers. You can deny the
+    permission and enter your city by hand.
+  </p>
+
+  <h2>Camera and photos</h2>
+  <p>
+    Only to read an ingredient list or a barcode on a food package. Text is read
+    <strong>on your phone</strong> and the photo is not uploaded. When you scan a barcode,
+    that code is looked up on <a href="https://world.openfoodfacts.org">Open Food Facts</a>, a
+    public open database, to identify the product.
+  </p>
+
+  <h2>Map and halal places</h2>
+  <p>
+    Maps come from <a href="https://www.openstreetmap.org">OpenStreetMap</a>; as with any map,
+    your IP address reaches their server when tiles load. If you <strong>suggest a
+    place</strong>, what you type (name, address, notes) is sent and stored so it can be
+    reviewed before publishing. Please do not type personal data there.
+  </p>
+
+  <h2>First-time downloads</h2>
+  <p>
+    To work offline, the app downloads once the speech recognition model (from Hugging Face)
+    and the translation models (from Google ML Kit). They stay on your phone. After that, the
+    sermon works with no internet. Do this on Wi-Fi.
+  </p>
+
+  <h2>Children</h2>
+  <p>The app is not directed at children under 13 and collects no data from anyone, at any age.</p>
+
+  <h2>Changes and contact</h2>
+  <p>
+    If this policy changes, the date above is updated. Questions:
+    <a href="mailto:pagos.euros73@gmail.com">pagos.euros73@gmail.com</a>
+  </p>
+</section>
+
+<!-- ───────────────────────── 日本語 ───────────────────────── -->
+<section id="ja" hidden>
+  <h1>プライバシーポリシー</h1>
+  <p class="sub">Halal Kansai ・ 2026年9月14日更新</p>
+
+  <div class="box">
+    <strong>ひとことで言うと：</strong>Halal Kansai にはアカウントも広告も解析もなく、
+    データを誰にも販売しません。<strong>説教（フトバ）の音声が端末の外に出ることはありません。</strong>
+  </div>
+
+  <h2>このアプリが行わないこと</h2>
+  <ul>
+    <li>登録は不要です。氏名・メール・電話番号を尋ねません。</li>
+    <li>広告も広告ネットワークもありません。</li>
+    <li>解析・追跡は一切ありません（Google Analytics も Firebase も使用しません）。</li>
+    <li>データの販売・提供はしません。販売するものがありません。</li>
+    <li>説教を録音・保存・送信することはありません。</li>
+  </ul>
+
+  <h2>マイクと説教の翻訳</h2>
+  <p>
+    マイクは開始を押したときだけ有効になり、停止で切れます。音声は<strong>端末内で</strong>
+    文字になり、<strong>端末内で</strong>翻訳されます。<strong>音声が録音されたり、
+    サーバーへ送られたりすることはありません。</strong>
+  </p>
+  <p>
+    正直にお伝えする例外：端末内で対応できない言語の組み合わせの場合、アプリは
+    <strong>文字に変換済みのテキスト</strong>のみ（音声は決して送りません）を当方のサーバーへ
+    送って翻訳し、保存はしません。<em>ルーム機能</em>（コードで複数人が同じ説教を見る）を
+    使う場合、翻訳されたテキストは他の端末に届けるため当方のサーバーを経由します。
+    ルーム終了後は保持しません。
+  </p>
+
+  <h2>位置情報</h2>
+  <p>
+    礼拝時刻とキブラの方角の計算に使います。計算は<strong>端末内</strong>で行い、位置情報を
+    当方のサーバーへ送信することはありません。許可を拒否して都市を手入力することもできます。
+  </p>
+
+  <h2>カメラと写真</h2>
+  <p>
+    食品パッケージの原材料名やバーコードを読むためだけに使います。文字の読み取りは
+    <strong>端末内</strong>で行い、写真はアップロードされません。バーコードを読み取った際は、
+    商品を特定するため公開データベースの
+    <a href="https://world.openfoodfacts.org">Open Food Facts</a> に照会します。
+  </p>
+
+  <h2>地図とハラール店舗</h2>
+  <p>
+    地図は <a href="https://www.openstreetmap.org">OpenStreetMap</a> のものです。地図一般と
+    同じく、タイル読み込み時にIPアドレスが先方サーバーに届きます。<strong>店舗を提案</strong>
+    された場合、入力内容（名称・住所・備考）は掲載前の確認のため送信・保存されます。
+    個人情報は入力しないでください。
+  </p>
+
+  <h2>初回のダウンロード</h2>
+  <p>
+    オフラインで動作させるため、音声認識モデル（Hugging Face）と翻訳モデル（Google ML Kit）を
+    一度だけダウンロードします。以後は端末内に保存され、説教の翻訳はインターネットなしで
+    動作します。Wi-Fi環境での実行をおすすめします。
+  </p>
+
+  <h2>お子様について</h2>
+  <p>13歳未満を対象としたアプリではなく、年齢を問わずいかなるデータも収集しません。</p>
+
+  <h2>変更と連絡先</h2>
+  <p>
+    本ポリシーを変更した場合は上部の日付を更新します。お問い合わせ：
+    <a href="mailto:pagos.euros73@gmail.com">pagos.euros73@gmail.com</a>
+  </p>
+</section>
+
+<!-- ───────────────────────── العربية ───────────────────────── -->
+<section id="ar" hidden dir="rtl" lang="ar">
+  <h1>سياسة الخصوصية</h1>
+  <p class="sub">حلال كنساي · حُدِّثت في ١٤ سبتمبر ٢٠٢٦</p>
+
+  <div class="box">
+    <strong>باختصار:</strong> تطبيق حلال كنساي بلا حسابات ولا إعلانات ولا تتبُّع، ولا يبيع
+    بياناتك لأحد. <strong>صوت الخطبة لا يغادر هاتفك أبدًا.</strong>
+  </div>
+
+  <h2>ما لا يفعله التطبيق</h2>
+  <ul>
+    <li>لا حاجة للتسجيل. لا نطلب اسمك ولا بريدك ولا رقم هاتفك.</li>
+    <li>لا إعلانات ولا شبكات إعلانية.</li>
+    <li>لا تحليلات ولا تتبُّع إطلاقًا.</li>
+    <li>لا تُباع أي بيانات ولا تُشارك. لا يوجد ما يُباع أصلًا.</li>
+    <li>لا تُسجَّل الخطبة ولا تُحفظ ولا تُرفع إلى أي مكان.</li>
+  </ul>
+
+  <h2>الميكروفون وترجمة الخطبة</h2>
+  <p>
+    يعمل الميكروفون فقط عند الضغط على «ابدأ»، ويتوقف عند الإيقاف. يتحوّل الصوت إلى نص
+    <strong>داخل هاتفك</strong>، ويُترجَم <strong>داخل هاتفك</strong>.
+    <strong>لا يُسجَّل الصوت ولا يُرسَل إلى أي خادم.</strong>
+  </p>
+  <p>
+    استثناء نذكره بصراحة: إذا تعذّرت الترجمة داخل الجهاز لزوج اللغات المختار، يُرسل التطبيق
+    <strong>النص المكتوب فقط</strong> — لا الصوت أبدًا — إلى خادمنا لترجمته، ولا يُحفَظ. وعند
+    استخدام <em>وضع القاعة</em> (عدة أشخاص يتابعون الخطبة نفسها برمز)، يمر النص المترجم عبر
+    خادمنا ليصل إلى بقية الهواتف، ولا يُحتفظ به بعد انتهاء الجلسة.
+  </p>
+
+  <h2>موقعك</h2>
+  <p>
+    يُستخدم لحساب أوقات الصلاة واتجاه القبلة. يجري الحساب <strong>داخل الهاتف</strong>، ولا
+    يُرسل موقعك إلى خوادمنا. ويمكنك رفض الإذن وإدخال اسم المدينة يدويًا.
+  </p>
+
+  <h2>الكاميرا والصور</h2>
+  <p>
+    تُستخدم فقط لقراءة قائمة المكوّنات أو الباركود على عبوة الطعام. تُقرأ الكتابة
+    <strong>داخل الهاتف</strong> ولا تُرفع الصورة. وعند مسح الباركود، يُستعلم عن الرمز في
+    قاعدة البيانات المفتوحة <a href="https://world.openfoodfacts.org">Open Food Facts</a>
+    لمعرفة المنتج.
+  </p>
+
+  <h2>الخريطة وأماكن الحلال</h2>
+  <p>
+    الخرائط من <a href="https://www.openstreetmap.org">OpenStreetMap</a>، وكما في أي خريطة
+    يصل عنوان IP الخاص بك إلى خادمهم عند تحميل الصور. وإذا <strong>اقترحت مكانًا</strong>،
+    فإن ما تكتبه (الاسم والعنوان والملاحظات) يُرسل ويُحفظ لمراجعته قبل نشره. رجاءً لا تكتب
+    هناك بيانات شخصية.
+  </p>
+
+  <h2>التنزيل في المرة الأولى</h2>
+  <p>
+    ليعمل التطبيق دون إنترنت، يُنزِّل مرة واحدة نموذج التعرّف على الكلام (من Hugging Face)
+    ونماذج الترجمة (من Google ML Kit). تبقى في هاتفك، وبعدها تعمل ترجمة الخطبة دون إنترنت.
+    يُفضَّل فعل ذلك عبر الواي فاي.
+  </p>
+
+  <h2>الأطفال</h2>
+  <p>التطبيق غير موجَّه لمن هم دون ١٣ عامًا، ولا يجمع أي بيانات من أي شخص مهما كان عمره.</p>
+
+  <h2>التغييرات والتواصل</h2>
+  <p>
+    عند تغيير هذه السياسة يُحدَّث التاريخ أعلاه. لأي سؤال:
+    <a href="mailto:pagos.euros73@gmail.com">pagos.euros73@gmail.com</a>
+  </p>
+</section>
+
+<footer>Halal Kansai · <a href="/">halalkansai</a></footer>
+</div>
+
+<script>
+  const buttons = document.querySelectorAll('nav button');
+  const show = (lang) => {
+    for (const s of document.querySelectorAll('section')) s.hidden = s.id !== lang;
+    for (const b of buttons) b.setAttribute('aria-current', String(b.dataset.lang === lang));
+    document.documentElement.lang = lang;
+    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+  };
+  for (const b of buttons) b.addEventListener('click', () => show(b.dataset.lang));
+  // Abrir en el idioma del navegador si lo tenemos.
+  const nav = (navigator.language || 'es').slice(0, 2);
+  if (['es', 'en', 'ja', 'ar'].includes(nav)) show(nav);
+</script>
+</body>
+</html>
