@@ -2,6 +2,7 @@ import { KhutbahListener, SOURCE_LOCALES, TARGET_LANGS, isSpeechSupported } from
 import { KhutbahRoom } from './room';
 import { refineTranslation, shouldRefine, type TranslatedSegment } from './translate';
 import { translateSegmentSmart, ensureModels } from './translate-ondevice';
+import { safeText } from '../escape';
 import { disableFridayMode, enableFridayMode } from './wakelock';
 import { t, getLang } from '../../i18n';
 import { qrSvg } from './qr';
@@ -83,11 +84,11 @@ function segmentCard(seg: TranslatedSegment): string {
       seg.verified && seg.translationSource !== 'tanzil' ? ` · ${t('translationUnofficial')}` : '';
     return `
       <div class="bubble quran">
-        ${seg.arabicVerified ? `<div class="arabic">${seg.arabicVerified}</div>` : ''}
-        <div>${seg.translation}</div>
+        ${seg.arabicVerified ? `<div class="arabic">${safeText(seg.arabicVerified)}</div>` : ''}
+        <div>${safeText(seg.translation)}</div>
         <span class="ref">${
           seg.verified && seg.reference
-            ? `${t('citationQuran')} ${seg.reference}${unofficial}`
+            ? `${t('citationQuran')} ${safeText(seg.reference)}${unofficial}`
             : `⚠ ${t('citationUnverified')}`
         }</span>
       </div>`;
@@ -95,21 +96,21 @@ function segmentCard(seg: TranslatedSegment): string {
   if (seg.kind === 'hadith') {
     return `
       <div class="bubble hadith">
-        <div>${seg.translation}</div>
+        <div>${safeText(seg.translation)}</div>
         <span class="ref">${t('citationHadith')}</span>
       </div>`;
   }
   if (seg.kind === 'dua') {
     return `
       <div class="bubble dua">
-        <div>${seg.translation}</div>
+        <div>${safeText(seg.translation)}</div>
         <span class="ref">${t('citationDua')}</span>
       </div>`;
   }
   return `
     <div class="bubble">
-      <div>${seg.translation}</div>
-      <div class="orig">${seg.original}</div>
+      <div>${safeText(seg.translation)}</div>
+      <div class="orig">${safeText(seg.original)}</div>
     </div>`;
 }
 

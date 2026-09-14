@@ -5,6 +5,7 @@ import { fetchCommunityPlaces, submitSuggestion } from './community';
 import { getCoords } from '../salat/ui';
 import { t } from '../../i18n';
 import { icon } from '../../ui/icons';
+import { escapeHtml } from '../escape';
 
 type Filter = PlaceType | 'all';
 
@@ -50,11 +51,11 @@ function renderList(listEl: HTMLElement): void {
           ? `<span>${distanceKm(here.lat, here.lng, p.lat, p.lng).toFixed(1)} ${t('kmAway')}</span>`
           : '';
       return `
-      <article class="place-card" data-id="${p.id}">
-        <h3>${TYPE_ICON[p.type]} ${p.name}</h3>
+      <article class="place-card" data-id="${escapeHtml(p.id)}">
+        <h3>${TYPE_ICON[p.type]} ${escapeHtml(p.name)}</h3>
         <div class="meta">
           <span class="badge ${p.type}">${TYPE_LABEL[p.type]()}</span>
-          <span>${p.city}</span>
+          <span>${escapeHtml(p.city)}</span>
           ${distance}
           ${p.verified ? '' : `<span class="badge warn">⚠ ${t('unverified')}</span>`}
         </div>

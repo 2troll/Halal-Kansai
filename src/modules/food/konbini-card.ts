@@ -25,6 +25,7 @@ import type {
   ProductSource,
   ProductStatus,
 } from '../ingredients/konbini';
+import { escapeHtml } from '../escape';
 
 /** Nombre comercial de la cadena. No se traduce: es el rótulo de la tienda. */
 const CHAIN_NAME: Record<Chain, string> = {
@@ -77,10 +78,6 @@ const SOURCE_LABEL: Record<ProductSource, () => string> = {
   allergen_table: () => t('konbiniSourceAllergen'),
   none: () => t('konbiniSourceNone'),
 };
-
-function escapeHtml(s: string): string {
-  return s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!);
-}
 
 /**
  * Fecha legible en el idioma de la app.
