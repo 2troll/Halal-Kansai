@@ -3,6 +3,7 @@ import { KhutbahRoom } from './room';
 import { refineTranslation, shouldRefine, type TranslatedSegment } from './translate';
 import { translateSegmentSmart, ensureModels } from './translate-ondevice';
 import { safeText } from '../escape';
+import { langAttrs, dirFor, baseLang } from '../text-direction';
 import { disableFridayMode, enableFridayMode } from './wakelock';
 import { t, getLang } from '../../i18n';
 import { qrSvg } from './qr';
@@ -78,14 +79,24 @@ function defaultEngine(): Engine {
   return isApple || !isSpeechSupported() ? 'whisper' : 'browser';
 }
 
-function segmentCard(seg: TranslatedSegment): string {
+/**
+ * Cada trozo lleva SU idioma y SU dirección.
+ *
+ * La app puede estar en español (documento en `ltr`) mientras la traducción va
+ * al urdu y el original es árabe. Sin marcarlo aquí, esos dos salían de
+ * izquierda a derecha. `lang` además hace que el lector de pantalla y la voz
+ * del sistema no lean árabe con acento español.
+ */
+function segmentCard(seg: TranslatedSegment, source: string, target: string): string {
+  const tr = langAttrs(target);
+  const or = langAttrs(source);
   if (seg.kind === 'quran') {
     const unofficial =
       seg.verified && seg.translationSource !== 'tanzil' ? ` · ${t('translationUnofficial')}` : '';
     return `
       <div class="bubble quran">
-        ${seg.arabicVerified ? `<div class="arabic">${safeText(seg.arabicVerified)}</div>` : ''}
-        <div>${safeText(seg.translation)}</div>
+        ${seg.arabicVerified ? `<div class="arabic" lang="ar" dir="rtl">${safeText(seg.arabicVerified)}</div>` : ''}
+        <div${tr}>${safeText(seg.translation)}</div>
         <span class="ref">${
           seg.verified && seg.reference
             ? `${t('citationQuran')} ${safeText(seg.reference)}${unofficial}`
@@ -96,21 +107,21 @@ function segmentCard(seg: TranslatedSegment): string {
   if (seg.kind === 'hadith') {
     return `
       <div class="bubble hadith">
-        <div>${safeText(seg.translation)}</div>
+        <div${tr}>${safeText(seg.translation)}</div>
         <span class="ref">${t('citationHadith')}</span>
       </div>`;
   }
   if (seg.kind === 'dua') {
     return `
       <div class="bubble dua">
-        <div>${safeText(seg.translation)}</div>
+        <div${tr}>${safeText(seg.translation)}</div>
         <span class="ref">${t('citationDua')}</span>
       </div>`;
   }
   return `
     <div class="bubble">
-      <div>${safeText(seg.translation)}</div>
-      <div class="orig">${safeText(seg.original)}</div>
+      <div${tr}>${safeText(seg.translation)}</div>
+      <div class="orig"${or}>${safeText(seg.original)}</div>
     </div>`;
 }
 
@@ -392,9 +403,16 @@ export function renderKhutbah(container: HTMLElement): void {
     // Subtítulo: la última traducción, grande y fija arriba. Quien no lleve
     // auricular sigue el sermón leyendo, sin tener que buscar en la lista.
     caption.textContent = seg.translation;
+    // El subtítulo es lo que lee quien no lleva auricular: si va al urdu o al
+    // árabe tiene que ir de derecha a izquierda, mande lo que mande la app.
+    caption.lang = baseLang(selTarget.value);
+    caption.dir = dirFor(selTarget.value);
     caption.hidden = false;
     proyectar?.(seg.translation);
-    transcript.insertAdjacentHTML('afterbegin', segmentCard(seg));
+    transcript.insertAdjacentHTML(
+      'afterbegin',
+      segmentCard(seg, selSource.value, selTarget.value),
+    );
     const card = transcript.firstElementChild;
     while (transcript.childElementCount > MAX_CARDS) transcript.lastElementChild?.remove();
     // Solo la traducción: el árabe original ya lo está diciendo el imán.
