@@ -33,6 +33,13 @@ interface Env {
   ANTHROPIC_MODEL?: string;
   ALLOWED_ORIGINS?: string;
   ADMIN_TOKEN?: string;
+  /**
+   * Opcional: URL de un Ollama accesible desde el Worker (p. ej. un túnel
+   * cloudflared/ngrok al Mac de la mezquita). Sin definir, no cambia nada:
+   * el Worker sigue usando Workers AI como hasta ahora.
+   */
+  OLLAMA_URL?: string;
+  OLLAMA_MODEL?: string;
 }
 
 const ROOM_RE = /^[a-z0-9-]{3,24}$/i;
@@ -66,6 +73,7 @@ export default {
         suggestions: env.SUGGESTIONS ? new KVSuggestionStore(env.SUGGESTIONS) : undefined,
         adminToken: env.ADMIN_TOKEN,
         ai: env.AI,
+        ollama: env.OLLAMA_URL ? { baseUrl: env.OLLAMA_URL, model: env.OLLAMA_MODEL } : undefined,
       });
     }
     return app.fetch(request);

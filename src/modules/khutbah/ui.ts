@@ -1,6 +1,7 @@
 import { KhutbahListener, SOURCE_LOCALES, TARGET_LANGS, isSpeechSupported } from './speech';
 import { KhutbahRoom } from './room';
-import { refineTranslation, translateSegment, type TranslatedSegment } from './translate';
+import { refineTranslation, type TranslatedSegment } from './translate';
+import { translateSegmentSmart, ensureModels } from './translate-ondevice';
 import { disableFridayMode, enableFridayMode } from './wakelock';
 import { t, getLang } from '../../i18n';
 import { qrSvg } from './qr';
@@ -46,6 +47,17 @@ const PREF_MODE = 'hk-khutbah-mode';
 const PREF_ROOM = 'hk-khutbah-room';
 const PREF_ENGINE = 'hk-khutbah-engine';
 const PREF_WHISPER_SIZE = 'hk-khutbah-whisper-size';
+
+/**
+ * Cuántas frases se mantienen en la lista.
+ *
+ * Una jutba de una hora deja varios cientos de tarjetas, y cada frase nueva
+ * obliga al móvil a recalcular la columna entera: al final del sermón —justo
+ * cuando el imán llega a lo importante— el subtítulo empieza a llegar tarde y
+ * la batería se va. Se conservan las últimas; lo de más arriba ya lo ha leído
+ * todo el mundo y nadie vuelve a ello en directo.
+ */
+const MAX_CARDS = 80;
 
 type Engine = 'browser' | 'whisper';
 
@@ -253,8 +265,25 @@ export function renderKhutbah(container: HTMLElement): void {
     lblSource.hidden = mode() === 'join';
     setIdleUi();
   });
-  selSource.addEventListener('change', () => localStorage.setItem(PREF_SOURCE, selSource.value));
-  selTarget.addEventListener('change', () => localStorage.setItem(PREF_TARGET, selTarget.value));
+  /**
+   * Al elegir idioma se baja ya el modelo de ML Kit (~30 MB por idioma, una
+   * sola vez). Si se deja para el viernes, la primera frase del imán espera a
+   * la descarga con la sala llena y la antena saturada. Silencioso: en la web
+   * o sin conexión no hace nada y se reintenta sola al traducir.
+   */
+  const prepareModels = (): void => {
+    void ensureModels(selSource.value, selTarget.value);
+  };
+
+  selSource.addEventListener('change', () => {
+    localStorage.setItem(PREF_SOURCE, selSource.value);
+    prepareModels();
+  });
+  selTarget.addEventListener('change', () => {
+    localStorage.setItem(PREF_TARGET, selTarget.value);
+    prepareModels();
+  });
+  prepareModels();
 
   const qrBox = container.querySelector<HTMLElement>('#room-qr')!;
 
@@ -366,6 +395,7 @@ export function renderKhutbah(container: HTMLElement): void {
     proyectar?.(seg.translation);
     transcript.insertAdjacentHTML('afterbegin', segmentCard(seg));
     const card = transcript.firstElementChild;
+    while (transcript.childElementCount > MAX_CARDS) transcript.lastElementChild?.remove();
     // Solo la traducción: el árabe original ya lo está diciendo el imán.
     speakTranslation(seg.translation, selTarget.value);
 
@@ -373,7 +403,17 @@ export function renderKhutbah(container: HTMLElement): void {
     // rápido; el bueno tarda tres o cuatro segundos más y merece la pena
     // esperarlo APARTE, sin retrasar lo que ya se está leyendo. Las aleyas
     // no se tocan: su traducción es la oficial de Tanzil.
-    if (seg.kind === 'quran' || seg.translationSource === 'llm') return;
+    // Ni tampoco si la tradujo el propio móvil: pedir refinado al servidor por
+    // cada frase son cientos de peticiones en una jutba de una hora, y devuelve
+    // la app a depender de la red justo de lo que queríamos librarla. Con ML Kit
+    // funcionando, el sermón entero se traduce sin salir del aparato.
+    if (
+      seg.kind === 'quran' ||
+      seg.translationSource === 'llm' ||
+      seg.translationSource === 'ondevice'
+    ) {
+      return;
+    }
     const target = selTarget.value;
     void refineTranslation(seg.original, selSource.value, target).then((better) => {
       if (!better || better === seg.translation) return;
@@ -557,7 +597,7 @@ export function renderKhutbah(container: HTMLElement): void {
     if (currentMode === 'local') {
       startListener(async (text) => {
         try {
-          addSegment(await translateSegment(text, selSource.value, selTarget.value));
+          addSegment(await translateSegmentSmart(text, selSource.value, selTarget.value));
         } catch {
           note.textContent = t('backendUnavailable');
           transcript.insertAdjacentHTML(

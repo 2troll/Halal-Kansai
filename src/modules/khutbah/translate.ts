@@ -23,8 +23,11 @@ export interface TranslatedSegment {
   reference?: string;
   /** false → mostrar "cita no verificada". */
   verified: boolean;
-  /** Origen de la traducción: oficial de Tanzil, LLM, o MT gratuita. */
-  translationSource?: 'tanzil' | 'llm' | 'free';
+  /**
+   * Origen de la traducción: oficial de Tanzil, LLM, MT gratuita del servidor,
+   * o 'ondevice' cuando la hizo ML Kit en el propio móvil (offline y gratis).
+   */
+  translationSource?: 'tanzil' | 'llm' | 'free' | 'ondevice';
 }
 
 

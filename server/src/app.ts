@@ -12,6 +12,7 @@ import type { LlmConfig } from './llm.ts';
 import { CONFIDENCE_THRESHOLD, type VerseRef } from './match.ts';
 import { buildSegment } from './segment.ts';
 import { chatTranslate } from './ai-translate.ts';
+import { ollamaTranslate, type OllamaConfig } from './ollama-translate.ts';
 import { glossaryHints } from './glossary.ts';
 import { usableTranslation } from './quality.ts';
 import { getMatcher, type QuranStore } from './store.ts';
@@ -31,6 +32,13 @@ export interface AppConfig {
   adminToken?: string;
   /** Workers AI: traduce dentro de Cloudflare, sin cuotas de terceros por IP. */
   ai?: AiBinding;
+  /**
+   * Ollama local (modelos en el Mac): motor gratis y SIN CUOTA. Si se define
+   * (típicamente vía OLLAMA_URL en el servidor Node), es el traductor
+   * prioritario y la jutba aguanta 1-1,5 h sin toparse con ningún límite de
+   * pago. Sin definir (p. ej. en Cloudflare), todo funciona como hoy.
+   */
+  ollama?: OllamaConfig;
 }
 
 /**
@@ -162,7 +170,7 @@ export function createApp(config: AppConfig): Hono {
     try {
       return c.json(
         await buildSegment(
-          { llm: config.llm, store: config.store, ai: config.ai },
+          { llm: config.llm, store: config.store, ai: config.ai, ollama: config.ollama },
           text,
           source,
           target,
@@ -196,7 +204,9 @@ export function createApp(config: AppConfig): Hono {
     if (!allowRequest(clientIp(c.req.raw.headers))) {
       return c.json({ error: 'rate limit' }, 429);
     }
-    if (!config.ai) return c.json({ error: 'unavailable' }, 503);
+    // La mejora la puede dar Ollama (local, gratis) o Workers AI. Sin ninguno
+    // de los dos no hay nada que refinar y la pantalla se queda como está.
+    if (!config.ollama && !config.ai) return c.json({ error: 'unavailable' }, 503);
 
     const body = await c.req
       .json<{ text?: string; source?: string; target?: string }>()
@@ -207,12 +217,17 @@ export function createApp(config: AppConfig): Hono {
     const text = body.text.slice(0, 400);
     const target = body.target.slice(0, 8);
     const source = (body.source ?? 'unknown').slice(0, 12);
+    const hints = glossaryHints(text, target);
 
-    const out = usableTranslation(
-      await chatTranslate(config.ai, text, source, target, glossaryHints(text, target)).catch(
-        () => null,
-      ),
-    );
+    // Prioridad al motor local: gratis y sin cuota. Si no da nada, Workers AI.
+    let refined: string | null = null;
+    if (config.ollama) {
+      refined = await ollamaTranslate(config.ollama, text, source, target, hints).catch(() => null);
+    }
+    if (!refined && config.ai) {
+      refined = await chatTranslate(config.ai, text, source, target, hints).catch(() => null);
+    }
+    const out = usableTranslation(refined);
     // Sin mejora que ofrecer se dice, y la pantalla se queda como está.
     if (!out) return c.json({ error: 'no-refinement' }, 404);
     return c.json({ translation: out, translationSource: 'llm' });

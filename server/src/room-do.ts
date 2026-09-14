@@ -31,6 +31,9 @@ interface DOEnv {
   AI?: AiBinding;
   ANTHROPIC_API_KEY: string;
   ANTHROPIC_MODEL?: string;
+  /** Opcional: Ollama accesible por red (túnel al Mac). Sin definir, igual que hoy. */
+  OLLAMA_URL?: string;
+  OLLAMA_MODEL?: string;
 }
 
 export class KhutbahRoomDO {
@@ -40,9 +43,10 @@ export class KhutbahRoomDO {
     const store = new WorkersAssetsStore(env.ASSETS);
     const llm = { apiKey: env.ANTHROPIC_API_KEY, model: env.ANTHROPIC_MODEL };
     const ai = env.AI;
+    const ollama = env.OLLAMA_URL ? { baseUrl: env.OLLAMA_URL, model: env.OLLAMA_MODEL } : undefined;
     this.hub = new RoomHub({
       translate: (text, source, target) =>
-        buildSegment({ llm, store, ai }, text, source, target, ROOM_DEADLINE_MS),
+        buildSegment({ llm, store, ai, ollama }, text, source, target, ROOM_DEADLINE_MS),
     });
   }
 

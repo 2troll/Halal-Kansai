@@ -9,6 +9,7 @@
  */
 import { freeTranslate } from './free-translate.ts';
 import { aiTranslate, chatTranslate, type AiBinding } from './ai-translate.ts';
+import { ollamaTranslate, type OllamaConfig } from './ollama-translate.ts';
 import { glossaryHints, hasTerms, protectTerms, restoreTerms } from './glossary.ts';
 import { usableTranslation } from './quality.ts';
 import { analyzeSegment, type LlmConfig } from './llm.ts';
@@ -31,6 +32,13 @@ export interface SegmentDeps {
   store: QuranStore;
   /** Workers AI: solo existe desplegado en Cloudflare, no en Node. */
   ai?: AiBinding;
+  /**
+   * Ollama local (el Mac de la mezquita). Si está configurado, es el motor
+   * PRIORITARIO: gratis y sin cuota, así que aguanta la jutba entera. Si no
+   * responde (apagado, modelo sin descargar), se cae al resto de motores.
+   * En el despliegue de Cloudflare no se define y todo sigue igual que hoy.
+   */
+  ollama?: OllamaConfig;
 }
 
 /**
@@ -180,6 +188,64 @@ async function buildSegmentFree(
   return segment;
 }
 
+/**
+ * Camino Ollama: traducción con un modelo LOCAL, gratis y sin cuota. Es el
+ * motor que aguanta una jutba de hora y media sin cortarse, porque cada
+ * fragmento es una petición independiente y no hay presupuesto que agotar.
+ *
+ * Si Ollama no da una traducción utilizable (apagado, modelo sin descargar,
+ * timeout), NO se deja al usuario sin nada: se cae al camino de siempre
+ * (Workers AI / MyMemory), así que esto solo añade una opción, nunca resta.
+ *
+ * El árabe del Corán se sigue verificando y mostrando desde Tanzil.
+ */
+async function buildSegmentOllama(
+  deps: SegmentDeps,
+  text: string,
+  source: string,
+  target: string,
+  deadlineMs: number,
+): Promise<TranslatedSegment> {
+  const ollama = deps.ollama!;
+  const segment: TranslatedSegment = {
+    kind: 'speech',
+    translation: text,
+    original: text,
+    verified: false,
+    translationSource: 'llm',
+  };
+
+  // Igual que en el resto: primero intentamos casar un verso con Tanzil.
+  const matched = await applyQuranMatch(deps, segment, text, target);
+  if (segment.translationSource === 'tanzil') return segment;
+
+  const guarded = hasTerms(text) ? protectTerms(text) : { text, used: [] };
+  const restore = (out: string): string =>
+    guarded.used.length > 0 ? restoreTerms(out, guarded.used, target) : out;
+
+  const viaOllama = usableTranslation(
+    await ollamaTranslate(ollama, text, source, target, glossaryHints(text, target)).catch(
+      () => null,
+    ),
+  );
+
+  if (viaOllama) {
+    segment.translation = viaOllama;
+    segment.translationSource = matched ? 'free' : 'llm';
+    return segment;
+  }
+
+  // Ollama no respondió a tiempo o no está disponible: red de seguridad con
+  // los motores de siempre. No rompe nada; solo garantiza que algo se ve.
+  const fallback = await buildSegmentFree(deps, text, source, target, deadlineMs);
+  // Si el fallback tampoco tradujo (devuelve el original), al menos intentamos
+  // el restore de términos protegidos por coherencia.
+  if (fallback.translation === text && guarded.used.length > 0) {
+    fallback.translation = restore(guarded.text);
+  }
+  return fallback;
+}
+
 /** Lanza si el LLM falla; el llamante decide la degradación. */
 export async function buildSegment(
   deps: SegmentDeps,
@@ -188,6 +254,11 @@ export async function buildSegment(
   target: string,
   deadlineMs: number = CHAT_DEADLINE_MS,
 ): Promise<TranslatedSegment> {
+  // Ollama configurado → motor local prioritario: gratis y sin cuota diaria.
+  if (deps.ollama) {
+    return buildSegmentOllama(deps, text, source, target, deadlineMs);
+  }
+
   // Sin clave de Anthropic → traducción gratuita (mantiene versos verificados).
   if (!deps.llm.apiKey) {
     return buildSegmentFree(deps, text, source, target, deadlineMs);
