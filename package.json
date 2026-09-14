@@ -1,6 +1,6 @@
 {
   "name": "halal-kansai",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Herramienta diaria gratuita para la comunidad musulmana en Japón: salat, qibla, lugares halal y traducción de la jutba en vivo.",
   "scripts": {
     "dev": "vite",
@@ -19,7 +19,9 @@
     "app:ios": "npm run app:build && npx cap open ios",
     "smoke": "node scripts/smoke.mjs",
     "feed:import": "node scripts/import-konbini-feed.mjs",
-    "build:index": "node tools/build-quran-index.mjs"
+    "build:index": "node tools/build-quran-index.mjs",
+    "version:sync": "node tools/version.mjs",
+    "version:check": "node tools/version.mjs --check"
   },
   "repository": {
     "type": "git",

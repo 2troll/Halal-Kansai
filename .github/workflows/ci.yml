@@ -20,3 +20,8 @@ jobs:
       - run: npm test
       - run: npm run build
       # El typecheck ya va dentro de build (tsc --noEmit && vite build).
+
+      # Las tres versiones tienen que cuadrar ANTES de generar un paquete: las
+      # tiendas rechazan una subida cuyo número de build no sea único y mayor
+      # que el anterior, y eso se descubre con el .aab ya hecho.
+      - run: npm run version:check
