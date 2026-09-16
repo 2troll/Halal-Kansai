@@ -191,17 +191,24 @@ No account is required. There is no paid content.
 
 ---
 
-## 4. Capturas de pantalla 🔴 (hay que hacerlas en un móvil real)
+## 4. Capturas y gráficos ✅ (17/09/2026)
 
-Mínimos: Google pide 2 (hasta 8); Apple pide 6,7" y 5,5" para iPhone.
-Las cinco que cuentan la historia, en este orden:
-1. Horas de oración con el widget.
-2. Brújula qibla.
-3. La jutba traduciéndose en directo — **es la pantalla que vende la app**.
-4. Mapa halal de Osaka.
-5. Lector de etiquetas señalando un ingrediente dudoso.
+Todo en `~/Documents/Trabajo/Halal-Kansai-tiendas/`:
 
-Se pueden sacar del emulador, pero la de la jutba conviene que sea real.
+| Tienda | Qué | Tamaño |
+|---|---|---|
+| Google Play | 5 capturas (emulador Android 15, build release) | 1080×1920 |
+| Google Play | Icono | 512×512, sin transparencia |
+| Google Play | Gráfico destacado | 1024×500 |
+| Google Play | `halal-kansai-1.0.0.aab` firmado | 39 MB |
+| App Store | 5 capturas iPhone 6,9" | 1320×2868 |
+
+Orden: rezo, qibla, lugares, lector de etiquetas, jutba.
+
+- Las de iPhone salen del mismo código renderizado en Chrome a tamaño de
+  iPhone (la app no abre en el simulador, ver §5). Es la misma interfaz.
+- **La de la jutba enseña la pantalla vacía.** Cámbiala por una real el
+  viernes 18/09 con una traducción en marcha: es la que vende la app.
 
 ---
 
@@ -215,6 +222,7 @@ Se pueden sacar del emulador, pero la de la jutba conviene que sea real.
 | Precio | Gratis, sin compras dentro | — |
 | Países | Todos (Apple: todos menos la UE) | — |
 | Sin iPhone | Simulacro + **TestFlight externo** con musulmanes de la mezquita que tengan iPhone | El simulador de iOS 26 no puede abrir la app: ML Kit no tiene versión arm64 para simulador. |
+| iPad | **Solo iPhone** (`TARGETED_DEVICE_FAMILY = 1`) | Evita capturas de iPad y revisión en un diseño no probado. En iPad funciona en modo compatibilidad. Se puede añadir después. |
 
 ## 6. Pasos para publicar
 
@@ -246,21 +254,34 @@ Luego TestFlight → grupo externo → enlace público → a la gente con iPhone
 
 ---
 
-## 7. Estado, a día de hoy
+## 7. Estado, a día de hoy (17/09/2026)
 
 | Cosa | Estado |
 |---|---|
-| Traducción y transcripción dentro del móvil | ✅ |
-| Build · tests · lint | ✅ 212 tests en verde (17/09) |
-| Rama juntada en `main` y subida | ✅ 17/09 |
+| Build · tests · lint | ✅ 224 tests en verde |
 | AAB firmado para Google Play | ✅ 39 MB, firma verificada |
-| iOS release para iPhone real | ✅ compila (sin firmar) |
-| Widget iOS | ✅ arreglado: le faltaba `CFBundleExecutable` y la app no se instalaba |
-| `PrivacyInfo.xcprivacy` (app y widget) | ✅ añadido |
-| Declaración de cifrado iOS | ✅ `ITSAppUsesNonExemptEncryption = NO` |
-| **Política de privacidad en línea** | 🔴 **da 404**: el Worker publicado es del 11/09. Hace falta `npm run deploy` |
-| Probado en emulador Android | ⏳ en curso |
-| Probado en iPhone | 🔴 imposible en este Mac → TestFlight |
-| Jutba real un viernes | 🔴 18/09 y 25/09 |
-| Capturas | 🔴 del emulador / simulador |
+| iOS release para iPhone real | ✅ compila (sin firmar: falta tu cuenta) |
+| Probado en emulador Android (release) | ✅ 6 pestañas, árabe RTL, avisos de rezo, lector de etiquetas |
+| Jutba en Android | ✅ arreglada: no arrancaba (3 fallos, ver commits del 17/09) |
+| Contraste en los 5 temas | ✅ escaneado; en modo oscuro no se veían los nombres de lugares |
+| Widget iOS / manifiesto de privacidad / cifrado | ✅ |
+| Capturas + icono + gráfico destacado | ✅ (la de la jutba, a rehacer el viernes) |
+| **Política de privacidad en línea** | 🔴 **da 404** → `npm run deploy` (tú) |
+| Reconocimiento de voz con audio real | 🔴 imposible en el emulador → viernes 18/09 en la mezquita |
+| Probado en iPhone | 🔴 → TestFlight |
 | Cuentas de desarrollador | 🔴 sin comprar |
+
+## 8. Calendario
+
+| Fecha | Quién | Qué |
+|---|---|---|
+| **Hoy 17/09** | Tú | `npm run deploy` · comprar Apple Developer (99 USD) y Google Play Console (25 USD) · verificar identidad |
+| **Vie 18/09** | Tú | Jutba real con el APK en tu Android: ¿salen frases traducidas? Captura de la jutba funcionando |
+| 18–20/09 | Yo | Arreglar lo que salga del viernes · firmar iOS con tu equipo · subir a TestFlight y Play (prueba cerrada) |
+| **21/09** | Tú | Conseguir 12 testers Android (correos Gmail) y 2–3 con iPhone para TestFlight |
+| 22/09 | Yo | Enviar iOS a revisión de Apple |
+| ~25/09 | Apple | Respuesta (1–3 días) → **iOS publicada** |
+| **Vie 25/09** | Tú | Segunda jutba real, ya con los testers |
+| 22/09 → 06/10 | Testers | 14 días seguidos de prueba cerrada (obligatorio) |
+| ~07/10 | Yo | Solicitar acceso a producción en Play |
+| **~10–14/10** | Google | **Android publicada** |
