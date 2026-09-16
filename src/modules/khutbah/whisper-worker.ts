@@ -35,10 +35,16 @@ export type WhisperResponse =
   | { type: 'progress'; pct: number; file: string }
   | { type: 'ready'; device: string; ms: number }
   | { type: 'text'; id: number; text: string; ms: number }
-  | { type: 'error'; message: string };
+  | { type: 'error'; message: string; id?: number };
 
 let transcriber: AutomaticSpeechRecognitionPipeline | null = null;
 let device = 'wasm';
+/**
+ * La carga en curso. El micrófono empieza a recoger frases en cuanto se pulsa
+ * «escuchar», pero la primera vez el modelo tarda un minuto en bajar: las
+ * frases de ese minuto esperan aquí en vez de perderse con «not-loaded».
+ */
+let loading: Promise<void> | null = null;
 
 const post = (msg: WhisperResponse): void => self.postMessage(msg);
 
@@ -49,9 +55,29 @@ const post = (msg: WhisperResponse): void => self.postMessage(msg);
  * vale un subtítulo con tres segundos de retraso que una pantalla en blanco,
  * y en los teléfonos viejos —que son muchos en una mezquita— es lo que hay.
  */
+/**
+ * ¿Hay un adaptador WebGPU DE VERDAD?
+ *
+ * Que exista `navigator.gpu` no basta: en casi todos los Android (y en Chrome
+ * sin GPU) el objeto está pero `requestAdapter()` devuelve null. Probar WebGPU
+ * igualmente y caer a WebAssembly en el `catch` NO funciona: el intento
+ * fallido deja roto el motor de ONNX dentro del worker, y la segunda carga
+ * falla con el mismo «no available backend found. ERR: [webgpu]». Con eso el
+ * modo «En este teléfono» no llegaba a cargar nunca en Android.
+ */
+async function webGpuAdapterAvailable(): Promise<boolean> {
+  const gpu = (navigator as unknown as { gpu?: { requestAdapter(): Promise<unknown> } }).gpu;
+  if (!gpu) return false;
+  try {
+    return (await gpu.requestAdapter()) !== null;
+  } catch {
+    return false;
+  }
+}
+
 async function load(model: string): Promise<void> {
   const t0 = performance.now();
-  const hasWebGPU = 'gpu' in navigator;
+  const hasWebGPU = await webGpuAdapterAvailable();
 
   const options = {
     // q4 en el decodificador es la diferencia entre 290 MB y unos 80: en una
@@ -72,7 +98,12 @@ async function load(model: string): Promise<void> {
     });
     device = 'webgpu';
   } catch {
-    transcriber = await pipeline('automatic-speech-recognition', model, options);
+    // `device: 'wasm'` explícito: sin él, transformers.js vuelve a elegir
+    // WebGPU al ver `navigator.gpu`.
+    transcriber = await pipeline('automatic-speech-recognition', model, {
+      ...options,
+      device: 'wasm',
+    });
     device = 'wasm';
   }
 
@@ -84,13 +115,20 @@ self.addEventListener('message', (ev: MessageEvent<WhisperRequest>) => {
   void (async () => {
     try {
       if (msg.type === 'load') {
-        if (!transcriber) await load(msg.model);
-        else post({ type: 'ready', device, ms: 0 });
+        if (transcriber) {
+          post({ type: 'ready', device, ms: 0 });
+          return;
+        }
+        loading ??= load(msg.model).finally(() => {
+          loading = null;
+        });
+        await loading;
         return;
       }
 
+      if (!transcriber && loading) await loading.catch(() => {});
       if (!transcriber) {
-        post({ type: 'error', message: 'not-loaded' });
+        post({ type: 'error', message: 'not-loaded', id: msg.id });
         return;
       }
 
@@ -106,7 +144,11 @@ self.addEventListener('message', (ev: MessageEvent<WhisperRequest>) => {
       const text = Array.isArray(out) ? (out[0]?.text ?? '') : (out.text ?? '');
       post({ type: 'text', id: msg.id, text, ms: Math.round(performance.now() - t0) });
     } catch (err) {
-      post({ type: 'error', message: err instanceof Error ? err.message : String(err) });
+      post({
+        type: 'error',
+        message: err instanceof Error ? err.message : String(err),
+        id: msg.type === 'transcribe' ? msg.id : undefined,
+      });
     }
   })();
 });

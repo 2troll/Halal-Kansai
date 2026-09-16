@@ -136,7 +136,15 @@ export class WhisperKhutbahListener {
       const msg = ev.data;
       if (msg.type === 'progress') this.onStatus({ kind: 'loading', pct: msg.pct });
       else if (msg.type === 'ready') this.onStatus({ kind: 'ready', device: msg.device });
-      else if (msg.type === 'error') this.callbacks.onError(msg.message);
+      else if (msg.type === 'error') {
+        // Si falló una frase, deja de contarse como pendiente: si no, la
+        // pantalla se queda en «transcribiendo…» para siempre.
+        if (msg.id !== undefined) {
+          this.pending = Math.max(0, this.pending - 1);
+          if (this.pending === 0) this.onStatus({ kind: 'idle' });
+        }
+        this.callbacks.onError(msg.message);
+      }
       else if (msg.type === 'text') {
         this.pending = Math.max(0, this.pending - 1);
         if (this.pending === 0) this.onStatus({ kind: 'idle' });
