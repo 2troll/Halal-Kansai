@@ -39,8 +39,9 @@ Gratis, sin anuncios y sin registro.
 • LECTOR DE ETIQUETAS: apunta la cámara al 原材料名 de un producto japonés y te
   dice qué ingredientes son dudosos y por qué.
 • TRADUCCIÓN DE LA JUTBA EN VIVO: el sermón del viernes, traducido a tu idioma
-  mientras se pronuncia, EN TU PROPIO TELÉFONO. El audio no se graba ni sale
-  del aparato. Funciona sin conexión una vez descargados los modelos.
+  mientras se pronuncia. Con el modo «En este teléfono» todo ocurre dentro del
+  aparato y funciona sin conexión: el audio no se graba ni sale del móvil.
+  El modo rápido usa el reconocedor de voz del sistema y necesita internet.
 
 Las aleyas del Corán nunca las traduce una máquina: se muestran con la
 traducción oficial de Tanzil.
@@ -61,8 +62,9 @@ Free, no ads, no sign-up.
 • LABEL READER: point the camera at the 原材料名 list on a Japanese product and
   it tells you which ingredients are doubtful, and why.
 • LIVE KHUTBAH TRANSLATION: the Friday sermon translated into your language as
-  it is spoken, ON YOUR OWN PHONE. Audio is never recorded and never leaves the
-  device. Works offline once the models are downloaded.
+  it is spoken. In "On this phone" mode everything runs on the device and works
+  offline: audio is never recorded and never leaves the phone. The fast mode
+  uses the system speech recogniser and needs internet.
 
 Qur'anic verses are never machine-translated: they are shown with the official
 Tanzil translation.
@@ -81,8 +83,9 @@ Halal Kansai は、日本に暮らすムスリムのための毎日の道具で�
 • 原材料リーダー：日本の商品の「原材料名」にカメラを向けると、疑わしい原材料と
   その理由を表示します。
 • 説教（フトバ）のライブ翻訳：金曜礼拝の説教を、話されるそばから母語へ。
-  処理はすべて端末内で行い、音声は録音も送信もされません。モデルを一度
-  ダウンロードすればオフラインで動作します。
+  「この端末で」モードでは処理がすべて端末内で完結し、オフラインでも動作。
+  音声は録音も送信もされません。高速モードはシステムの音声認識を使うため、
+  インターネット接続が必要です。
 
 クルアーンの章句は機械翻訳しません。Tanzil の公式訳を表示します。
 
@@ -99,8 +102,10 @@ Halal Kansai は、日本に暮らすムスリムのための毎日の道具で�
 • خريطة الحلال: مطاعم ومتاجر ومساجد في كنساي، مع إمكانية اقتراح ما ينقص.
 • قارئ الملصقات: وجّه الكاميرا إلى قائمة «原材料名» على المنتج الياباني ليخبرك
   بالمكوّنات المشبوهة وسببها.
-• ترجمة الخطبة مباشرة: خطبة الجمعة تُترجَم إلى لغتك أثناء إلقائها، داخل هاتفك.
-  لا يُسجَّل الصوت ولا يغادر الجهاز. وتعمل دون إنترنت بعد تنزيل النماذج.
+• ترجمة الخطبة مباشرة: خطبة الجمعة تُترجَم إلى لغتك أثناء إلقائها. في وضع
+  «على هذا الهاتف» تتم المعالجة كلها داخل الجهاز وتعمل دون إنترنت، ولا يُسجَّل
+  الصوت ولا يغادر الهاتف. أما الوضع السريع فيستخدم التعرّف على الكلام في النظام
+  ويحتاج إلى الإنترنت.
 
 آيات القرآن لا تُترجَم آليًا أبدًا: تُعرض بترجمة Tanzil الرسمية.
 
@@ -125,7 +130,7 @@ Responde exactamente esto. Está comprobado contra el código.
 |---|---|
 | ¿Recopila o comparte datos de usuario? | **Sí** (por lo de abajo; el resto es todo local) |
 | Ubicación | **No se recopila.** Se usa solo en el aparato para calcular rezo y qibla; no se envía a ningún servidor. |
-| Audio / grabaciones de voz | **No se recopila.** El audio se transcribe en el propio teléfono y nunca se sube. |
+| Audio / grabaciones de voz | **No se recopila.** La app no guarda ni envía audio a ningún servidor suyo. En modo «En este teléfono» se transcribe dentro del aparato; en modo rápido lo procesa el reconocedor de voz del sistema (Google), no la app. |
 | Fotos / vídeos | **No se recopila.** El OCR de etiquetas es local; la foto no se sube. |
 | Contenido generado por el usuario — *texto del sermón* | **Sí se recopila** · Finalidad: **funcionalidad de la app** · **Procesado de forma efímera** (no se almacena) · No se comparte con terceros. Solo cuando el par de idiomas no puede traducirse en el aparato, o en modo sala. |
 | Contenido generado por el usuario — *sugerencia de un lugar* | **Sí se recopila y se almacena** · Finalidad: funcionalidad de la app · Opcional para el usuario · Se revisa antes de publicarse. |
@@ -134,8 +139,10 @@ Responde exactamente esto. Está comprobado contra el código.
 | ¿Se cifran los datos en tránsito? | **Sí** (HTTPS/WSS). |
 | ¿Puede el usuario pedir que se borren sus datos? | **Sí**, escribiendo a `pagos.euros73@gmail.com`. No hay cuentas que borrar; solo, si acaso, una sugerencia de lugar enviada. |
 
-> 🟢 **Punto fuerte que conviene decir en la ficha**: el audio del sermón se
-> procesa en el dispositivo y no se sube. A los revisores les gusta y es verdad.
+> 🟢 **Punto fuerte**: en modo «En este teléfono» el audio se procesa en el
+> dispositivo y no se sube. **Ojo:** el modo rápido (el que sale por defecto en
+> Android) usa el reconocedor de Google y necesita red; no prometer "nunca sale
+> del teléfono" sin matizarlo.
 
 ### Permisos declarados (y por qué)
 | Permiso | Para qué |
@@ -169,9 +176,11 @@ justo lo que Apple exige.
 ```
 Halal Kansai is a free tool for the Muslim community in Japan.
 
-The Friday sermon translation runs entirely on the device: speech recognition
-(Whisper via transformers.js) and translation (Google ML Kit) both execute
-locally. Audio is never recorded, stored or transmitted.
+The Friday sermon translation offers two recognition modes. "On this phone"
+runs entirely on the device: speech recognition (Whisper) and translation
+(Google ML Kit) both execute locally, and audio is never recorded, stored or
+transmitted. The fast mode uses the system speech recogniser (Apple Speech),
+which may need internet; the app itself never stores or uploads audio.
 
 To test the sermon feature: open the "Khutbah" tab, choose source language
 Arabic and any target language, press start and play any Arabic speech near the
