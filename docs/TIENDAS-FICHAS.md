@@ -258,16 +258,18 @@ Luego TestFlight → grupo externo → enlace público → a la gente con iPhone
 
 | Cosa | Estado |
 |---|---|
-| Build · tests · lint | ✅ 224 tests en verde |
+| Build · tests · lint | ✅ 228 tests en verde |
 | AAB firmado para Google Play | ✅ 39 MB, firma verificada |
 | iOS release para iPhone real | ✅ compila (sin firmar: falta tu cuenta) |
 | Probado en emulador Android (release) | ✅ 6 pestañas, árabe RTL, avisos de rezo, lector de etiquetas |
-| Jutba en Android | ✅ arreglada: no arrancaba (3 fallos, ver commits del 17/09) |
+| Jutba en Android, modo rápido | ✅ arreglada: no arrancaba (3 fallos). Frase inyectada → traducida en el móvil en 0,14 s |
+| Jutba en Android, modo «En este teléfono» | ✅ arreglada: el WebView no tenía micrófono y Whisper no cargaba sin WebGPU. Probado con audio árabe: transcribe y traduce sin servidor |
+| Calidad con el modelo pequeño | 🟡 errores con voz sintética; probar «Standard» el viernes |
 | Contraste en los 5 temas | ✅ escaneado; en modo oscuro no se veían los nombres de lugares |
 | Widget iOS / manifiesto de privacidad / cifrado | ✅ |
 | Capturas + icono + gráfico destacado | ✅ (la de la jutba, a rehacer el viernes) |
 | **Política de privacidad en línea** | 🔴 **da 404** → `npm run deploy` (tú) |
-| Reconocimiento de voz con audio real | 🔴 imposible en el emulador → viernes 18/09 en la mezquita |
+| Reconocimiento con un imán real | 🔴 viernes 18/09 en la mezquita |
 | Probado en iPhone | 🔴 → TestFlight |
 | Cuentas de desarrollador | 🔴 sin comprar |
 
