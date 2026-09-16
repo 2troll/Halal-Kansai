@@ -4,22 +4,8 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
-	<!-- Apple rechaza la app si falta el motivo de cada permiso, y lo rechaza
-	     tambien si la frase es generica: tiene que decir para que sirve. -->
-	<key>NSCameraUsageDescription</key>
-	<string>To read the barcode on a food package and look up its ingredients. Nothing is recorded or sent anywhere.</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>To compute prayer times and the qibla direction for where you are. Your location stays on this device.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>To read the ingredient list from a photo of a food package. The photo stays on your phone.</string>
-	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>To save the photo of the label you just took, if you choose to.</string>
-	<key>NSSpeechRecognitionUsageDescription</key>
-	<string>To turn the Friday sermon into text on this device, so it can be translated for you. The audio never leaves your phone.</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>To listen to the Friday sermon and translate it live for you. Audio is not recorded or stored.</string>
 	<key>CFBundleDisplayName</key>
-        <string>Halal Kansai</string>
+	<string>Halal Kansai</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -34,26 +20,40 @@
 	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>To read the barcode on a food package and look up its ingredients. Nothing is recorded or sent anywhere.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>To compute prayer times and the qibla direction for where you are. Your location stays on this device.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>To listen to the Friday sermon and translate it live for you. Audio is not recorded or stored.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>To save the photo of the label you just took, if you choose to.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>To read the ingredient list from a photo of a food package. The photo stays on your phone.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>To turn the Friday sermon into text on this device, so it can be translated for you. The audio never leaves your phone.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
-    <false/>
-    <key>UISceneConfigurations</key>
-    <dict>
-      <key>UIWindowSceneSessionRoleApplication</key>
-      <array>
-        <dict>
-            <key>UISceneConfigurationName</key>
-            <string>Default Configuration</string>
-            <key>UISceneDelegateClassName</key>
-            <string>$(PRODUCT_MODULE_NAME).SceneDelegate</string>
-            <key>UISceneStoryboardFile</key>
-            <string>Main</string>
-        </dict>
-      </array>
-    </dict>
+		<false/>
+		<key>UISceneConfigurations</key>
+		<dict>
+			<key>UIWindowSceneSessionRoleApplication</key>
+			<array>
+				<dict>
+					<key>UISceneConfigurationName</key>
+					<string>Default Configuration</string>
+					<key>UISceneDelegateClassName</key>
+					<string>$(PRODUCT_MODULE_NAME).SceneDelegate</string>
+					<key>UISceneStoryboardFile</key>
+					<string>Main</string>
+				</dict>
+			</array>
+		</dict>
 	</dict>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
