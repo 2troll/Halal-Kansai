@@ -196,41 +196,62 @@ Se pueden sacar del emulador, pero la de la jutba conviene que sea real.
 
 ---
 
-## 5. Pasos para publicar
+## 5. Decisiones tomadas (16/09/2026)
 
-### Google Play (25 USD, pago único — lo más rápido)
+| Decisión | Elegido | Por qué |
+|---|---|---|
+| Cuenta de Google Play | **Personal** (25 USD, pago único) | Una organización pide D-U-N-S y papeles de entidad que no existen. |
+| Prueba cerrada de Google | **12 testers × 14 días seguidos** | Obligatorio en cuentas personales nuevas antes de producción. No se puede saltar. |
+| Apple: ¿comerciante (DSA)? | **No comerciante** | App gratis, sin ingresos. Si dices que sí, tu dirección y teléfono salen públicos. Coste: no aparece en las tiendas de la UE (el público está en Japón). |
+| Precio | Gratis, sin compras dentro | — |
+| Países | Todos (Apple: todos menos la UE) | — |
+| Sin iPhone | Simulacro + **TestFlight externo** con musulmanes de la mezquita que tengan iPhone | El simulador de iOS 26 no puede abrir la app: ML Kit no tiene versión arm64 para simulador. |
+
+## 6. Pasos para publicar
+
+### Clave de firma de Android (hecha)
+- `~/.claves/halal-kansai/upload.jks` + `keystore.properties`, copia en
+  `PortableSSD/3-DOCUMENTOS/Claves-apps/halal-kansai/`.
+- `android/app/build.gradle` la lee sola. **Nunca al repo** (es público).
+- Con *Play App Signing* activado (por defecto), si se pierde se puede pedir a
+  Google un reseteo, pero tarda días. Mejor no perderla.
+
+### Google Play
 ```bash
 cd ~/projects/Halal-Kansai
-npm run app:build          # compila y sincroniza
-npx cap open android       # abre Android Studio
+npm run app:build
+cd android && JAVA_HOME=/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home ./gradlew bundleRelease
+# → android/app/build/outputs/bundle/release/app-release.aab
 ```
-En Android Studio: `Build > Generate Signed App Bundle` → crear la clave de
-subida (🔴 **guárdala: si se pierde, no se puede volver a actualizar la app**)
-→ genera el `.aab` → súbelo en Play Console.
+Play Console → Crear app → Pruebas → **Prueba cerrada** → subir el `.aab` →
+lista de correos de los 12 testers → enviar a revisión.
 
-### App Store (99 USD/año)
+### App Store
 ```bash
 npm run app:ios            # abre Xcode
 ```
-En Xcode: elegir el equipo en *Signing & Capabilities*, `Product > Archive`,
-y subir con el Organizer a App Store Connect.
+Xcode → *Signing & Capabilities* → elegir tu equipo (en **App** y en
+**PrayerWidget**; los dos usan el App Group `group.app.halalkansai`) →
+`Product > Archive` → Organizer → *Distribute App* → App Store Connect.
+Luego TestFlight → grupo externo → enlace público → a la gente con iPhone.
 
 ---
 
-## 6. Estado, a día de hoy
+## 7. Estado, a día de hoy
 
 | Cosa | Estado |
 |---|---|
-| Traducción dentro del móvil (ML Kit) | ✅ Instalada, sincronizada en Android e iOS |
-| Transcripción dentro del móvil (Whisper) | ✅ Ya estaba |
-| La jutba no llama al servidor por cada frase | ✅ Arreglado |
-| Aguanta una hora sin degradarse | ✅ Lista podada a 80 frases |
-| Modelos descargados al elegir idioma | ✅ Conectado |
-| `RECORD_AUDIO` declarado | ✅ Explícito en el manifest |
-| Textos de permisos iOS | ✅ Revisados |
-| Política de privacidad | ✅ ES/EN/JA/AR en `/privacidad.html` |
-| Fichas y formularios | ✅ Este documento |
-| Build · tests · lint | ✅ 182 tests en verde |
-| **Probado en un móvil real** | 🔴 **Falta — el viernes** |
-| Capturas | 🔴 Faltan |
-| Cuentas de desarrollador | 🔴 Sin comprar |
+| Traducción y transcripción dentro del móvil | ✅ |
+| Build · tests · lint | ✅ 212 tests en verde (17/09) |
+| Rama juntada en `main` y subida | ✅ 17/09 |
+| AAB firmado para Google Play | ✅ 39 MB, firma verificada |
+| iOS release para iPhone real | ✅ compila (sin firmar) |
+| Widget iOS | ✅ arreglado: le faltaba `CFBundleExecutable` y la app no se instalaba |
+| `PrivacyInfo.xcprivacy` (app y widget) | ✅ añadido |
+| Declaración de cifrado iOS | ✅ `ITSAppUsesNonExemptEncryption = NO` |
+| **Política de privacidad en línea** | 🔴 **da 404**: el Worker publicado es del 11/09. Hace falta `npm run deploy` |
+| Probado en emulador Android | ⏳ en curso |
+| Probado en iPhone | 🔴 imposible en este Mac → TestFlight |
+| Jutba real un viernes | 🔴 18/09 y 25/09 |
+| Capturas | 🔴 del emulador / simulador |
+| Cuentas de desarrollador | 🔴 sin comprar |

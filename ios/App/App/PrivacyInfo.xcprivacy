@@ -2,14 +2,29 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<!-- Sin rastreo ni recogida de datos: lo que viaja (texto de la jutba en
-	     modo sala, sugerencias de lugares) no se vincula a nadie. -->
+	<!-- Sin rastreo. Lo único que sale del teléfono es contenido del usuario
+	     (texto de la jutba en modo sala o si no hay traducción local, y las
+	     sugerencias de lugares), sin vincular a nadie. Debe coincidir con la
+	     ficha "App Privacy" de docs/TIENDAS-FICHAS.md. -->
 	<key>NSPrivacyTracking</key>
 	<false/>
 	<key>NSPrivacyTrackingDomains</key>
 	<array/>
 	<key>NSPrivacyCollectedDataTypes</key>
-	<array/>
+	<array>
+		<dict>
+			<key>NSPrivacyCollectedDataType</key>
+			<string>NSPrivacyCollectedDataTypeOtherUserContent</string>
+			<key>NSPrivacyCollectedDataTypeLinked</key>
+			<false/>
+			<key>NSPrivacyCollectedDataTypeTracking</key>
+			<false/>
+			<key>NSPrivacyCollectedDataTypePurposes</key>
+			<array>
+				<string>NSPrivacyCollectedDataTypePurposeAppFunctionality</string>
+			</array>
+		</dict>
+	</array>
 	<key>NSPrivacyAccessedAPITypes</key>
 	<array>
 		<!-- La app y el widget comparten el próximo rezo por el App Group. -->
