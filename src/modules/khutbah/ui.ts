@@ -357,7 +357,7 @@ export function renderKhutbah(container: HTMLElement): void {
   };
   fillVoices();
   // La lista llega tarde en algunos navegadores.
-  speechSynthesis?.addEventListener?.('voiceschanged', fillVoices);
+  globalThis.speechSynthesis?.addEventListener?.('voiceschanged', fillVoices);
 
   selVoice?.addEventListener('change', () => {
     setVoiceName(selVoice.value);
