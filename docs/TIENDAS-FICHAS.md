@@ -6,7 +6,7 @@ Todo lo de aquí está listo para copiar y pegar. Lo que **no** puedo hacer yo
 está marcado con 🔴 (necesita tus cuentas de desarrollador o tu Mac abierto).
 
 **Política de privacidad (URL obligatoria en las dos tiendas):**
-`https://halal-kansai.2troll-p.workers.dev/privacidad.html`
+`https://halal-kansai.2troll-p.workers.dev/privacidad`
 Está en `public/privacidad.html`, en ES/EN/JA/AR con RTL, y se publica sola con
 `npm run deploy`. Si algún día compras dominio propio, cambia la URL en las dos
 fichas.
@@ -268,7 +268,7 @@ Luego TestFlight → grupo externo → enlace público → a la gente con iPhone
 | Contraste en los 5 temas | ✅ escaneado; en modo oscuro no se veían los nombres de lugares |
 | Widget iOS / manifiesto de privacidad / cifrado | ✅ |
 | Capturas + icono + gráfico destacado | ✅ (la de la jutba, a rehacer el viernes) |
-| **Política de privacidad en línea** | 🔴 **da 404** → `npm run deploy` (tú) |
+| Política de privacidad en línea | ✅ publicada el 17/09 (200, ES/EN/JA/AR) |
 | Reconocimiento con un imán real | 🔴 viernes 18/09 en la mezquita |
 | Probado en iPhone | 🔴 → TestFlight |
 | Cuentas de desarrollador | 🔴 sin comprar |
