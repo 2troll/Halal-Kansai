@@ -53,9 +53,9 @@ function makeListener() {
   const sentences: string[] = [];
   const errors: string[] = [];
   const listener = new NativeKhutbahListener({
-    onSentence: (t) => sentences.push(t),
+    onSentence: (t: string) => sentences.push(t),
     onInterim: () => {},
-    onError: (e) => errors.push(e),
+    onError: (e: string) => errors.push(e),
     onDegenerate: () => {},
   } as never);
   return { listener, sentences, errors };
