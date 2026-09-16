@@ -530,6 +530,34 @@ body::before {
   background: color-mix(in srgb, var(--night-soft) 82%, transparent);
 }
 
+/* main.css le da a la tarjeta de lugar tinta oscura (pensada para papel). Con
+   el fondo de arriba, en los temas oscuros el nombre de la mezquita quedaba
+   oscuro sobre oscuro: invisible. El texto sigue al tema, como el fondo. */
+.place-card {
+  color: var(--on-surface);
+}
+
+.place-card .meta {
+  color: color-mix(in srgb, var(--on-surface) 78%, transparent);
+}
+
+/* Marcas y etiquetas de color. «Prohibido» llevaba --on-surface, que en los
+   temas claros es tinta oscura sobre rojo (2,3:1); y en papel y arena el oro
+   se oscurece (ver arriba), así que la tinta oscura encima tampoco se lee.
+   Sobre rojo, siempre texto claro; sobre el oro oscuro, también. */
+.hit.haram {
+  color: var(--on-accent);
+}
+
+[data-theme='paper'] .hit.mushbooh,
+[data-theme='sand'] .hit.mushbooh,
+[data-theme='paper'] .badge.mushbooh,
+[data-theme='sand'] .badge.mushbooh,
+[data-theme='paper'] .badge.shop,
+[data-theme='sand'] .badge.shop {
+  color: var(--on-accent);
+}
+
 /* ============================================================
    Modo pantalla: la traducción proyectada para toda la sala
    ============================================================
