@@ -28,8 +28,28 @@ android {
             ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
+    // La clave de subida a Google Play vive FUERA del repo (es público): en
+    // ~/.claves/halal-kansai/, con copia en el SSD. Sin ella el build de
+    // release sale sin firmar en vez de fallar, para que cualquiera pueda
+    // compilar el proyecto.
+    def keystorePropsFile = file(System.getenv('HALAL_KANSAI_KEYSTORE') ?: "${System.getProperty('user.home')}/.claves/halal-kansai/keystore.properties")
+    if (keystorePropsFile.exists()) {
+        def keystoreProps = new Properties()
+        keystorePropsFile.withInputStream { keystoreProps.load(it) }
+        signingConfigs {
+            release {
+                storeFile file(keystoreProps['storeFile'])
+                storePassword keystoreProps['storePassword']
+                keyAlias keystoreProps['keyAlias']
+                keyPassword keystoreProps['keyPassword']
+            }
+        }
+    }
     buildTypes {
         release {
+            if (keystorePropsFile.exists()) {
+                signingConfig signingConfigs.release
+            }
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
