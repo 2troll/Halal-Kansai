@@ -77,7 +77,7 @@ export function renderSalat(container: HTMLElement): void {
       isNative()
         ? `<label class="notify-row">
              <input type="checkbox" id="chk-notify" ${notificationsEnabled() ? 'checked' : ''} />
-             <span>${icon('listen', 19)}${t('notifyPrayers')}</span>
+             <span>${icon('salat', 19)}${t('notifyPrayers')}</span>
            </label>`
         : ''
     }
