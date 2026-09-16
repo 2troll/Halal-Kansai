@@ -57,6 +57,13 @@
          El audio se procesa en el aparato y no se graba ni se sube. -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
+    <!-- Sin esto el WebView NO recibe el micrófono aunque RECORD_AUDIO esté
+         concedido: Capacitor (BridgeWebChromeClient.onPermissionRequest) pide
+         los dos y, si falta uno en el manifest, deniega getUserMedia. Eso
+         dejaba muertos el modo «En este teléfono» (Whisper) y el medidor de
+         nivel en Android. Es un permiso normal: no se le pregunta a nadie. -->
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+
     <!-- Horas de rezo y qibla del sitio donde estas. La ubicacion no sale
          del telefono: el calculo es local. -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
