@@ -695,3 +695,57 @@ body::before {
 .diag-ok .diag-dot { color: #3fa76d; }
 .diag-aviso .diag-dot { color: var(--gold); }
 .diag-fallo .diag-dot { color: var(--danger); }
+
+/* ---------- Añadidos del 17/09: ajustes de rezo, ayuno, cómo llegar ---------- */
+
+.salat-settings,
+.fast-card {
+  margin: 0.8rem 0;
+  border-radius: var(--radius-card);
+  background: color-mix(in srgb, var(--on-surface) 6%, transparent);
+  padding: 0.2rem 0.9rem;
+}
+
+.salat-settings summary,
+.fast-card summary {
+  cursor: pointer;
+  padding: 0.7rem 0;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.fast-card .fast-times {
+  font-weight: 400;
+  margin-inline-start: auto;
+}
+
+.salat-settings label {
+  display: block;
+  margin: 0.4rem 0 0.7rem;
+  font-size: 0.85rem;
+}
+
+.salat-settings select {
+  display: block;
+  width: 100%;
+  margin-top: 0.3rem;
+  padding: 0.55rem 0.7rem;
+  background: var(--night-soft);
+  color: var(--on-surface);
+}
+
+.fast-card .fast-left {
+  margin: 0 0 0.8rem;
+}
+
+/* Botón pequeño dentro de la tarjeta: área táctil suficiente sin ocupar fila. */
+.place-card .directions {
+  margin-top: 0.55rem;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.85rem;
+  min-height: 36px;
+  text-decoration: none;
+}

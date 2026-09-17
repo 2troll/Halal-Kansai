@@ -11,7 +11,6 @@ export const en = {
 
   // Salat
   salatTitle: 'Prayer times',
-  salatMethod: 'Muslim World League · Asr Shafi‘i',
   fajr: 'Fajr',
   sunrise: 'Sunrise',
   dhuhr: 'Dhuhr',
@@ -25,6 +24,22 @@ export const en = {
   shareError: 'Could not create the image.',
   locationDenied: 'Location unavailable — showing Osaka times.',
   city: 'City',
+  methodMwl: 'Muslim World League',
+  methodKarachi: 'Karachi (University of Islamic Sciences)',
+  methodIsna: 'ISNA (North America)',
+  methodEgypt: 'Egyptian General Authority of Survey',
+  methodMakkah: 'Umm al-Qura (Makkah)',
+  methodIndonesia: 'Kemenag (Indonesia)',
+  asrShafii: 'Asr Shafi‘i',
+  asrHanafi: 'Asr Hanafi',
+  calcSettings: 'Calculation method',
+  asrSchool: 'Asr',
+  calcHint: 'Use the method of your mosque. If you are not sure, ask the imam.',
+  fastTitle: 'Fasting today',
+  fastSuhoor: 'Suhoor until',
+  fastIftar: 'Iftar',
+  fastToIftar: 'Until iftar',
+  fastToSuhoor: 'Until suhoor ends',
 
   // Qibla
   qiblaTitle: 'Qibla direction',
@@ -46,6 +61,7 @@ export const en = {
   typeRestaurant: 'Restaurant',
   typeShop: 'Halal shop',
   unverified: 'To be verified on site',
+  directions: 'Directions',
   openMap: 'Map',
   kmAway: 'km away',
   suggestPlace: 'Suggest a place',

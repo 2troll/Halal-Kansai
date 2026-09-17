@@ -18,7 +18,6 @@ export const ja: Dict = {
 
   // Salat
   salatTitle: '礼拝の時刻',
-  salatMethod: 'ムスリム世界連盟方式 ・ アスルはシャーフィイー派',
   fajr: 'ファジュル（夜明け前）',
   sunrise: '日の出',
   dhuhr: 'ズフル（正午）',
@@ -32,6 +31,22 @@ export const ja: Dict = {
   shareError: '画像を作成できませんでした。',
   locationDenied: '現在地を取得できないため、大阪の時刻を表示しています。',
   city: '都市',
+  methodMwl: 'ムスリム世界連盟',
+  methodKarachi: 'カラチ・イスラーム科学大学',
+  methodIsna: '北米イスラーム協会（ISNA）',
+  methodEgypt: 'エジプト測量庁',
+  methodMakkah: 'ウンム・アル＝クラー（マッカ）',
+  methodIndonesia: 'インドネシア宗教省',
+  asrShafii: 'アスルはシャーフィイー派',
+  asrHanafi: 'アスルはハナフィー派',
+  calcSettings: '計算方式',
+  asrSchool: 'アスル',
+  calcHint: '通っているモスクの方式を選んでください。わからない場合はイマームに聞いてください。',
+  fastTitle: '今日の断食',
+  fastSuhoor: 'スフール終了',
+  fastIftar: 'イフタール',
+  fastToIftar: 'イフタールまで',
+  fastToSuhoor: 'スフール終了まで',
 
   // Qibla
   qiblaTitle: 'キブラの方角',
@@ -54,6 +69,7 @@ export const ja: Dict = {
   typeRestaurant: '飲食店',
   typeShop: 'ハラール食品店',
   unverified: '現地での確認が必要です',
+  directions: '経路',
   openMap: '地図',
   kmAway: 'km先',
   suggestPlace: 'スポットを提案する',

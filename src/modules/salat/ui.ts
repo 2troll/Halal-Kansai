@@ -1,4 +1,17 @@
-import { computePrayerTimes, formatTime, type Coordinates, type PrayerTimes } from './calculator';
+import { computePrayerTimes, formatTime, type AsrSchool, type Coordinates, type MethodId, type PrayerTimes } from './calculator';
+import {
+  METHOD_IDS,
+  SCHOOLS,
+  currentMethod,
+  getMethodId,
+  getSchool,
+  methodLabel,
+  methodSummary,
+  schoolLabel,
+  setMethod,
+  timezoneHours,
+} from './settings';
+import { fastingCountdown } from '../ramadan/fasting';
 import { getLang, t, type Lang } from '../../i18n';
 import { icon } from '../../ui/icons';
 import { updatePrayerWidget } from '../../native/widget';
@@ -11,7 +24,6 @@ import {
 } from '../../native';
 
 const OSAKA: Coordinates = { lat: 34.6937, lng: 135.5023 };
-const JST = 9;
 const STORAGE_KEY = 'hk-coords';
 
 const ORDER: Array<keyof PrayerTimes> = ['fajr', 'sunrise', 'dhuhr', 'asr', 'maghrib', 'isha'];
@@ -46,7 +58,8 @@ export function renderSalat(container: HTMLElement): void {
   const times = computePrayerTimes(
     { year: now.getFullYear(), month: now.getMonth() + 1, day: now.getDate() },
     coords,
-    JST,
+    timezoneHours(now),
+    currentMethod(),
   );
   const next = nextPrayerOf(times, now);
   const h = Math.floor(next.minutesLeft / 60);
@@ -58,7 +71,7 @@ export function renderSalat(container: HTMLElement): void {
 
   container.innerHTML = `
     <h2>${t('salatTitle')}</h2>
-    <p class="subtitle">${t('salatMethod')}</p>
+    <p class="subtitle">${methodSummary()}</p>
     <div class="mihrab-card">
       <div class="label">${t('nextPrayer')}</div>
       <div class="big">${t(next.name)}</div>
@@ -73,6 +86,7 @@ export function renderSalat(container: HTMLElement): void {
         </li>`,
       ).join('')}
     </ul>
+    ${fastingCardHtml(now, coords)}
     ${
       isNative()
         ? `<label class="notify-row">
@@ -81,6 +95,20 @@ export function renderSalat(container: HTMLElement): void {
            </label>`
         : ''
     }
+    <details class="salat-settings">
+      <summary>${icon('settings', 17)}${t('calcSettings')}</summary>
+      <label>${t('calcSettings')}
+        <select id="sel-method">
+          ${METHOD_IDS.map((id) => `<option value="${id}" ${id === getMethodId() ? 'selected' : ''}>${methodLabel(id)}</option>`).join('')}
+        </select>
+      </label>
+      <label>${t('asrSchool')}
+        <select id="sel-asr">
+          ${SCHOOLS.map((s) => `<option value="${s}" ${s === getSchool() ? 'selected' : ''}>${schoolLabel(s)}</option>`).join('')}
+        </select>
+      </label>
+      <p class="note">${t('calcHint')}</p>
+    </details>
     <button class="btn" id="btn-locate">${icon('location', 19)}${t('useMyLocation')}</button>
     <button class="btn" id="btn-share">${icon('share', 19)}${t('shareTimes')}</button>
     <p class="note" id="salat-note"></p>
@@ -94,6 +122,19 @@ export function renderSalat(container: HTMLElement): void {
       container.querySelector('#salat-note')!.textContent = t('shareError');
     }
   });
+
+  // Cambiar de método reprograma también los avisos y el widget: si no,
+  // sonarían a la hora del método anterior.
+  const selMethod = container.querySelector<HTMLSelectElement>('#sel-method')!;
+  const selAsr = container.querySelector<HTMLSelectElement>('#sel-asr')!;
+  const onMethodChange = async (): Promise<void> => {
+    setMethod(selMethod.value as MethodId, selAsr.value as AsrSchool);
+    renderSalat(container);
+    container.querySelector<HTMLDetailsElement>('.salat-settings')!.open = true;
+    if (notificationsEnabled()) await rescheduleNotifications();
+  };
+  selMethod.addEventListener('change', () => void onMethodChange());
+  selAsr.addEventListener('change', () => void onMethodChange());
 
   const chk = container.querySelector<HTMLInputElement>('#chk-notify');
   chk?.addEventListener('change', async () => {
@@ -137,6 +178,36 @@ function formatCountdown(h: number, m: number, lang: Lang): string {
   return h > 0 ? `${h} h ${m} min` : `${m} min`;
 }
 
+/**
+ * Suhur hasta el fajr, iftar en el maghrib, con la cuenta atrás de lo que toca.
+ *
+ * Sin fecha hégira a propósito (ver ramadan/fasting.ts): sirve igual para
+ * Ramadán que para los ayunos voluntarios, y no finge saber cuándo empieza
+ * el mes. Va plegada: a quien no ayuna no le ocupa la pantalla.
+ */
+function fastingCardHtml(now: Date, coords: Coordinates): string {
+  const date = { year: now.getFullYear(), month: now.getMonth() + 1, day: now.getDate() };
+  // Con el método elegido, para que el suhur y el iftar coincidan con el
+  // fajr y el maghrib de la lista de arriba.
+  const times = computePrayerTimes(date, coords, timezoneHours(now), currentMethod());
+  const day = {
+    date,
+    imsak: times.fajr,
+    iftar: times.maghrib,
+    durationMinutes: Math.round((times.maghrib - times.fajr) * 60),
+  };
+  const c = fastingCountdown(day, now.getHours() + now.getMinutes() / 60);
+  const left = formatCountdown(Math.floor(c.minutesRemaining / 60), c.minutesRemaining % 60, getLang());
+  return `
+    <details class="fast-card">
+      <summary>
+        <span>${t('fastTitle')}</span>
+        <span class="fast-times">${t('fastSuhoor')} <b>${formatTime(day.imsak)}</b> · ${t('fastIftar')} <b>${formatTime(day.iftar)}</b></span>
+      </summary>
+      <p class="fast-left">${c.phase === 'fasting' ? t('fastToIftar') : t('fastToSuhoor')}: <b>${left}</b></p>
+    </details>`;
+}
+
 export function getCoords(): Coordinates {
   return loadCoords();
 }
@@ -159,7 +230,8 @@ export async function rescheduleNotifications(): Promise<void> {
       times: computePrayerTimes(
         { year: date.getFullYear(), month: date.getMonth() + 1, day: date.getDate() },
         coords,
-        JST,
+        timezoneHours(date),
+        currentMethod(),
       ),
     };
   });

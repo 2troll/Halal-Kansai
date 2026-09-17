@@ -4,6 +4,7 @@
  */
 import { formatTime, type PrayerTimes } from './calculator';
 import { getLang, t } from '../../i18n';
+import { methodSummary } from './settings';
 
 const W = 1080;
 const H = 1350;
@@ -68,7 +69,7 @@ export function renderTimesImage(times: PrayerTimes, date: Date): HTMLCanvasElem
     day: 'numeric',
   });
   ctx.fillText(dateStr, W / 2, 360);
-  ctx.fillText(t('salatMethod'), W / 2, 412);
+  ctx.fillText(methodSummary(), W / 2, 412);
 
   // Horarios.
   const startY = 520;

@@ -20,12 +20,47 @@ export interface PrayerTimes {
   isha: number;
 }
 
-export const METHOD_MWL = {
+/**
+ * Un método de cálculo: ángulos del sol para Fajr e Isha, o Isha a un número
+ * fijo de minutos tras el Maghrib (Umm al-Qura), y el factor de sombra del Asr.
+ */
+export interface CalcMethod {
+  fajrAngle: number;
+  ishaAngle?: number;
+  /** Isha a minutos fijos tras el Maghrib, en vez de por ángulo. */
+  ishaMinutes?: number;
+  /** 1 = Shafi'i, Maliki, Hanbali · 2 = Hanafi. */
+  asrFactor: number;
+}
+
+export const METHOD_MWL: CalcMethod = {
   fajrAngle: 18,
   ishaAngle: 17,
   /** Factor de sombra Shafi'i para Asr */
   asrFactor: 1,
-} as const;
+};
+
+/**
+ * Los métodos que usan las comunidades que viven en Japón. No son opiniones
+ * de la app: cada mezquita reza por uno, y quien viene de Pakistán, Indonesia
+ * o Egipto espera ver las horas de su tierra. Los ángulos son los de
+ * PrayTimes.org / AlAdhan, contra los que se comprueban los tests.
+ */
+export const METHODS = {
+  mwl: { fajrAngle: 18, ishaAngle: 17 },
+  karachi: { fajrAngle: 18, ishaAngle: 18 },
+  isna: { fajrAngle: 15, ishaAngle: 15 },
+  egypt: { fajrAngle: 19.5, ishaAngle: 17.5 },
+  makkah: { fajrAngle: 18.5, ishaMinutes: 90 },
+  indonesia: { fajrAngle: 20, ishaAngle: 18 },
+} as const satisfies Record<string, Omit<CalcMethod, 'asrFactor'>>;
+
+export type MethodId = keyof typeof METHODS;
+export type AsrSchool = 'shafii' | 'hanafi';
+
+export function methodFor(id: MethodId, school: AsrSchool): CalcMethod {
+  return { ...METHODS[id], asrFactor: school === 'hanafi' ? 2 : 1 };
+}
 
 const DEG = Math.PI / 180;
 
@@ -123,7 +158,10 @@ export function computePrayerTimes(
     dhuhr: midDay(portions.dhuhr),
     asr: asrTime(method.asrFactor, portions.asr),
     maghrib: sunAngleTime(horizon, portions.sunset, false),
-    isha: sunAngleTime(method.ishaAngle, portions.isha, false),
+    isha:
+      method.ishaMinutes !== undefined
+        ? sunAngleTime(horizon, portions.sunset, false) + method.ishaMinutes / 60
+        : sunAngleTime(method.ishaAngle ?? 17, portions.isha, false),
   };
 
   // Paso de hora solar local a hora civil de la zona.
