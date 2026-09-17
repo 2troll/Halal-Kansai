@@ -109,8 +109,10 @@ export function renderSalat(container: HTMLElement): void {
       </label>
       <p class="note">${t('calcHint')}</p>
     </details>
-    <button class="btn" id="btn-locate">${icon('location', 19)}${t('useMyLocation')}</button>
-    <button class="btn" id="btn-share">${icon('share', 19)}${t('shareTimes')}</button>
+    <div class="btn-row">
+      <button class="btn" id="btn-locate">${icon('location', 19)}${t('useMyLocation')}</button>
+      <button class="btn ghost" id="btn-share">${icon('share', 19)}${t('shareTimes')}</button>
+    </div>
     <p class="note" id="salat-note"></p>
   `;
 

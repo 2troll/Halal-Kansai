@@ -1,12 +1,20 @@
 import './styles/main.css';
 import './styles/themes.css';
 import './styles/refined.css';
+import './styles/modern.css';
 import { applyDirection, getLang, onLangChange, setLang, t, type Lang } from './i18n';
 import { applyAppearance, openAppearanceSheet } from './modules/appearance';
 import { icon, type IconName } from './ui/icons';
 
 /** Etiqueta del botón: sigla, salvo el japonés, que se lee de un vistazo. */
-const LANG_LABEL: Record<Lang, string> = { ar: 'AR', en: 'EN', es: 'ES', ja: '日本語' };
+/**
+ * El idioma va en un selector compacto junto a los ajustes, no en una fila de
+ * cuatro botones: esa fila hacía que la cabecera ocupara casi un cuarto de la
+ * pantalla en todas las pestañas. En la lista, cada idioma en su propia
+ * lengua, para que lo encuentre quien no lee la actual.
+ */
+const LANG_LABEL: Record<Lang, string> = { ar: 'العربية', en: 'English', es: 'Español', ja: '日本語' };
+const LANG_CODE: Record<Lang, string> = { ar: 'ع', en: 'EN', es: 'ES', ja: '日本' };
 import { renderSalat } from './modules/salat/ui';
 import { renderQibla } from './modules/qibla/ui';
 import { renderPlaces } from './modules/places/ui';
@@ -47,14 +55,16 @@ function renderShell(): void {
           <p class="tagline">${t('tagline')}</p>
         </div>
       </div>
-      <button class="btn-appearance" id="btn-appearance" aria-label="${t('appearance')}" title="${t('appearance')}">${icon('settings', 20)}</button>
-      <div class="lang-switch" role="group" aria-label="${t('language')}">
-        ${(['ar', 'en', 'es', 'ja'] as Lang[])
-          .map(
-            (l) =>
-              `<button data-lang="${l}" aria-pressed="${String(l === getLang())}">${LANG_LABEL[l]}</button>`,
-          )
-          .join('')}
+      <div class="header-actions">
+        <label class="lang-select" title="${t('language')}">
+          <span class="lang-code" aria-hidden="true">${LANG_CODE[getLang()]}</span>
+          <select id="sel-lang" aria-label="${t('language')}">
+            ${(['ar', 'en', 'es', 'ja'] as Lang[])
+              .map((l) => `<option value="${l}" ${l === getLang() ? 'selected' : ''}>${LANG_LABEL[l]}</option>`)
+              .join('')}
+          </select>
+        </label>
+        <button class="btn-appearance" id="btn-appearance" aria-label="${t('appearance')}" title="${t('appearance')}">${icon('settings', 20)}</button>
       </div>
     </header>
     <main id="view"></main>
@@ -72,8 +82,8 @@ function renderShell(): void {
     openAppearanceSheet(() => applyDirection());
   });
 
-  app.querySelectorAll<HTMLButtonElement>('.lang-switch button').forEach((btn) => {
-    btn.addEventListener('click', () => setLang(btn.dataset.lang as Lang));
+  app.querySelector<HTMLSelectElement>('#sel-lang')!.addEventListener('change', (ev) => {
+    setLang((ev.target as HTMLSelectElement).value as Lang);
   });
 
   app.querySelectorAll<HTMLButtonElement>('.tabbar button').forEach((btn) => {

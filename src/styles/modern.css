@@ -1,0 +1,262 @@
+/* ============================================================
+   Capa moderna (17/09/2026)
+   ============================================================
+   Va la última. Sale de revisar la app en un Nothing Phone 3a real:
+
+   1. La cabecera ocupaba casi un cuarto de pantalla en todas las pestañas
+      (marca + fila de cuatro idiomas + engranaje). Ahora es una sola fila.
+   2. El texto secundario en los temas oscuros era dorado: competía con el
+      contenido y todo parecía un aviso. Ahora es neutro; el oro se reserva
+      para lo que tiene que llamar la atención.
+   3. Botones sueltos sin agrupar (Comer, Rezo): ahora filas con jerarquía,
+      acción principal llena y secundaria de contorno.
+   4. La pestaña activa se marcaba solo por color: ahora lleva la píldora
+      detrás del icono que usan Android e iOS.
+   ============================================================ */
+
+/* ---------- Texto secundario neutro en los temas oscuros ---------- */
+/* :root solo cuando no hay tema: con `:root` a secas esta regla ganaba
+   también al tema claro, y el subtítulo quedaba casi invisible sobre crema. */
+:root:not([data-theme]),
+[data-theme='night'] {
+  --on-surface-dim: #b7c4bd;
+}
+
+[data-theme='indigo'] {
+  --on-surface-dim: #b9c1d6;
+}
+
+/* ---------- Cabecera en una fila ---------- */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding-bottom: 0.7rem;
+}
+
+.brand {
+  min-width: 0;
+  align-items: center;
+}
+
+.brand h1 {
+  font-size: 1.35rem;
+  line-height: 1.15;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.brand .tagline {
+  display: none;
+}
+
+/* En pantallas anchas sobra sitio para el lema. */
+@media (min-width: 600px) {
+  .brand h1 {
+    font-size: 1.6rem;
+  }
+
+  .brand .tagline {
+    display: block;
+  }
+}
+
+.brand-arch {
+  width: 26px;
+  height: 32px;
+  flex-shrink: 0;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+/* Selector de idioma: una píldora con el código, y el <select> nativo
+   transparente encima para que se abra la lista del sistema (accesible y
+   con la tipografía correcta para árabe y japonés). */
+.lang-select {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  height: 40px;
+  padding: 0 0.8rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--on-surface) 8%, transparent);
+  color: var(--on-surface);
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.lang-select::after {
+  content: '';
+  width: 0;
+  height: 0;
+  margin-inline-start: 0.4rem;
+  border-inline: 4px solid transparent;
+  border-top: 5px solid currentColor;
+  opacity: 0.7;
+}
+
+.lang-select select {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  opacity: 0;
+  cursor: pointer;
+  font-size: 16px; /* iOS no hace zoom al abrirlo */
+}
+
+.btn-appearance {
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+}
+
+/* ---------- Títulos de sección ---------- */
+main h2 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0.4rem 0 0.2rem;
+}
+
+.subtitle {
+  margin-bottom: 1.1rem;
+}
+
+.eyebrow {
+  margin: 1rem 0 0.45rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--on-surface-dim);
+}
+
+/* ---------- Filas de botones ---------- */
+.btn-row,
+.scan-actions.primary {
+  display: grid;
+  /* 200px: en un móvil van uno debajo del otro (con 140px, «Usar mi
+     ubicación» se partía en dos líneas); en tableta, lado a lado. */
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.6rem;
+  margin: 1rem 0;
+}
+
+.btn-row .btn,
+.scan-actions.primary .btn {
+  width: 100%;
+  min-height: 48px;
+}
+
+.btn.ghost {
+  background: transparent;
+  border: 1px solid var(--hairline);
+  color: var(--on-surface);
+}
+
+/* Ejemplos: una fila que se desliza, no un bloque que empuja el contenido. */
+.chip-row {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding: 0.1rem 0 0.4rem;
+  margin-inline: -1.1rem;
+  padding-inline: 1.1rem;
+  scroll-snap-type: x proximity;
+  scrollbar-width: none;
+}
+
+.chip-row::-webkit-scrollbar {
+  display: none;
+}
+
+.chip-row .chip {
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+  min-height: 40px;
+  padding: 0.45rem 1rem;
+  font-size: 0.95rem;
+}
+
+/* ---------- Tarjetas: un solo lenguaje ---------- */
+.place-card,
+.finding,
+.guide-card,
+.salat-settings,
+.fast-card,
+.feedback-card,
+.diag {
+  border-radius: 16px;
+}
+
+/* ---------- Barra de pestañas: píldora en la activa ---------- */
+.tabbar button .icon {
+  /* 56px como en Android, pero nunca más ancha que su botón: en 320px de
+     pantalla cada pestaña mide 53px y la píldora se salía por el borde. */
+  width: min(56px, 100%);
+  height: 30px;
+  padding: 3px 0;
+  border-radius: 999px;
+  transition: background-color 0.2s ease;
+}
+
+.tabbar button[aria-selected='true'] .icon {
+  background: color-mix(in srgb, var(--gold) 22%, transparent);
+}
+
+.tabbar button[aria-selected='true'] {
+  font-weight: 600;
+}
+
+/* ---------- Respuesta al toque ---------- */
+.btn,
+.btn-appearance,
+.lang-select,
+.tabbar button,
+.place-card {
+  transition:
+    transform 0.12s ease,
+    background-color 0.2s ease;
+}
+
+.btn:active,
+.btn-appearance:active,
+.lang-select:active,
+.place-card:active {
+  transform: scale(0.97);
+}
+
+/* Quien navega con teclado o lector de pantalla ve dónde está. */
+:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+.lang-select:focus-within {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
+}
+
+/* ---------- Jutba: los ajustes en una tarjeta ---------- */
+.khutbah-controls {
+  background: color-mix(in srgb, var(--on-surface) 5%, transparent);
+  border-radius: 16px;
+  padding: 0.9rem;
+  margin-bottom: 1rem;
+}

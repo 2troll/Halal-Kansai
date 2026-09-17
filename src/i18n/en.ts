@@ -142,6 +142,7 @@ export const en = {
   scanPlaceholder: '原材料名：小麦粉、豚脂、しょうゆ、みりん…',
   scanCheck: 'Check the label',
   scanClear: 'Clear',
+  scanExamples: 'Try an example',
   scanCamera: 'Scan barcode',
   scanCameraStop: 'Stop camera',
   scanPointCamera: 'Point the camera at the barcode.',

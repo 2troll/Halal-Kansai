@@ -139,6 +139,7 @@ export const es: Dict = {
   scanPlaceholder: '原材料名：小麦粉、豚脂、しょうゆ、みりん…',
   scanCheck: 'Analizar la etiqueta',
   scanClear: 'Limpiar',
+  scanExamples: 'Prueba con un ejemplo',
   scanCamera: 'Escanear código',
   scanCameraStop: 'Apagar cámara',
   scanPointCamera: 'Apunta la cámara al código de barras.',

@@ -197,15 +197,19 @@ function renderLabelMode(body: HTMLElement): void {
   body.innerHTML = `
     <p class="subtitle">${t('scanSubtitle')}</p>
 
-    <div class="scan-actions">
+    <div class="scan-actions primary">
       <button class="btn" id="scan-camera">${icon('camera', 19)}${t('scanCamera')}</button>
       ${
         ocrAvailable()
           ? `<button class="btn" id="scan-photo">${icon('camera', 19)}${t('scanPhoto')}</button>`
           : ''
       }
+    </div>
+
+    <p class="eyebrow">${t('scanExamples')}</p>
+    <div class="chip-row">
       ${EXAMPLES.map(
-        (ex, i) => `<button class="btn ghost" data-example="${i}" lang="ja">${ex.name}</button>`,
+        (ex, i) => `<button class="btn ghost chip" data-example="${i}" lang="ja">${ex.name}</button>`,
       ).join('')}
     </div>
 

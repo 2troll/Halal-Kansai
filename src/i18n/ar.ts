@@ -136,6 +136,7 @@ export const ar: Dict = {
   scanPlaceholder: '原材料名：小麦粉、豚脂、しょうゆ、みりん…',
   scanCheck: 'افحص الملصق',
   scanClear: 'مسح',
+  scanExamples: 'جرّب مثالًا',
   scanCamera: 'امسح الباركود',
   scanCameraStop: 'إيقاف الكاميرا',
   scanPointCamera: 'وجّه الكاميرا نحو الباركود.',

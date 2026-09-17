@@ -150,6 +150,7 @@ export const ja: Dict = {
   scanPlaceholder: '原材料名：小麦粉、豚脂、しょうゆ、みりん…',
   scanCheck: '原材料を調べる',
   scanClear: '消去',
+  scanExamples: '例で試す',
   scanCamera: 'バーコードを読み取る',
   scanCameraStop: 'カメラを止める',
   scanPointCamera: 'カメラをバーコードに向けてください。',
