@@ -24,6 +24,12 @@ const post = (body: unknown, headers: Record<string, string> = {}) => ({
 const VALID = { kind: 'bug', message: 'El Asr sale a otra hora que en mi mezquita' };
 
 describe('parseFeedback', () => {
+  it('conserva el idioma de todos los idiomas de la app', () => {
+    // Lista literal: importar src/i18n necesita localStorage del navegador.
+    const LANGS = ['en', 'ja', 'ar', 'id', 'ur', 'bn', 'ms', 'tr', 'ne', 'vi', 'zh', 'ko', 'fil', 'pt', 'th', 'my', 'si', 'hi', 'es'];
+    for (const lang of LANGS) expect(parseFeedback({ ...VALID, lang })?.lang).toBe(lang);
+  });
+
   it('acepta lo mínimo y guarda el contexto técnico válido', () => {
     const f = parseFeedback({ ...VALID, rating: 4, lang: 'es', platform: 'android', appVersion: '1.0.0', tab: 'salat' });
     expect(f).toMatchObject({ kind: 'bug', rating: 4, lang: 'es', platform: 'android', appVersion: '1.0.0', tab: 'salat' });

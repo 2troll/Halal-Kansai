@@ -33,7 +33,11 @@ export interface FeedbackStore {
 
 const KINDS: ReadonlySet<string> = new Set(['bug', 'idea', 'data', 'other']);
 const PLATFORMS: ReadonlySet<string> = new Set(['android', 'ios', 'web']);
-const LANGS: ReadonlySet<string> = new Set(['ar', 'en', 'es', 'ja']);
+// Los 19 idiomas de la app (src/i18n LANGS). Antes solo había 4 y el idioma
+// de quien escribía en urdu, nepalí o vietnamita se perdía por el camino.
+const LANGS: ReadonlySet<string> = new Set([
+  'en', 'ja', 'ar', 'id', 'ur', 'bn', 'ms', 'tr', 'ne', 'vi', 'zh', 'ko', 'fil', 'pt', 'th', 'my', 'si', 'hi', 'es',
+]);
 const TABS: ReadonlySet<string> = new Set(['salat', 'qibla', 'places', 'food', 'khutbah', 'guide']);
 
 export const MESSAGE_MIN = 5;
