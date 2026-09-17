@@ -3,10 +3,14 @@ import { getCoords } from '../salat/ui';
 import { t } from '../../i18n';
 import { icon } from '../../ui/icons';
 import { isNative } from '../../backend';
+import { magneticDeclination } from './declination';
+import { smoothHeading, trueHeading } from './heading';
 
 /** Evento webkit de iOS con rumbo de brújula real. */
 interface WebkitOrientationEvent extends DeviceOrientationEvent {
   webkitCompassHeading?: number;
+  /** Precisión en grados (iOS); negativa si el sensor no está calibrado. */
+  webkitCompassAccuracy?: number;
 }
 
 type IOSPermissionAPI = {
@@ -103,6 +107,8 @@ export function renderQibla(container: HTMLElement): void {
     <div class="qibla-actions">
       <button class="btn" id="btn-compass">${icon('qibla', 19)}${t('compassStart')}</button>
       <p class="note" id="qibla-note">${t('compassHint')}</p>
+      <p class="note calib" id="qibla-calib" hidden>∞ ${t('compassCalibrate')}</p>
+      <p class="note decl">${t('compassTrueNorth')} (${magneticDeclination(lat, lng) >= 0 ? '+' : ''}${magneticDeclination(lat, lng).toFixed(1)}°)</p>
     </div>
   `;
 
@@ -111,13 +117,26 @@ export function renderQibla(container: HTMLElement): void {
   const wrap = container.querySelector<HTMLElement>('#compass')!;
   const note = container.querySelector<HTMLElement>('#qibla-note')!;
   const turn = container.querySelector<HTMLElement>('#qibla-turn')!;
+  const calib = container.querySelector<HTMLElement>('#qibla-calib')!;
   let wasAligned = false;
+  let smoothed: number | null = null;
+  const declination = magneticDeclination(lat, lng);
 
   const onOrientation = (ev: DeviceOrientationEvent) => {
-    const webkit = (ev as WebkitOrientationEvent).webkitCompassHeading;
+    const webkitEv = ev as WebkitOrientationEvent;
+    const webkit = webkitEv.webkitCompassHeading;
     // iOS expone el rumbo directamente; en Android alpha es antihorario desde el norte.
-    const heading = webkit !== undefined ? webkit : ev.alpha !== null ? 360 - ev.alpha : null;
-    if (heading === null) return;
+    const magnetic = webkit !== undefined ? webkit : ev.alpha !== null ? 360 - ev.alpha : null;
+    if (magnetic === null) return;
+    const screenAngle = screen.orientation?.angle ?? 0;
+    smoothed = smoothHeading(smoothed, trueHeading(magnetic, declination, screenAngle));
+    const heading = smoothed;
+    // Precisión baja (iOS la da; en Android, si el evento no es absoluto) → calibrar.
+    const needsCalibration =
+      (webkitEv.webkitCompassAccuracy !== undefined &&
+        (webkitEv.webkitCompassAccuracy < 0 || webkitEv.webkitCompassAccuracy > 15)) ||
+      (webkit === undefined && ev.absolute === false);
+    calib.hidden = !needsCalibration;
     // La esfera gira con el norte; la aguja marca la qibla relativa a la pantalla.
     dial.style.transform = `rotate(${-heading}deg)`;
     needle.style.transform = `rotate(${bearing - heading}deg)`;
