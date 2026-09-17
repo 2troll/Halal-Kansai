@@ -2020,3 +2020,60 @@ details.guide-card > p {
   text-align: end;
   font-size: 0.9rem;
 }
+
+/* ---------- Próxima fecha islámica ---------- */
+.event-card {
+  margin: 0.8rem 0;
+  padding: 0.2rem 1rem;
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--gold) 14%, transparent);
+  color: var(--on-surface);
+}
+
+.event-card > summary {
+  gap: 0.8rem;
+  padding-block: 0.5rem;
+}
+
+.event-icon {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 2.6rem;
+  height: 2.6rem;
+  border-radius: 12px;
+  background: var(--gold);
+  color: var(--night);
+  font-size: 1.4rem;
+}
+
+.event-body {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+}
+
+.event-body .eyebrow {
+  margin: 0;
+  color: var(--on-surface-dim);
+}
+
+.event-when {
+  text-align: end;
+  font-size: 0.82rem;
+  font-weight: 400;
+  line-height: 1.3;
+  color: var(--on-surface-dim);
+}
+
+.event-when b {
+  color: var(--on-surface);
+}
+
+.event-card.soon {
+  background: color-mix(in srgb, var(--gold) 30%, transparent);
+}
+
+.event-card > .note {
+  margin: 0 0 0.7rem;
+}

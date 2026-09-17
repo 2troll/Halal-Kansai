@@ -12,6 +12,7 @@ import {
   timezoneHours,
 } from './settings';
 import { fastingCountdown } from '../ramadan/fasting';
+import { nextIslamicEventCached } from './events';
 import { FARD, currentPrayerOf, hijriDate, loadPrayed, prayerDate, togglePrayed } from './today';
 import { PLACES } from '../places/data';
 import { directionsUrl } from '../places/directions';
@@ -105,6 +106,7 @@ export function renderSalat(container: HTMLElement): void {
       ).join('')}
     </ul>
     ${fastingCardHtml(now, coords)}
+    ${islamicEventHtml(now)}
     ${nearestPlaceHtml(coords)}
     ${weekTableHtml(now, coords)}
     ${
@@ -365,6 +367,32 @@ export function getCoords(): Coordinates {
  * 7 días = 35, con margen de sobra. Se vuelve a llamar cada vez que la app
  * pasa a primer plano, así que la ventana se renueva sola.
  */
+/** Próxima fecha islámica (Ramadán, Eid…): estimada, y lo dice. */
+function islamicEventHtml(now: Date): string {
+  const ev = nextIslamicEventCached(now);
+  if (!ev) return '';
+  const when =
+    ev.daysLeft === 0 ? t('evToday') : ev.daysLeft === 1 ? t('evTomorrow') : t('evInDays').replace('{n}', String(ev.daysLeft));
+  let dateText = '';
+  try {
+    dateText = ev.date.toLocaleDateString(getLang(), { day: 'numeric', month: 'long' });
+  } catch {
+    dateText = ev.date.toDateString();
+  }
+  return `
+    <details class="event-card${ev.daysLeft <= 1 ? ' soon' : ''}">
+      <summary>
+        <span class="event-icon" aria-hidden="true">☾</span>
+        <span class="event-body">
+          <span class="eyebrow">${t('evNextTitle')}</span>
+          <strong>${t(ev.key)}</strong>
+        </span>
+        <span class="event-when">${escapeHtml(dateText)}<br><b>${escapeHtml(when)}</b></span>
+      </summary>
+      <p class="note">${t('evEstimate')}</p>
+    </details>`;
+}
+
 export async function rescheduleNotifications(): Promise<void> {
   const coords = loadCoords();
   const today = new Date();

@@ -26,18 +26,31 @@ const HIJRI_MONTHS_AR = [
  * escribía «6 de abril de 1448 a. C.» (meses y era del calendario
  * gregoriano). Los nombres de los meses los pone la app.
  */
-export function hijriDate(date: Date, lang: string): string | null {
+let hijriFmt: Intl.DateTimeFormat | null | undefined;
+
+/** Día, mes y año hégiros en números; null si el motor no trae el calendario. */
+export function hijriParts(date: Date): { day: number; month: number; year: number } | null {
   try {
-    const fmt = new Intl.DateTimeFormat('en-u-ca-islamic-umalqura-nu-latn', { day: 'numeric', month: 'numeric', year: 'numeric' });
-    if (!fmt.resolvedOptions().calendar.startsWith('islamic')) return null;
-    const part = (type: string) => Number(fmt.formatToParts(date).find((p) => p.type === type)?.value);
+    if (hijriFmt === undefined) {
+      const fmt = new Intl.DateTimeFormat('en-u-ca-islamic-umalqura-nu-latn', { day: 'numeric', month: 'numeric', year: 'numeric' });
+      hijriFmt = fmt.resolvedOptions().calendar.startsWith('islamic') ? fmt : null;
+    }
+    if (!hijriFmt) return null;
+    const parts = hijriFmt.formatToParts(date);
+    const part = (type: string) => Number(parts.find((p) => p.type === type)?.value);
     const [day, month, year] = [part('day'), part('month'), part('year')];
     if (![day, month, year].every(Number.isFinite) || month < 1 || month > 12) return null;
-    if (lang === 'ar' || lang === 'ur') return `${day} ${HIJRI_MONTHS_AR[month - 1]} ${year} هـ`;
-    return `${day} ${HIJRI_MONTHS[month - 1]} ${year} AH`;
+    return { day, month, year };
   } catch {
     return null;
   }
+}
+
+export function hijriDate(date: Date, lang: string): string | null {
+  const h = hijriParts(date);
+  if (!h) return null;
+  if (lang === 'ar' || lang === 'ur') return `${h.day} ${HIJRI_MONTHS_AR[h.month - 1]} ${h.year} هـ`;
+  return `${h.day} ${HIJRI_MONTHS[h.month - 1]} ${h.year} AH`;
 }
 
 /**
