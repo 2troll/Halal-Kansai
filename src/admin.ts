@@ -11,6 +11,7 @@ import './styles/main.css';
 import './styles/themes.css';
 import './styles/refined.css';
 import { applyAppearance } from './modules/appearance';
+import { escapeHtml } from './modules/escape';
 
 interface Suggestion {
   id: string;
@@ -80,7 +81,11 @@ async function renderQueue(): Promise<void> {
     <main style="max-width:560px;margin:2rem auto;padding:0 1rem">
       <h2>Sugerencias pendientes (${suggestions.length})</h2>
       <div id="queue" class="transcript"></div>
+      <h2>Opiniones de los usuarios</h2>
+      <div id="feedback" class="transcript"></div>
     </main>`;
+
+  void renderFeedback(root.querySelector<HTMLElement>('#feedback')!);
 
   const queue = root.querySelector<HTMLElement>('#queue')!;
   if (suggestions.length === 0) {
@@ -93,11 +98,14 @@ async function renderQueue(): Promise<void> {
     card.className = 'bubble';
     const maps =
       s.lat !== undefined
-        ? `<a href="https://www.openstreetmap.org/?mlat=${s.lat}&mlon=${s.lng}#map=17/${s.lat}/${s.lng}" target="_blank" rel="noopener">mapa</a>`
+        ? `<a href="https://www.openstreetmap.org/?mlat=${Number(s.lat)}&mlon=${Number(s.lng)}#map=17/${Number(s.lat)}/${Number(s.lng)}" target="_blank" rel="noopener">mapa</a>`
         : 'sin coordenadas';
+    // TODO lo que escribe el público se escapa: con innerHTML crudo, una
+    // «sugerencia» con <img onerror> se ejecutaba aquí y podía leer el token
+    // de administración de sessionStorage.
     card.innerHTML = `
-      <strong>${s.name}</strong> · ${s.type} · ${s.city}<br>
-      <span class="orig">${s.address ?? ''} ${s.note ? `— «${s.note}»` : ''} (${maps})</span><br>
+      <strong>${escapeHtml(s.name)}</strong> · ${escapeHtml(s.type)} · ${escapeHtml(s.city)}<br>
+      <span class="orig">${escapeHtml(s.address ?? '')} ${s.note ? `— «${escapeHtml(s.note)}»` : ''} (${maps})</span><br>
       <button class="btn" data-action="approve">✅ Aprobar</button>
       <button class="btn stop" data-action="reject">✖ Rechazar</button>`;
     card.querySelectorAll<HTMLButtonElement>('button').forEach((btn) =>
@@ -105,6 +113,51 @@ async function renderQueue(): Promise<void> {
     );
     queue.appendChild(card);
   }
+}
+
+interface FeedbackItem {
+  kind: string;
+  message: string;
+  rating?: number;
+  lang?: string;
+  platform?: string;
+  appVersion?: string;
+  createdAt: string;
+}
+
+const KIND_LABEL: Record<string, string> = {
+  bug: '🐞 No funciona',
+  idea: '💡 Idea',
+  data: '📍 Dato mal',
+  other: '💬 Otro',
+};
+
+async function renderFeedback(box: HTMLElement): Promise<void> {
+  const res = await fetch('/api/admin/feedback', { headers: { Authorization: `Bearer ${getToken()}` } });
+  if (!res.ok) {
+    box.innerHTML = `<p class="note">No disponible (HTTP ${res.status}).</p>`;
+    return;
+  }
+  const { feedback } = (await res.json()) as { feedback: FeedbackItem[] };
+  if (feedback.length === 0) {
+    box.innerHTML = '<p class="note">Todavía no hay opiniones.</p>';
+    return;
+  }
+  box.innerHTML = feedback
+    .map((f) => {
+      const meta = [f.platform, f.appVersion && `v${f.appVersion}`, f.lang, new Date(f.createdAt).toLocaleString('es')]
+        .filter(Boolean)
+        .map((x) => escapeHtml(String(x)))
+        .join(' · ');
+      const stars = f.rating ? ` · ${'★'.repeat(Number(f.rating))}` : '';
+      return `
+        <div class="bubble">
+          <strong>${escapeHtml(KIND_LABEL[f.kind] ?? f.kind)}</strong>${stars}<br>
+          <span>${escapeHtml(f.message)}</span><br>
+          <span class="orig">${meta}</span>
+        </div>`;
+    })
+    .join('');
 }
 
 if (getToken()) {
