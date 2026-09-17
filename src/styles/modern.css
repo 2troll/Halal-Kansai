@@ -1880,3 +1880,30 @@ details[open] > summary::after,
   color: var(--on-surface);
   border: 1.5px solid color-mix(in srgb, var(--on-surface) 30%, transparent);
 }
+
+/* Qué rezos avisan (idea de Muslim Pro): una píldora por rezo. */
+.notify-which {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin: 0.5rem 0 0.2rem;
+}
+
+.notify-chip {
+  min-height: 38px;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  border: 1.5px solid color-mix(in srgb, var(--on-surface) 25%, transparent);
+  background: transparent;
+  color: var(--on-surface-dim);
+  font-size: 0.8rem;
+  cursor: pointer;
+  text-decoration: line-through;
+}
+
+.notify-chip[aria-pressed='true'] {
+  background: var(--emerald);
+  border-color: var(--emerald);
+  color: var(--on-accent);
+  text-decoration: none;
+}

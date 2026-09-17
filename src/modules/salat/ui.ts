@@ -21,8 +21,12 @@ import { icon } from '../../ui/icons';
 import { updatePrayerWidget } from '../../native/widget';
 import { isNative } from '../../backend';
 import {
+  NOTIFY_CHOICES,
   cancelPrayerNotifications,
+  mutedPrayers,
   notificationsEnabled,
+  toggleMuted,
+  type NotifyChoice,
   schedulePrayerNotifications,
   setNotificationsEnabled,
 } from '../../native';
@@ -108,7 +112,13 @@ export function renderSalat(container: HTMLElement): void {
         ? `<label class="notify-row">
              <input type="checkbox" id="chk-notify" ${notificationsEnabled() ? 'checked' : ''} />
              <span>${icon('salat', 19)}${t('notifyPrayers')}</span>
-           </label>`
+           </label>
+           <div class="notify-which" role="group" aria-label="${t('notifyPrayers')}" ${notificationsEnabled() ? '' : 'hidden'}>
+             ${NOTIFY_CHOICES.map(
+               (c) =>
+                 `<button type="button" class="notify-chip" data-choice="${c}" aria-pressed="${String(!mutedPrayers().has(c))}">${t(c)}</button>`,
+             ).join('')}
+           </div>`
         : ''
     }
     <details class="salat-settings">
@@ -166,8 +176,17 @@ export function renderSalat(container: HTMLElement): void {
   selAsr.addEventListener('change', () => void onMethodChange());
 
   const chk = container.querySelector<HTMLInputElement>('#chk-notify');
+  const which = container.querySelector<HTMLElement>('.notify-which');
+  which?.querySelectorAll<HTMLButtonElement>('.notify-chip').forEach((b) =>
+    b.addEventListener('click', async () => {
+      const muted = toggleMuted(b.dataset.choice as NotifyChoice);
+      b.setAttribute('aria-pressed', String(!muted.has(b.dataset.choice as NotifyChoice)));
+      await rescheduleNotifications();
+    }),
+  );
   chk?.addEventListener('change', async () => {
     setNotificationsEnabled(chk.checked);
+    if (which) which.hidden = !chk.checked;
     if (chk.checked) await rescheduleNotifications();
     else await cancelPrayerNotifications();
   });

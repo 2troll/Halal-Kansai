@@ -36,6 +36,44 @@ export function setNotificationsEnabled(on: boolean): void {
   localStorage.setItem(PREF_KEY, on ? '1' : '0');
 }
 
+const MUTED_KEY = 'hk-notify-muted';
+/** Lo que se puede silenciar por separado: los cinco rezos y el jumu'ah. */
+export const NOTIFY_CHOICES = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha', 'jumuah'] as const;
+export type NotifyChoice = (typeof NOTIFY_CHOICES)[number];
+
+export function parseMuted(raw: string | null): Set<NotifyChoice> {
+  try {
+    const list = JSON.parse(raw ?? '[]') as unknown;
+    return new Set(Array.isArray(list) ? list.filter((x): x is NotifyChoice => (NOTIFY_CHOICES as readonly string[]).includes(x as string)) : []);
+  } catch {
+    return new Set();
+  }
+}
+
+/**
+ * Rezos sin aviso. Idea de Muslim Pro: quien reza el fayr con despertador
+ * propio, o el dhuhr en el trabajo, quiere quitar ESE aviso, no todos.
+ */
+export function mutedPrayers(): Set<NotifyChoice> {
+  try {
+    return parseMuted(localStorage.getItem(MUTED_KEY));
+  } catch {
+    return new Set();
+  }
+}
+
+export function toggleMuted(choice: NotifyChoice): Set<NotifyChoice> {
+  const set = mutedPrayers();
+  if (set.has(choice)) set.delete(choice);
+  else set.add(choice);
+  try {
+    localStorage.setItem(MUTED_KEY, JSON.stringify([...set]));
+  } catch {
+    /* vale para esta sesión */
+  }
+  return set;
+}
+
 /**
  * Arranca lo nativo: barra de estado a juego, splash fuera en cuanto hay
  * pintado algo, y reprogramación de avisos al volver a primer plano (los
@@ -96,6 +134,7 @@ export async function schedulePrayerNotifications(
   }
 
   const now = Date.now();
+  const muted = mutedPrayers();
   const notifications = timesByDay.flatMap(({ date, times }, dayIndex) =>
     NOTIFIED.map((name, i) => {
       const at = atTime(date, times[name]);
@@ -106,14 +145,14 @@ export async function schedulePrayerNotifications(
         schedule: { at },
         smallIcon: 'ic_stat_icon',
       };
-    }).filter((n) => n.schedule.at.getTime() > now),
+    }).filter((n, i) => n.schedule.at.getTime() > now && !muted.has(NOTIFIED[i] as NotifyChoice)),
   );
 
   // Viernes: aviso 45 min antes del dhuhr con la mezquita más cercana. El
   // jumu'ah se reza en congregación y hay que llegar; a la hora del rezo ya
   // es tarde para salir de casa.
   timesByDay.forEach(({ date, times }, dayIndex) => {
-    if (date.getDay() !== 5) return;
+    if (date.getDay() !== 5 || muted.has('jumuah')) return;
     const at = atTime(date, times.dhuhr - 0.75);
     if (at.getTime() <= now) return;
     notifications.push({

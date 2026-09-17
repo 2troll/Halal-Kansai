@@ -44,3 +44,25 @@ describe('aviso del jumu‘ah', () => {
     expect(new Set(ids).size).toBe(ids.length);
   });
 });
+
+import { parseMuted } from '../src/native/index.ts';
+
+describe('avisos silenciados por rezo', () => {
+  it('no programa los rezos silenciados ni el jumu‘ah si se quitó', async () => {
+    const m = new Map([['hk-notify-prayers', '1'], ['hk-notify-muted', '["fajr","jumuah"]']]);
+    vi.stubGlobal('localStorage', { getItem: (k: string) => m.get(k) ?? null, setItem: () => {} });
+    const days = [0, 1, 2].map((i) => ({ date: new Date(2026, 8, 17 + i), times: TIMES }));
+    await schedulePrayerNotifications(days, 'Osaka Masjid');
+    const titles = scheduled.map((n) => n.title);
+    expect(titles).not.toContain('fajr');
+    expect(titles).not.toContain('jumuahReminderTitle');
+    expect(titles).toContain('dhuhr');
+    expect(titles).toContain('isha');
+  });
+
+  it('solo acepta rezos conocidos y tolera datos rotos', () => {
+    expect([...parseMuted('["fajr","jumuah","sunrise","x"]')]).toEqual(['fajr', 'jumuah']);
+    expect(parseMuted('{roto').size).toBe(0);
+    expect(parseMuted(null).size).toBe(0);
+  });
+});
