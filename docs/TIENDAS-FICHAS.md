@@ -275,7 +275,9 @@ Luego TestFlight → grupo externo → enlace público → a la gente con iPhone
 | Política de privacidad en línea | ✅ publicada el 17/09 (200, ES/EN/JA/AR) |
 | Reconocimiento con un imán real | 🔴 viernes 18/09 en la mezquita |
 | Probado en iPhone | 🔴 → TestFlight |
-| Cuenta Apple Developer | 🟡 pagada 17/09 (pedido W1411848888), esperando activación |
+| Cuenta Apple Developer | ✅ activa (team 4G3KM439A2) |
+| iOS 1.0.0 (10000) en App Store Connect | ✅ subida y procesada (app 6812956750) |
+| TestFlight externo | ⏳ en revisión de Apple · enlace para iPhone: https://testflight.apple.com/join/NMJzxGZn (máx. 100) |
 | Cuenta Google Play | 🟡 creada y pagada 17/09 (ID 8915848332706435995); faltan verificación de identidad, dispositivo Android y teléfono |
 
 ## 8. Calendario
