@@ -20,8 +20,8 @@ import { t, getLang } from '../../i18n';
 import { qrSvg } from './qr';
 import { closeScreenMode, openScreenMode, screenModeOpen } from './screen';
 import { isNative } from '../../backend';
-import { NativeKhutbahListener } from './speech-native';
-import { MicMeter, type MicReading } from './mic-level';
+import { NativeKhutbahListener, speechPlugin } from './speech-native';
+import { MicMeter, NativeMicMeter, type MicReading } from './mic-level';
 import {
   WhisperKhutbahListener,
   webGpuAvailable,
@@ -52,7 +52,7 @@ interface Listener {
 let listener: Listener | null = null;
 let room: KhutbahRoom | null = null;
 let running = false;
-let meter: MicMeter | null = null;
+let meter: MicMeter | NativeMicMeter | null = null;
 
 const PREF_SOURCE = 'hk-khutbah-source';
 const PREF_TARGET = 'hk-khutbah-target';
@@ -678,7 +678,9 @@ export function renderKhutbah(container: HTMLElement): void {
     noMatch = false;
     meterBox.hidden = false;
     paintMeter();
-    meter = new MicMeter();
+    // En la app nativa, el nivel lo da el propio reconocedor: abrir el
+    // micrófono otra vez desde aquí hace que Android lo deje sordo.
+    meter = listener instanceof NativeKhutbahListener ? new NativeMicMeter(speechPlugin()) : new MicMeter();
     void meter.start((reading) => {
       lastReading = reading;
       paintMeter();

@@ -97,3 +97,65 @@ export class MicMeter {
     this.peak = 0;
   }
 }
+
+/**
+ * Umbrales del nivel que da el reconocedor de Android (`onRmsChanged`, en dB
+ * relativos). Medido el 17-9-2026 en un Nothing Phone (2a): sala en silencio
+ * entre −2 y 3 con picos sueltos; voz por un altavoz a un metro, media ≈ 4,5.
+ * Como cada muestra salta mucho, el estado se decide sobre la media móvil.
+ */
+const NATIVE_SILENCE_DB = 1.5;
+const NATIVE_WEAK_DB = 3;
+
+/** Convierte una lectura nativa en la misma forma que el medidor del navegador. */
+export function nativeReading(db: number, prevPeak: number, avgDb = db): MicReading {
+  const level = Math.max(0, Math.min(1, (db + 2) / 12));
+  const peak = level > prevPeak ? level : prevPeak * 0.85 + level * 0.15;
+  return { level: peak, state: avgDb < NATIVE_SILENCE_DB ? 'silence' : avgDb < NATIVE_WEAK_DB ? 'weak' : 'good' };
+}
+
+interface RmsSource {
+  addListener(event: 'rmsChanged', fn: (ev: { value?: number }) => void): Promise<{ remove(): Promise<void> }>;
+}
+
+/**
+ * Medidor para la app nativa: escucha el nivel que ya calcula el reconocedor.
+ *
+ * NO abre el micrófono. Si el WebView graba a la vez que el reconocedor de
+ * Android, el sistema silencia al reconocedor: la barra decía «estoy oyendo la
+ * jutba» y no salía ni una frase (registro de audio: «VOICE_RECOGNITION
+ * silenced»). Así fallaba la jutba en la mezquita.
+ */
+export class NativeMicMeter {
+  private handle: { remove(): Promise<void> } | null = null;
+  private stopped = false;
+  private peak = 0;
+  /** Media móvil (≈2 s) de los dB: una sílaba suelta no cambia el estado. */
+  private avg: number | null = null;
+
+  constructor(private source: RmsSource) {}
+
+  async start(onReading: (r: MicReading) => void): Promise<void> {
+    try {
+      const handle = await this.source.addListener('rmsChanged', (ev) => {
+        if (typeof ev.value !== 'number') return;
+        this.avg = this.avg === null ? ev.value : this.avg * 0.9 + ev.value * 0.1;
+        const reading = nativeReading(ev.value, this.peak, this.avg);
+        this.peak = reading.level;
+        onReading(reading);
+      });
+      if (this.stopped) void handle.remove().catch(() => {});
+      else this.handle = handle;
+    } catch {
+      onReading({ level: 0, state: 'unavailable' });
+    }
+  }
+
+  stop(): void {
+    this.stopped = true;
+    void this.handle?.remove().catch(() => {});
+    this.handle = null;
+    this.peak = 0;
+    this.avg = null;
+  }
+}

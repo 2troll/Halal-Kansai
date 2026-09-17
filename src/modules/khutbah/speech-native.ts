@@ -48,6 +48,8 @@ interface SpeechEvent {
   code?: string;
   state?: string;
   status?: 'started' | 'stopped';
+  /** rmsChanged: nivel del micrófono en dB relativos. */
+  value?: number;
 }
 
 interface SpeechPlugin {
@@ -57,7 +59,7 @@ interface SpeechPlugin {
   start(options?: Record<string, unknown>): Promise<unknown>;
   stop(): Promise<void>;
   addListener(
-    event: 'partialResults' | 'segmentResults' | 'error' | 'listeningState',
+    event: 'partialResults' | 'segmentResults' | 'error' | 'listeningState' | 'rmsChanged',
     fn: (ev: SpeechEvent) => void,
   ): Promise<{ remove(): Promise<void> }>;
 }
