@@ -209,6 +209,12 @@ export const vi: Dict = {
   certVerifyNote: 'Hãy kiểm tra tổ chức cấp và ngày hết hạn. Chỉ lời ghi trên nhãn thì chưa phải bằng chứng.',
 
   notifyPrayers: 'Thông báo cho tôi khi đến giờ cầu nguyện',
+  jumuahReminderTitle: 'Hôm nay là Jumu‘ah',
+  jumuahReminderBody: 'Lễ thứ Sáu vào giờ trưa. Thánh đường gần nhất:',
+  tasbihTitle: 'Bộ đếm tasbih',
+  tasbihTap: 'Chạm để đếm',
+  tasbihReset: 'Đặt lại',
+  tasbihRound: 'Vòng',
 
   appearance: 'Giao diện',
   appearanceHint: 'Chọn màu bạn thấy dễ nhìn nhất, và cỡ chữ bạn đọc thoải mái.',

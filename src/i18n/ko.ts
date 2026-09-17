@@ -217,6 +217,12 @@ export const ko: Dict = {
   certVerifyNote: '인증 기관과 유효 기간을 확인하세요. 표시만으로는 증거가 되지 않습니다.',
 
   notifyPrayers: '예배 시간에 알림 받기',
+  jumuahReminderTitle: '오늘은 주므아',
+  jumuahReminderBody: '금요 합동예배는 정오입니다. 가장 가까운 모스크:',
+  tasbihTitle: '타스비흐 카운터',
+  tasbihTap: '눌러서 세기',
+  tasbihReset: '초기화',
+  tasbihRound: '회',
 
   // Apariencia
   appearance: '화면 설정',

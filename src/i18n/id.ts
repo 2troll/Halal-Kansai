@@ -217,6 +217,12 @@ export const id: Dict = {
   certVerifyNote: 'Periksa lembaga penerbit dan tanggal kedaluwarsanya. Klaim saja bukan bukti.',
 
   notifyPrayers: 'Beri tahu saya saat waktu salat',
+  jumuahReminderTitle: 'Hari ini salat Jumat',
+  jumuahReminderBody: 'Salat Jumat di waktu Zuhur. Masjid terdekat:',
+  tasbihTitle: 'Penghitung tasbih',
+  tasbihTap: 'Ketuk untuk menghitung',
+  tasbihReset: 'Ulang',
+  tasbihRound: 'Putaran',
 
   // Apariencia
   appearance: 'Tampilan',

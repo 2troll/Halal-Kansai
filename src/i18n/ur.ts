@@ -209,6 +209,12 @@ export const ur: Dict = {
   certVerifyNote: 'جاری کرنے والے ادارے اور میعاد ختم ہونے کی تاریخ کی تصدیق کریں۔ صرف دعویٰ ثبوت نہیں ہے۔',
 
   notifyPrayers: 'نماز کے اوقات پر مجھے اطلاع دیں',
+  jumuahReminderTitle: 'آج جمعہ ہے',
+  jumuahReminderBody: 'نمازِ جمعہ ظہر کے وقت ہے۔ قریب ترین مسجد:',
+  tasbihTitle: 'تسبیح کاؤنٹر',
+  tasbihTap: 'گننے کے لیے چھوئیں',
+  tasbihReset: 'دوبارہ',
+  tasbihRound: 'چکر',
 
   appearance: 'ظاہری شکل',
   appearanceHint: 'وہ رنگ منتخب کریں جو دیکھنے میں آپ کو سب سے آسان لگیں، اور وہ متن کا سائز جو آپ آرام سے پڑھ سکیں۔',

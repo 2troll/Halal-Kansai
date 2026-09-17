@@ -217,6 +217,12 @@ export const ne: Dict = {
   certVerifyNote: 'प्रमाणपत्र दिने संस्था र म्याद सकिने मिति पुष्टि गर्नुहोस्। दाबी मात्र प्रमाण होइन।',
 
   notifyPrayers: 'नमाजको समयमा मलाई सूचना दिनुहोस्',
+  jumuahReminderTitle: 'आज जुम्मा',
+  jumuahReminderBody: 'जुम्माको नमाज मध्यान्हमा। नजिकको मस्जिद:',
+  tasbihTitle: 'तस्बिह गणक',
+  tasbihTap: 'गन्न थिच्नुहोस्',
+  tasbihReset: 'फेरि सुरु',
+  tasbihRound: 'फेरो',
 
   // Apariencia
   appearance: 'रूप',

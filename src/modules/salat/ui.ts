@@ -253,7 +253,7 @@ function fastingCardHtml(now: Date, coords: Coordinates): string {
  * Sale de los datos de la app, sin red: justo lo que hace falta cuando entra
  * la hora del rezo fuera de casa.
  */
-function nearestPlaceHtml(coords: Coordinates): string {
+function nearestOf(coords: Coordinates, types: ReadonlyArray<string>): { p: (typeof PLACES)[number]; d: number } | undefined {
   const R = 6371;
   const rad = (d: number) => (d * Math.PI) / 180;
   const km = (lat: number, lng: number) => {
@@ -262,9 +262,13 @@ function nearestPlaceHtml(coords: Coordinates): string {
       Math.cos(rad(coords.lat)) * Math.cos(rad(lat)) * Math.sin(rad(lng - coords.lng) / 2) ** 2;
     return 2 * R * Math.asin(Math.sqrt(x));
   };
-  const best = PLACES.filter((p) => (p.type === 'mosque' || p.type === 'prayer') && p.lat !== undefined)
+  return PLACES.filter((p) => types.includes(p.type) && p.lat !== undefined)
     .map((p) => ({ p, d: km(p.lat!, p.lng!) }))
     .sort((a, b) => a.d - b.d)[0];
+}
+
+function nearestPlaceHtml(coords: Coordinates): string {
+  const best = nearestOf(coords, ['mosque', 'prayer']);
   if (!best) return '';
   const { p, d } = best;
   return `
@@ -336,5 +340,6 @@ export async function rescheduleNotifications(): Promise<void> {
       ),
     };
   });
-  await schedulePrayerNotifications(days);
+  // El jumu'ah es en mezquita, no en una sala de oración.
+  await schedulePrayerNotifications(days, nearestOf(coords, ['mosque'])?.p.name);
 }

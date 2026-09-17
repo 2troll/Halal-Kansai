@@ -215,6 +215,12 @@ export const en = {
   certVerifyNote: 'Verify the issuing body and the expiry date. The claim alone is not proof.',
 
   notifyPrayers: 'Notify me at prayer times',
+  jumuahReminderTitle: 'Jumu‘ah today',
+  jumuahReminderBody: 'Friday prayer is at midday. Nearest mosque:',
+  tasbihTitle: 'Tasbih counter',
+  tasbihTap: 'Tap to count',
+  tasbihReset: 'Reset',
+  tasbihRound: 'Round',
 
   // Apariencia
   appearance: 'Appearance',

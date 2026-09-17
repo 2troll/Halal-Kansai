@@ -209,6 +209,12 @@ export const hi: Dict = {
   certVerifyNote: 'जारी करने वाली संस्था और समाप्ति की तारीख़ जाँचें। सिर्फ़ दावा सबूत नहीं है।',
 
   notifyPrayers: 'नमाज़ के वक़्त मुझे सूचना दें',
+  jumuahReminderTitle: 'आज जुमा है',
+  jumuahReminderBody: 'जुमा की नमाज़ दोपहर में। सबसे नज़दीकी मस्जिद:',
+  tasbihTitle: 'तस्बीह काउंटर',
+  tasbihTap: 'गिनने के लिए छुएँ',
+  tasbihReset: 'रीसेट',
+  tasbihRound: 'चक्कर',
 
   appearance: 'रूप-रंग',
   appearanceHint: 'वे रंग चुनें जो आपकी आँखों को सबसे आसान लगें, और टेक्स्ट का वह साइज़ जो आप आराम से पढ़ सकें।',

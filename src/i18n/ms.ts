@@ -209,6 +209,12 @@ export const ms: Dict = {
   certVerifyNote: 'Sahkan badan pengeluar sijil dan tarikh luputnya. Dakwaan semata-mata bukan bukti.',
 
   notifyPrayers: 'Beri notifikasi pada waktu solat',
+  jumuahReminderTitle: 'Hari ini Jumaat',
+  jumuahReminderBody: 'Solat Jumaat pada waktu Zohor. Masjid terdekat:',
+  tasbihTitle: 'Pengira tasbih',
+  tasbihTap: 'Ketik untuk mengira',
+  tasbihReset: 'Set semula',
+  tasbihRound: 'Pusingan',
 
   appearance: 'Paparan',
   appearanceHint: 'Pilih warna yang paling selesa untuk mata anda, dan saiz teks yang mudah dibaca.',

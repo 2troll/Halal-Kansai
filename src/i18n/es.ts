@@ -216,6 +216,12 @@ export const es: Dict = {
   certVerifyNote: 'Verifica la entidad emisora y la fecha de caducidad. La declaración por sí sola no es prueba.',
 
   notifyPrayers: 'Avisarme a la hora del rezo',
+  jumuahReminderTitle: 'Hoy es jumu‘ah',
+  jumuahReminderBody: 'El rezo del viernes es a mediodía. Mezquita más cercana:',
+  tasbihTitle: 'Contador de tasbih',
+  tasbihTap: 'Toca para contar',
+  tasbihReset: 'Reiniciar',
+  tasbihRound: 'Vuelta',
 
   // Apariencia
   appearance: 'Apariencia',

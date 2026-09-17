@@ -14,6 +14,7 @@ export function renderGuide(container: HTMLElement): void {
 
   container.innerHTML = `
     <h2>${t('guideTitle')}</h2>
+    ${tasbihCardHtml()}
     ${feedbackCardHtml()}
     ${donateCardHtml()}
     ${sections
@@ -35,6 +36,7 @@ export function renderGuide(container: HTMLElement): void {
   `;
 
   wireFeedback(container);
+  wireTasbih(container);
 
   container.querySelector<HTMLButtonElement>('#diag-run')!.addEventListener('click', () => {
     void (async () => {
@@ -165,5 +167,75 @@ function donateCardHtml(): string {
       </div>
       <a class="btn" href="${DONATE_URL}" target="_blank" rel="noopener">${icon('heart', 18)}${t('donate')}</a>
     </div>`;
+}
+
+const TASBIH_KEY = 'hk-tasbih';
+const TASBIH_TARGET = 33;
+
+/**
+ * Contador de tasbih: 33 por vuelta, con vibración al cerrar cada una.
+ * Sin textos de dhikr a propósito: la app no pone palabras religiosas que
+ * no vengan de una fuente verificada; cada uno sabe qué recita.
+ */
+function tasbihCardHtml(): string {
+  return `
+    <div class="tasbih-card">
+      <div class="tasbih-head">
+        <h3>${t('tasbihTitle')}</h3>
+        <button class="btn ghost tasbih-reset" type="button" id="tasbih-reset">${t('tasbihReset')}</button>
+      </div>
+      <button class="tasbih-tap" type="button" id="tasbih-tap" aria-live="polite">
+        <span class="tasbih-count" id="tasbih-count">0</span>
+        <span class="tasbih-sub"><span id="tasbih-of">0 / ${TASBIH_TARGET}</span> · ${t('tasbihRound')} <span id="tasbih-round">1</span></span>
+        <span class="note">${t('tasbihTap')}</span>
+      </button>
+    </div>`;
+}
+
+function wireTasbih(container: HTMLElement): void {
+  const read = (): number => {
+    try {
+      return Math.max(0, Number(localStorage.getItem(TASBIH_KEY)) || 0);
+    } catch {
+      return 0;
+    }
+  };
+  let total = read();
+  const count = container.querySelector<HTMLElement>('#tasbih-count')!;
+  const of = container.querySelector<HTMLElement>('#tasbih-of')!;
+  const round = container.querySelector<HTMLElement>('#tasbih-round')!;
+  const paint = (): void => {
+    count.textContent = String(total);
+    of.textContent = `${total % TASBIH_TARGET} / ${TASBIH_TARGET}`;
+    round.textContent = String(Math.floor(total / TASBIH_TARGET) + 1);
+    try {
+      localStorage.setItem(TASBIH_KEY, String(total));
+    } catch {
+      /* sin almacenamiento: cuenta igual en esta sesión */
+    }
+  };
+  paint();
+  container.querySelector('#tasbih-tap')!.addEventListener('click', () => {
+    total++;
+    paint();
+    void vibrate(total % TASBIH_TARGET === 0 ? 'heavy' : 'light');
+  });
+  container.querySelector('#tasbih-reset')!.addEventListener('click', () => {
+    total = 0;
+    paint();
+  });
+}
+
+async function vibrate(kind: 'light' | 'heavy'): Promise<void> {
+  try {
+    if (isNative()) {
+      const { Haptics, ImpactStyle } = await import('@capacitor/haptics');
+      await Haptics.impact({ style: kind === 'heavy' ? ImpactStyle.Heavy : ImpactStyle.Light });
+    } else {
+      navigator.vibrate?.(kind === 'heavy' ? 80 : 10);
+    }
+  } catch {
+    /* sin vibración no pasa nada */
+  }
 }
 

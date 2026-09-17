@@ -823,3 +823,69 @@ main h2 {
   opacity: 0.7;
   font-size: 0.72rem;
 }
+
+/* ---------- Tasbih ---------- */
+.tasbih-card {
+  margin: 0 0 1rem;
+  padding: 0.9rem;
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--on-surface) 6%, transparent);
+}
+
+.tasbih-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.tasbih-head h3 {
+  margin: 0;
+  font-size: 1.02rem;
+}
+
+.tasbih-reset {
+  width: auto;
+  min-height: 36px;
+  padding: 0.3rem 0.9rem;
+  font-size: 0.85rem;
+}
+
+.tasbih-tap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  width: 100%;
+  margin-top: 0.7rem;
+  padding: 1.3rem 0.5rem;
+  border: 0;
+  border-radius: 20px;
+  background: var(--emerald);
+  color: var(--on-accent);
+  cursor: pointer;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: transform 0.08s ease;
+}
+
+.tasbih-tap:active {
+  transform: scale(0.97);
+}
+
+.tasbih-count {
+  font-size: 3.2rem;
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.tasbih-sub {
+  font-size: 0.9rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.tasbih-tap .note {
+  color: color-mix(in srgb, var(--on-accent) 75%, transparent);
+}

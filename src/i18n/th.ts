@@ -209,6 +209,12 @@ export const th: Dict = {
   certVerifyNote: 'โปรดตรวจสอบหน่วยงานที่ออกใบรับรองและวันหมดอายุ คำกล่าวอ้างอย่างเดียวไม่ใช่หลักฐาน',
 
   notifyPrayers: 'แจ้งเตือนเมื่อถึงเวลาละหมาด',
+  jumuahReminderTitle: 'วันนี้วันศุกร์ (ญุมอะฮ์)',
+  jumuahReminderBody: 'ละหมาดวันศุกร์เวลาซุฮรี มัสยิดที่ใกล้ที่สุด:',
+  tasbihTitle: 'ที่นับตัสบีห์',
+  tasbihTap: 'แตะเพื่อนับ',
+  tasbihReset: 'รีเซ็ต',
+  tasbihRound: 'รอบ',
 
   appearance: 'รูปลักษณ์',
   appearanceHint: 'เลือกสีที่มองสบายตาที่สุด และขนาดตัวอักษรที่อ่านได้สะดวก',

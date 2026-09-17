@@ -217,6 +217,12 @@ export const pt: Dict = {
   certVerifyNote: 'Verifique a certificadora e a data de validade. A afirmação sozinha não é prova.',
 
   notifyPrayers: 'Avisar nos horários de oração',
+  jumuahReminderTitle: 'Hoje é Jumu‘ah',
+  jumuahReminderBody: 'A oração de sexta é ao meio-dia. Mesquita mais próxima:',
+  tasbihTitle: 'Contador de tasbih',
+  tasbihTap: 'Toque para contar',
+  tasbihReset: 'Zerar',
+  tasbihRound: 'Volta',
 
   // Aparência
   appearance: 'Aparência',

@@ -217,6 +217,12 @@ export const tr: Dict = {
   certVerifyNote: 'Sertifikayı veren kurumu ve son geçerlilik tarihini kontrol edin. Beyan tek başına kanıt değildir.',
 
   notifyPrayers: 'Namaz vakitlerinde bildir',
+  jumuahReminderTitle: 'Bugün cuma',
+  jumuahReminderBody: 'Cuma namazı öğle vaktinde. En yakın cami:',
+  tasbihTitle: 'Tesbih sayacı',
+  tasbihTap: 'Saymak için dokun',
+  tasbihReset: 'Sıfırla',
+  tasbihRound: 'Tur',
 
   // Apariencia
   appearance: 'Görünüm',

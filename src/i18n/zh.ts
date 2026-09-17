@@ -209,6 +209,12 @@ export const zh: Dict = {
   certVerifyNote: '请核实发证机构和有效期。仅有声明并不能作为证明。',
 
   notifyPrayers: '礼拜时间提醒我',
+  jumuahReminderTitle: '今天是主麻日',
+  jumuahReminderBody: '主麻聚礼在晌礼时间。最近的清真寺：',
+  tasbihTitle: '赞念计数器',
+  tasbihTap: '点击计数',
+  tasbihReset: '重置',
+  tasbihRound: '轮',
 
   appearance: '外观',
   appearanceHint: '选择您看着最舒服的颜色，以及阅读舒适的文字大小。',

@@ -209,6 +209,12 @@ export const fil: Dict = {
   certVerifyNote: 'Suriin ang nag-isyu at ang petsa ng expiry. Ang pahayag lamang ay hindi patunay.',
 
   notifyPrayers: 'Abisuhan ako sa oras ng salah',
+  jumuahReminderTitle: 'Jumu‘ah ngayon',
+  jumuahReminderBody: 'Ang Jumu‘ah ay sa tanghali. Pinakamalapit na masjid:',
+  tasbihTitle: 'Tasbih counter',
+  tasbihTap: 'I-tap para magbilang',
+  tasbihReset: 'I-reset',
+  tasbihRound: 'Round',
 
   appearance: 'Hitsura',
   appearanceHint: 'Piliin ang mga kulay na pinakamadaling tingnan, at ang laki ng teksto na komportable basahin.',

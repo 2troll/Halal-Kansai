@@ -210,6 +210,12 @@ export const ar: Dict = {
   certVerifyNote: 'تحقّق من الجهة المانحة ومن تاريخ الانتهاء. الادعاء وحده ليس دليلًا.',
 
   notifyPrayers: 'نبّهني عند دخول وقت الصلاة',
+  jumuahReminderTitle: 'اليوم الجمعة',
+  jumuahReminderBody: 'صلاة الجمعة وقت الظهر. أقرب مسجد:',
+  tasbihTitle: 'عدّاد التسبيح',
+  tasbihTap: 'انقر للعدّ',
+  tasbihReset: 'إعادة',
+  tasbihRound: 'الدورة',
 
   // المظهر
   appearance: 'المظهر',

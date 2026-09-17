@@ -68,6 +68,7 @@ export async function initNative(reschedule: () => Promise<void>): Promise<void>
  */
 export async function schedulePrayerNotifications(
   timesByDay: Array<{ date: Date; times: PrayerTimes }>,
+  nearestMosque?: string,
 ): Promise<void> {
   if (!isNative() || !notificationsEnabled()) return;
 
@@ -94,6 +95,22 @@ export async function schedulePrayerNotifications(
       };
     }).filter((n) => n.schedule.at.getTime() > now),
   );
+
+  // Viernes: aviso 45 min antes del dhuhr con la mezquita más cercana. El
+  // jumu'ah se reza en congregación y hay que llegar; a la hora del rezo ya
+  // es tarde para salir de casa.
+  timesByDay.forEach(({ date, times }, dayIndex) => {
+    if (date.getDay() !== 5) return;
+    const at = atTime(date, times.dhuhr - 0.75);
+    if (at.getTime() <= now) return;
+    notifications.push({
+      id: dayIndex * 10 + 9,
+      title: t('jumuahReminderTitle'),
+      body: nearestMosque ? `${t('jumuahReminderBody')} ${nearestMosque}` : t('jumuahReminderBody').replace(/[:：]\s*$/, ''),
+      schedule: { at },
+      smallIcon: 'ic_stat_icon',
+    });
+  });
 
   if (notifications.length > 0) {
     await LocalNotifications.schedule({ notifications });

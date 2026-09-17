@@ -209,6 +209,12 @@ export const si: Dict = {
   certVerifyNote: 'නිකුත් කළ ආයතනය සහ කල් ඉකුත් වන දිනය තහවුරු කරගන්න. ප්‍රකාශය පමණක් සාක්ෂියක් නොවේ.',
 
   notifyPrayers: 'සලාත වේලාවන්හිදී මට දැනුම් දෙන්න',
+  jumuahReminderTitle: 'අද ජුම්මා',
+  jumuahReminderBody: 'ජුම්මා සලාතය දහවල්. ආසන්නම පල්ලිය:',
+  tasbihTitle: 'තස්බීහ් ගණකය',
+  tasbihTap: 'ගණන් කිරීමට ඔබන්න',
+  tasbihReset: 'නැවත',
+  tasbihRound: 'වටය',
 
   appearance: 'පෙනුම',
   appearanceHint: 'බැලීමට පහසුම වර්ණ සහ සුවපහසුවෙන් කියවිය හැකි අකුරු ප්‍රමාණය තෝරන්න.',

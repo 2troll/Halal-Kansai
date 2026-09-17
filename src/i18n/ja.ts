@@ -224,6 +224,12 @@ export const ja: Dict = {
   certVerifyNote: '認証機関と有効期限をご確認ください。表示だけでは証明になりません。',
 
   notifyPrayers: '礼拝の時刻に通知する',
+  jumuahReminderTitle: '今日はジュムア',
+  jumuahReminderBody: '金曜礼拝は正午です。最寄りのモスク：',
+  tasbihTitle: 'タスビーフ・カウンター',
+  tasbihTap: 'タップして数える',
+  tasbihReset: 'リセット',
+  tasbihRound: '周',
 
   // 表示設定
   appearance: '表示設定',

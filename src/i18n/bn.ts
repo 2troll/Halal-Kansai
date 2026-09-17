@@ -190,6 +190,12 @@ export const bn: Dict = {
   certVerifyNote: 'প্রদানকারী সংস্থা ও মেয়াদ শেষের তারিখ যাচাই করুন। শুধু দাবি প্রমাণ নয়।',
 
   notifyPrayers: 'নামাজের সময় আমাকে জানান',
+  jumuahReminderTitle: 'আজ জুমা',
+  jumuahReminderBody: 'জুমার নামাজ দুপুরে। নিকটতম মসজিদ:',
+  tasbihTitle: 'তাসবিহ গণনা',
+  tasbihTap: 'গুনতে চাপুন',
+  tasbihReset: 'আবার শুরু',
+  tasbihRound: 'রাউন্ড',
 
   appearance: 'চেহারা',
   appearanceHint: 'যে রং দেখতে আপনার সবচেয়ে আরাম লাগে এবং যে আকারের লেখা স্বচ্ছন্দে পড়তে পারেন, তা বেছে নিন।',
