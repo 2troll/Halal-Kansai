@@ -11,6 +11,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const calls = vi.hoisted(() => [] as Array<Record<string, unknown>>);
 vi.mock('@huggingface/transformers', () => ({
+  env: {} as Record<string, unknown>,
   pipeline: async (_task: string, _model: string, opts: Record<string, unknown>) => {
     calls.push(opts);
     if (opts.device === 'webgpu') throw new Error('no available backend found. ERR: [webgpu]');

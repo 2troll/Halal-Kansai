@@ -23,7 +23,19 @@
  * corriera en el de la pantalla, el subtítulo se congelaría justo mientras
  * traduce, que es cuando hay que leerlo.
  */
-import { pipeline, type AutomaticSpeechRecognitionPipeline } from '@huggingface/transformers';
+import { env, pipeline, type AutomaticSpeechRecognitionPipeline } from '@huggingface/transformers';
+
+/**
+ * Descargar el modelo SIN decir desde qué web se pide.
+ *
+ * Hugging Face contesta 404 (y sin cabeceras CORS) a las descargas que llegan
+ * con un `Referer` de *.workers.dev: en la web publicada el modelo no bajaba
+ * nunca y la jutba se quedaba en «not-loaded» todo el sermón. Desde localhost
+ * sí bajaba, por eso no se vio en las pruebas. Comprobado el 17-9-2026 con
+ * curl: mismo fichero, 404 con ese Referer y 307→200 sin él.
+ */
+env.fetch = (input: string | URL, init?: RequestInit) =>
+  fetch(input, { ...init, referrerPolicy: 'no-referrer' });
 
 /** Lo que la pantalla puede pedirle a este worker. */
 export type WhisperRequest =
