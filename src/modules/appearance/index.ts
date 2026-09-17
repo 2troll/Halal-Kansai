@@ -137,6 +137,10 @@ export function applyAppearance(): void {
   document
     .querySelector<HTMLMetaElement>('meta[name="theme-color"]')
     ?.setAttribute('content', bg || '#10211d');
+  // En la app nativa, también la barra de estado del teléfono.
+  if ((globalThis as { Capacitor?: { isNativePlatform?: () => boolean } }).Capacitor?.isNativePlatform?.()) {
+    void import('../../native').then(({ syncStatusBar }) => syncStatusBar());
+  }
 }
 
 /**

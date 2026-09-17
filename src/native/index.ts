@@ -44,19 +44,32 @@ export function setNotificationsEnabled(on: boolean): void {
 export async function initNative(reschedule: () => Promise<void>): Promise<void> {
   if (!isNative()) return;
 
-  const [{ StatusBar, Style }, { SplashScreen }, { App }] = await Promise.all([
-    import('@capacitor/status-bar'),
+  const [{ SplashScreen }, { App }] = await Promise.all([
     import('@capacitor/splash-screen'),
     import('@capacitor/app'),
   ]);
 
-  await StatusBar.setStyle({ style: Style.Dark }).catch(() => {});
-  await StatusBar.setBackgroundColor({ color: '#10211d' }).catch(() => {});
+  await syncStatusBar();
   await SplashScreen.hide().catch(() => {});
 
   App.addListener('resume', () => {
     void reschedule();
   });
+}
+
+/**
+ * La barra de estado (hora, batería) sigue al tema. Antes era siempre de
+ * letra blanca: con un tema claro no se leía la hora sobre el fondo crema.
+ */
+export async function syncStatusBar(): Promise<void> {
+  if (!isNative()) return;
+  const { StatusBar, Style } = await import('@capacitor/status-bar');
+  const root = document.documentElement;
+  const light = root.dataset.tone === 'light';
+  const bg = getComputedStyle(root).getPropertyValue('--night').trim() || '#10211d';
+  // Style.Light = letra oscura (para fondo claro); Style.Dark = letra clara.
+  await StatusBar.setStyle({ style: light ? Style.Light : Style.Dark }).catch(() => {});
+  await StatusBar.setBackgroundColor({ color: bg }).catch(() => {});
 }
 
 /**
