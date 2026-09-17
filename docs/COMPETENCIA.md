@@ -26,9 +26,21 @@ junta rezo + qibla + comida + jutba sin pedir registro o pago.
 - Qibla: «Gira a tu derecha/izquierda» y chip de precisión (Muslim Pro).
 - Ajustes: tamaños de letra en una fila de cuatro, sin apretar.
 
-## Siguiente (por valor)
+- Jutba estilo Manarah: lector de arriba abajo, aleya con referencia y Tanzil, «posible Corán» sin traducir, tamaño de letra, original, atenuar.
+- Botón de escuchar grande y opciones avanzadas plegadas (Baian).
+- Historial de jutbas en el teléfono, con copiar y borrar (Baian, sin cuenta).
+- Comida: «¿Por qué?» y Compartir en el veredicto (Taste Halal).
+- Lugares: Compartir en cada ficha (eHalal).
+- Bienvenida de una pantalla con la promesa «Gratis · Sin cuenta · Sin anuncios».
 
-1. Jutba estilo Manarah: tarjeta de aleya con «QUR’AN · sura:aleya · Tanzil», «posible Corán, traducción retenida», marcas de audio poco claro, modo tenue al escuchar.
-2. Lugares estilo eHalal: mapa más grande con la lista en hoja inferior, chips de tipo, «Compartir» en la ficha.
-3. Comida: veredicto grande con «¿Por qué?» y Compartir (Taste Halal); búsqueda de números E (Halal Check).
-4. Historial local de jutbas (Baian), sin cuenta.
+## Descartado
+
+- Buscador de números E (Halal Check): las etiquetas japonesas casi no los usan y
+  una lista halal/haram de aditivos sin revisión religiosa es arriesgada.
+
+## Siguiente
+
+1. Probar la jutba nueva con audio real en el teléfono (pendiente).
+2. Lugares estilo eHalal: mapa más grande con la lista en hoja inferior.
+3. Pedir reseña en un buen momento (tras una jutba traducida sin fallos).
+4. Ficha de las tiendas en varios idiomas con «Gratis · Sin cuenta · Sin anuncios».
