@@ -41,7 +41,7 @@ export function renderGuide(container: HTMLElement): void {
   container.querySelector<HTMLButtonElement>('#btn-recommend')!.addEventListener('click', async (ev) => {
     const btn = ev.currentTarget as HTMLButtonElement;
     const { shareText } = await import('../../ui/share');
-    const result = await shareText(t('appName'), `🕌 ${t('appName')}\n${t('recommendText')}`);
+    const result = await shareText(t('appName'), `🕌 ${t('recommendText')}`);
     if (result === 'copied') btn.textContent = `✓ ${t('historyCopied')}`;
   });
   wireTasbih(container);
