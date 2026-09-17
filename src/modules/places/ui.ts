@@ -6,6 +6,7 @@ import { getCoords } from '../salat/ui';
 import { t } from '../../i18n';
 import { icon } from '../../ui/icons';
 import { escapeHtml } from '../escape';
+import { directionsUrl } from './directions';
 
 type Filter = PlaceType | 'all';
 
@@ -59,12 +60,19 @@ function renderList(listEl: HTMLElement): void {
           ${distance}
           ${p.verified ? '' : `<span class="badge warn">⚠ ${t('unverified')}</span>`}
         </div>
+        ${
+          p.lat !== undefined && p.lng !== undefined
+            ? `<a class="btn ghost directions" href="${directionsUrl(p.lat, p.lng)}" target="_blank" rel="noopener">${icon('location', 16)}${t('directions')}</a>`
+            : ''
+        }
       </article>`;
     })
     .join('');
 
   listEl.querySelectorAll<HTMLElement>('.place-card').forEach((card) => {
-    card.addEventListener('click', () => {
+    card.addEventListener('click', (ev) => {
+      // «Cómo llegar» abre el mapa del teléfono; no debe mover además el de aquí.
+      if ((ev.target as HTMLElement).closest('.directions')) return;
       const p = allPlaces.find((x) => x.id === card.dataset.id);
       if (p && map && p.lat !== undefined && p.lng !== undefined) {
         map.setView([p.lat, p.lng], 15);
