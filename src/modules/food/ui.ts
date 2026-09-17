@@ -425,8 +425,9 @@ function renderLabelMode(body: HTMLElement): void {
   }
 }
 
+/** Las frases existen en ar/en/es/ja; los demás idiomas leen el inglés. */
 function phraseFor(p: Phrase): string {
-  return p[getLang()];
+  return (p as unknown as Partial<Record<string, string>>)[getLang()] ?? p.en;
 }
 
 function renderPhrasesMode(body: HTMLElement): void {

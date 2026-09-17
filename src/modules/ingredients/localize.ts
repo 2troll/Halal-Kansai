@@ -11,5 +11,8 @@ import { RULES_JA } from './rules.ja';
  */
 export function ruleText(id: string, text: Trilingual, field: 'label' | 'why', lang: Lang): string {
   if (lang === 'ja') return RULES_JA[id]?.[field] ?? text.en;
-  return text[lang];
+  // Las fichas de ingredientes están en ar/en/es (+ ja arriba). Los idiomas
+  // añadidos después leen el inglés hasta que se traduzcan y se revisen:
+  // son explicaciones que valida una certificadora, no textos de interfaz.
+  return (text as Partial<Record<Lang, string>>)[lang] ?? text.en;
 }

@@ -305,10 +305,15 @@ export function reasonStatus(code: string): Status | null {
   return rule?.status ?? null;
 }
 
+/** El texto en `lang`, o en inglés si ese idioma aún no está traducido. */
+function pick(text: Quad, lang: Lang): string {
+  return (text as Partial<Record<Lang, string>>)[lang] ?? text.en;
+}
+
 /** Nombre del término. Un código que esta versión no conoce se muestra crudo. */
 export function reasonLabel(code: string, lang: Lang): string {
   if (!isReasonCode(code)) return code;
-  return CODES[code].label[lang];
+  return pick(CODES[code].label, lang);
 }
 
 /**
@@ -321,7 +326,7 @@ export function reasonLabel(code: string, lang: Lang): string {
 export function reasonWhy(code: string, lang: Lang): string {
   if (!isReasonCode(code)) return '';
   const entry = CODES[code];
-  if (entry.why) return entry.why[lang];
+  if (entry.why) return pick(entry.why, lang);
   const rule = entry.rule ? RULE_BY_ID.get(entry.rule) : undefined;
   if (!rule) return '';
   return ruleText(rule.id, rule.why, 'why', lang);

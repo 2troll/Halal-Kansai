@@ -1,0 +1,370 @@
+import type { Dict } from './index';
+
+export const id: Dict = {
+  appName: 'Halal Kansai',
+  tagline: 'Teman sehari-hari komunitas Muslim di Jepang',
+
+  // Navigation
+  navSalat: 'Salat',
+  navQibla: 'Kiblat',
+  navPlaces: 'Tempat',
+  navKhutbah: 'Khutbah',
+  navGuide: 'Panduan',
+
+  // Salat
+  salatTitle: 'Jadwal salat',
+  fajr: 'Subuh',
+  sunrise: 'Terbit',
+  dhuhr: 'Zuhur',
+  asr: 'Asar',
+  maghrib: 'Magrib',
+  isha: 'Isya',
+  nextPrayer: 'Salat berikutnya',
+  inTime: 'dalam',
+  useMyLocation: 'Gunakan lokasi saya',
+  shareTimes: 'Bagikan jadwal',
+  shareError: 'Gambar tidak dapat dibuat.',
+  locationDenied: 'Lokasi tidak tersedia — menampilkan jadwal Osaka.',
+  city: 'Kota',
+  methodMwl: 'Liga Muslim Dunia (MWL)',
+  methodKarachi: 'Karachi (Universitas Ilmu-Ilmu Islam)',
+  methodIsna: 'ISNA (Amerika Utara)',
+  methodEgypt: 'Otoritas Survei Umum Mesir',
+  methodMakkah: 'Umm al-Qura (Makkah)',
+  methodIndonesia: 'Kemenag (Indonesia)',
+  asrShafii: 'Asar Syafi‘i',
+  asrHanafi: 'Asar Hanafi',
+  calcSettings: 'Metode perhitungan',
+  asrSchool: 'Asar',
+  calcHint: 'Gunakan metode yang dipakai masjid Anda. Jika ragu, tanyakan kepada imam.',
+  fastTitle: 'Puasa hari ini',
+  fastSuhoor: 'Sahur sampai',
+  fastIftar: 'Buka puasa',
+  fastToIftar: 'Menuju buka puasa',
+  fastToSuhoor: 'Sampai sahur berakhir',
+
+  // Qibla
+  qiblaTitle: 'Arah kiblat',
+  qiblaFromNorth: 'dari utara sejati',
+  qiblaDistance: 'ke Ka’bah',
+  compassStart: 'Mulai kompas',
+  compassHint: 'Pegang ponsel secara mendatar dan jauhkan dari benda logam.',
+  compassUnsupported: 'Kompas tidak tersedia di perangkat ini. Gunakan derajat arah ini dengan kompas biasa.',
+  compassPermissionDenied: 'Izin kompas ditolak.',
+  qiblaAligned: 'Sudah menghadap kiblat',
+
+  // Places
+  placesTitle: 'Tempat halal di Kansai',
+  filterAll: 'Semua',
+  filterMosque: 'Masjid',
+  filterRestaurant: 'Restoran',
+  filterShop: 'Toko',
+  typeMosque: 'Masjid',
+  typeRestaurant: 'Restoran',
+  typeShop: 'Toko halal',
+  unverified: 'Perlu dicek langsung di tempat',
+  directions: 'Rute',
+  openMap: 'Peta',
+  kmAway: 'km dari sini',
+  suggestPlace: 'Usulkan tempat',
+  fieldName: 'Nama',
+  fieldAddress: 'Alamat (opsional)',
+  fieldNote: 'Catatan untuk moderator (opsional)',
+  attachLocation: 'Lampirkan lokasi saya saat ini',
+  send: 'Kirim',
+  suggestThanks: 'Terima kasih! Usulan Anda akan ditinjau sebelum diterbitkan.',
+  suggestError: 'Usulan tidak dapat dikirim. Coba lagi nanti.',
+
+  // Khutbah
+  khutbahTitle: 'Terjemahan khutbah langsung',
+  khutbahDisclaimer:
+    'Terjemahan langsung hanya alat bantu untuk memahami — bukan fatwa dan bukan teks keagamaan resmi.',
+  sourceLang: 'Bahasa khutbah',
+  targetLang: 'Terjemahkan ke',
+  startListening: 'Mulai mendengarkan',
+  stopListening: 'Berhenti',
+  listening: 'Mendengarkan…',
+  fridayMode: 'Mode Jumat: layar tetap menyala selama mendengarkan.',
+  modeLabel: 'Mode',
+  modeLocal: 'Dengarkan dengan mikrofon saya',
+  modeTransmit: 'Siarkan ke sebuah ruang (ponsel di dekat pengeras suara)',
+  modeJoin: 'Ikuti siaran',
+  roomCode: 'Kode ruang (mis. osaka-masjid)',
+  startBroadcast: 'Mulai siaran',
+  joinRoom: 'Gabung',
+  leaveRoom: 'Keluar',
+  broadcasting: 'Sedang menyiarkan…',
+  joinedRoom: 'Terhubung ke ruang',
+  listenersLabel: 'pendengar',
+  roomTaken: 'Ruang ini sudah memiliki penyiar.',
+  roomFull: 'Ruang sudah penuh.',
+  connectionLost: 'Koneksi terputus.',
+  speechUnsupported:
+    'Pengenalan suara tidak didukung di browser ini. Gunakan Chrome di Android.',
+  backendUnavailable: 'Layanan terjemahan tidak tersedia. Periksa koneksi Anda.',
+  citationQuran: 'Al-Qur’an',
+  citationHadith: 'Hadis — periksa sumbernya',
+  citationDua: 'Doa',
+  citationUnverified: 'Kutipan belum diverifikasi',
+  translationUnofficial: 'terjemahan tidak resmi',
+
+  // Guide
+  guideTitle: 'Panduan',
+  fbTitle: 'Apa yang perlu kami perbaiki?',
+  fbIntro: 'Beri tahu kami apa yang tidak berfungsi, apa yang kurang, atau apa yang membingungkan. Kami membaca setiap pesan. Mohon jangan sertakan data pribadi.',
+  fbKind: 'Tentang apa?',
+  fbKindBug: 'Ada yang tidak berfungsi',
+  fbKindIdea: 'Ide atau sesuatu yang kurang',
+  fbKindData: 'Informasi salah (jadwal, tempat, bahan)',
+  fbKindOther: 'Lainnya',
+  fbRating: 'Seberapa bermanfaat aplikasi ini bagi Anda?',
+  fbRatingNone: 'Tidak ingin menjawab',
+  fbMessage: 'Pesan Anda',
+  fbSend: 'Kirim',
+  fbSent: 'Terima kasih. Pesan Anda sudah kami terima.',
+  fbQueued: 'Saat ini tidak ada koneksi. Pesan akan terkirim otomatis begitu Anda kembali online.',
+  fbTooShort: 'Tulis sedikit lebih banyak agar kami bisa memahaminya.',
+  fbError: 'Pesan tidak dapat dikirim. Silakan coba lagi nanti.',
+  guideSalatH: 'Salat di Jepang',
+  guideSalatP:
+    'Jadwal salat di sini dihitung secara astronomis (metode MWL) dan berfungsi sepenuhnya tanpa internet. Kini banyak stasiun dan pusat perbelanjaan di Kansai yang memiliki musala — lihat tab Tempat.',
+  guideHalalH: 'Mencari makanan halal',
+  guideHalalP:
+    'Jepang tidak memiliki label halal resmi. Carilah poster sertifikasi (JMA, NAHA), mintalah daftar bahan kepada staf, dan waspadai mirin, sake, serta shortening dari hewan pada makanan olahan.',
+  guideJummahH: 'Salat Jumat',
+  guideJummahP:
+    'Khutbah di Kansai biasanya disampaikan dalam bahasa Urdu, Indonesia, Jepang, atau Arab. Tab Khutbah menerjemahkan khutbah secara langsung ke bahasa Anda.',
+  guideAboutH: 'Tentang aplikasi ini',
+  guideAboutP:
+    'Gratis, tanpa iklan, tanpa akun, tanpa pelacakan. Dibuat oleh dan untuk komunitas Muslim di Kansai.',
+
+  // Ingredient checker
+  scanSubtitle:
+    'Pindai barcode, atau tempel baris 原材料名 dari kemasan. Pembacaan dilakukan di ponsel Anda: tanpa akun, dan tetap berfungsi tanpa koneksi.',
+  scanPlaceholder: '原材料名：小麦粉、豚脂、しょうゆ、みりん…',
+  scanCheck: 'Periksa label',
+  scanClear: 'Hapus',
+  scanExamples: 'Coba contoh',
+  scanCamera: 'Pindai barcode',
+  scanCameraStop: 'Matikan kamera',
+  scanPointCamera: 'Arahkan kamera ke barcode.',
+  scanCameraUnsupported:
+    'Browser ini tidak dapat membaca barcode. Gunakan Chrome di Android, atau tempel daftar bahan di bawah.',
+  scanCameraDenied: 'Kamera tidak tersedia. Tempel daftar bahan di bawah.',
+  scanLookingUp: 'Mencari barcode…',
+  scanFound: 'Produk',
+  scanNotFound:
+    'Barcode ini belum ada di database terbuka. Tempel daftar bahan dari kemasan.',
+  scanNoIngredients:
+    'Produk ada di database tetapi tanpa teks bahan. Tempel dari kemasan.',
+  scanOffline:
+    'Tidak ada koneksi, jadi barcode tidak dapat dicari. Tempel daftar bahan — analisisnya sendiri berfungsi tanpa internet.',
+  scanNetworkError: 'Tidak dapat terhubung ke database produk. Tempel daftar bahan sebagai gantinya.',
+  scanEmpty: 'Tempel daftar bahan terlebih dahulu.',
+  scanVerdict: 'Hasil',
+  verdictHaramTitle: 'Ditemukan bahan yang dilarang',
+  verdictHaramBody: 'Label menyebutkan setidaknya satu bahan yang dilarang oleh dalil yang tegas.',
+  verdictMushboohTitle: 'Syubhat — periksa dulu sebelum dimakan',
+  verdictMushboohBody:
+    'Tidak ada yang jelas-jelas dilarang, tetapi ada bahan yang sumbernya tidak disebutkan di label, atau yang diperselisihkan para ulama. Tanyakan kepada produsen.',
+  verdictNoHaramTitle: 'Tidak dikenali bahan yang dilarang',
+  verdictNoHaramBody:
+    'Semua istilah yang dikenali pada label ini tidak bermasalah. Apa pun yang tidak dikenali aplikasi tetap belum diperiksa.',
+  verdictUnknownTitle: 'Tidak ada yang dikenali',
+  verdictUnknownBody:
+    'Tidak satu pun istilah yang dikenali. Pastikan Anda menempel baris 原材料名, dan baca sendiri kemasannya.',
+  scanNotClearance:
+    'Ini bukan sertifikasi halal. Aplikasi hanya membaca kata-kata yang dikenalnya, dan tidak pernah menyatakan produk aman.',
+  scanNoFatwa:
+    'Jika para ulama berbeda pendapat, aplikasi ini menyampaikannya dan menyerahkan keputusan kepada Anda dan ustaz Anda.',
+  scanMarkedLabel: 'Label, dengan tanda',
+  scanFoundTerms: 'Yang dikenali',
+  scanAskMaker: 'Salin pertanyaan untuk produsen (bahasa Jepang)',
+  scanCopied: 'Tersalin. Kirimkan ke alamat layanan pelanggan produsen.',
+  statusHaram: 'Dilarang',
+  statusMushbooh: 'Syubhat',
+  statusHalal: 'Tidak bermasalah',
+  scanOfflineNote: 'Analisis berjalan tanpa internet, di ponsel Anda.',
+  scanSource: 'Data produk: Open Food Facts (ODbL)',
+
+  // Certificación en la pegatina
+  verdictCertConflictTitle: 'Stiker dan daftar bahan saling bertentangan',
+  verdictCertConflictBody:
+    'Label mengklaim bersertifikat halal, tetapi juga menyebutkan bahan yang dilarang oleh dalil yang tegas. Sertifikasi tidak mengesampingkan hal itu. Jangan bergantung pada stikernya: tanyakan kepada lembaga penerbit sebelum memakannya.',
+  verdictCertDoubtfulTitle: 'Bersertifikat — istilah syubhat di bawah adalah hal yang diaudit lembaga sertifikasi',
+  verdictCertDoubtfulBody:
+    'Label mengklaim bersertifikat halal, dan tidak ditemukan bahan yang dilarang oleh dalil yang tegas. Istilah syubhat di bawah (sumber gelatin, pengemulsi, lemak) justru hal yang diperiksa lembaga sertifikasi di pabrik, jadi kemungkinan besar sudah terjawab. Pastikan sertifikatnya masih berlaku dan Anda memercayai lembaga penerbitnya.',
+  certBadgeCertified: 'Sertifikasi tercantum di label',
+  certBadgeFriendly: 'Bukan sertifikasi',
+  certFriendlyNote:
+    'Label ini menyebut “Muslim friendly”, “no pork”, atau sejenisnya. Itu klaim produsen sendiri, bukan sertifikasi yang diaudit: tidak ada yang memverifikasi sumber bahan-bahan lainnya. Baca daftar di bawah dan tanyakan.',
+  certVerifyNote: 'Periksa lembaga penerbit dan tanggal kedaluwarsanya. Klaim saja bukan bukti.',
+
+  notifyPrayers: 'Beri tahu saya saat waktu salat',
+
+  // Apariencia
+  appearance: 'Tampilan',
+  appearanceHint: 'Pilih warna yang paling nyaman di mata, dan ukuran teks yang nyaman Anda baca.',
+  theme: 'Warna',
+  themeNight: 'Malam',
+  themePaper: 'Kertas',
+  themeSand: 'Pasir',
+  themeIndigo: 'Nila',
+  themeContrast: 'Kontras tinggi',
+  textSize: 'Ukuran teks',
+  textNormal: 'Normal',
+  textLarge: 'Besar',
+  textXLarge: 'Lebih besar',
+  textXXLarge: 'Paling besar',
+  done: 'Selesai',
+
+  voiceOutput: 'Bacakan terjemahan dengan suara',
+  voiceOutputHint: 'Pakai earphone: Anda mendengar terjemahan saat imam berbicara, dengan ponsel tetap di saku.',
+  voiceOutputTest: 'Terjemahan akan dibacakan dengan suara.',
+
+  voicePick: 'Suara',
+  voiceNone: 'Tidak ada suara terpasang untuk bahasa ini',
+
+  roomQrLabel: 'Kode QR untuk bergabung ke ruang ini',
+  roomQrHint: 'Tunjukkan ini kepada jamaah: mereka mengarahkan kamera ke kode ini dan bergabung dalam bahasa masing-masing.',
+
+  micDenied: 'Izin mikrofon atau pengenalan suara ditolak.',
+
+  // El viernes, cuando la pantalla se queda muda, esto es lo único que
+  // distingue «el micrófono está sordo» de «no es este idioma».
+  micLevelLabel: 'Mikrofon',
+  micGood: 'Khutbah terdengar.',
+  micWeak: 'Suaranya sangat pelan — dekatkan ponsel ke pengeras suara.',
+  micSilence: 'Tidak terdengar apa pun. Dekatkan ponsel ke pengeras suara.',
+  micUnavailable: 'Tingkat suara mikrofon tidak dapat diukur di perangkat ini.',
+  micNoMatch: 'Ada suara, tetapi tidak ada kata yang dikenali dalam bahasa',
+  micNoMatchHint: 'Jika imam berbicara dalam bahasa lain, ubah "Bahasa khutbah" di atas.',
+  errNetwork: 'Tidak ada koneksi: pengenalan suara memerlukan internet.',
+  errAudioCapture: 'Mikrofon tidak tersedia — mungkin sedang dipakai aplikasi lain.',
+  errLangUnsupported: 'Perangkat ini tidak dapat mengenali bahasa khutbah yang dipilih.',
+  errStart: 'Pengenalan suara tidak mau berjalan. Hentikan lalu mulai lagi.',
+  earphonesNote: 'Earphone tidak diperlukan untuk membaca terjemahan. Earphone hanya untuk mendengarkannya dibacakan.',
+
+  // Whisper en el aparato: el motor que funciona en iPhone, sin conexión y
+  // con la reverberación de una sala grande.
+  engineLabel: 'Pengenalan',
+  engineBrowser: 'Browser (cepat, perlu internet)',
+  engineWhisper: 'Di ponsel ini (tanpa internet, lebih baik di aula)',
+  engineWhisperHint:
+    'Diunduh sekali (sekitar 80 MB) lalu tersimpan di ponsel. Audio khutbah tidak pernah keluar dari perangkat Anda.',
+  whisperLoading: 'Menyiapkan pengenal suara di ponsel ini',
+  whisperReady: 'Siap, berjalan di ponsel ini',
+  whisperThinking: 'Mentranskripsi…',
+  whisperOnGpu: 'dengan akselerasi grafis',
+  whisperOnCpu: 'tanpa akselerasi grafis — lebih lambat, tetapi berfungsi',
+  whisperSize: 'Model',
+  whisperTiny: 'Kecil (80 MB, ponsel lama)',
+  whisperBase: 'Standar (150 MB, lebih baik untuk logat)',
+
+  scanPhoto: 'Foto labelnya',
+  scanPhotoWorking: 'Membaca label…',
+  scanPhotoFailed: 'Label tidak terbaca. Coba lagi dari jarak lebih dekat, atau ketik daftarnya di bawah.',
+
+  broadcasterLeft: 'Siaran telah berakhir: ponsel yang mengirim khutbah kehilangan koneksi.',
+
+  screenMode: 'Tampilkan di layar',
+  screenExit: 'Keluar',
+  screenWaiting: 'Menunggu khutbah dimulai…',
+
+  // Hoja de revisión
+  revisionTitle: 'Aturan bahan — untuk ditinjau',
+  revisionIntro: 'Semua hasil yang dapat diberikan aplikasi ini, dalam satu halaman. Kami meminta Anda mengoreksinya: jika ada penilaian yang salah, sebutkan nomornya dan kami akan mengubahnya.',
+  revisionP1T: 'Deterministik, bukan model AI.',
+  revisionP1: 'Ini adalah kamus. Label yang sama selalu memberi hasil yang sama, dan setiap penilaian dapat diaudit baris demi baris.',
+  revisionP2T: 'Tidak mengeluarkan fatwa.',
+  revisionP2: 'Jika para ulama berbeda pendapat, aplikasi menyampaikannya, menjelaskan kedua pendapat, dan menyerahkan keputusan kepada pengguna dan ustaznya.',
+  revisionP3T: 'Tidak pernah menyatakan produk aman.',
+  revisionP3: 'Hal paling baik yang bisa dikatakannya adalah “tidak dikenali bahan yang dilarang”. Aplikasi tidak pernah menyatakan suatu produk halal.',
+  revisionTerms: 'Seperti tertulis di kemasan',
+  revisionName: 'Bahan',
+  revisionWhy: 'Alasan penilaian ini',
+  revisionPrint: 'Cetak',
+  revisionFooter: 'Koreksi untuk aturan mana pun sangat kami terima. Mohon sebutkan nomornya. Setiap koreksi yang masuk akan diterapkan dan ditunjukkan kembali kepada Anda.',
+
+  // Diagnóstico
+  diagTitle: 'Apakah berfungsi di ponsel ini?',
+  diagIntro: 'Memeriksa apa yang benar-benar bisa dilakukan perangkat ini. Berguna saat ada yang tidak berfungsi dan Anda perlu tahu sebabnya — sebelum hari Jumat, bukan saat khutbah.',
+  diagRun: 'Jalankan pemeriksaan',
+  diagCopy: 'Salin hasilnya',
+  diagPlatform: 'Berjalan sebagai',
+  diagPlatformApp: 'aplikasi terpasang',
+  diagPlatformWeb: 'browser web',
+  diagServer: 'Server terjemahan',
+  diagNoConnection: 'tidak ada koneksi',
+  diagSpeechIn: 'Pengenalan suara',
+  diagUseRoomMode: 'tidak tersedia — gunakan “ikuti siaran”',
+  diagMic: 'Izin mikrofon',
+  diagVoices: 'Suara untuk membacakan',
+  diagBarcode: 'Pemindai barcode',
+  diagTypeInstead: 'tidak tersedia — tempel daftar bahan',
+  diagPhoto: 'Foto labelnya',
+  diagNotifications: 'Notifikasi salat',
+  diagWakeLock: 'Layar tetap menyala',
+  diagScreenMaySleep: 'layar bisa mati saat khutbah',
+  diagOffline: 'Berfungsi tanpa koneksi',
+  diagCachedFiles: 'file tersimpan',
+  diagAvailable: 'tersedia',
+  diagNotSupported: 'tidak didukung di sini',
+  diagOnlyInApp: 'hanya di aplikasi terpasang',
+
+  // Misc
+  language: 'Bahasa',
+  offlineReady: 'Tersedia tanpa internet',
+  loading: 'Memuat…',
+
+  // Comida
+  navFood: 'Makanan',
+  foodTitle: 'Membaca label dan menu Jepang',
+  foodTabScan: 'Bahan',
+  foodTabPhrases: 'Tunjukkan ke staf',
+  foodScanLabel: 'Tempel daftar bahan, atau ketik satu kata',
+  foodNoMatch: 'Tidak ada di database. Itu tidak berarti halal — tanyakan.',
+  foodBrowseAll: 'Lihat semua istilah',
+  foodDisclaimer: 'Panduan untuk membantu Anda bertanya dengan lebih tepat — bukan fatwa dan bukan sertifikasi halal. Jika para ulama berbeda pendapat, kami menyampaikannya dan menyerahkan keputusan kepada Anda.',
+  foodPhrasesHint: 'Ketuk sebuah kalimat untuk menampilkannya layar penuh kepada staf.',
+  foodClose: 'Tutup',
+  // Base de konbini (feed del productor)
+  konbiniFound: 'Ada di database konbini',
+  konbiniCertified: 'Sertifikat halal masih berlaku',
+  konbiniCertifiedBody:
+    'Sertifikat berlaku untuk produk ini dan pabrik ini, bukan untuk seluruh merek. Baca cakupannya di bawah.',
+  konbiniConfirmed: 'Produsen mengonfirmasi secara tertulis',
+  konbiniConfirmedBody:
+    'Jawaban tertulis dari produsen menyatakan tidak ada bahan yang dilarang. Itu bukan sertifikasi.',
+  konbiniLabelClear: 'Tidak ada yang ditandai di label',
+  konbiniLabelClearBody:
+    'Tidak ada istilah yang dilarang atau syubhat dalam daftar yang dicantumkan. Jalur produksi bersama berada di luar jangkauan pemeriksaan ini.',
+  konbiniAmbiguous: 'Informasi belum lengkap',
+  konbiniAmbiguousBody: 'Satu atau beberapa istilah perlu dijawab oleh produsen. Ini bukan penolakan.',
+  konbiniExcluded: 'Tercantum bahan yang dilarang',
+  konbiniExcludedBody: 'Kemasannya sendiri menyebutkan bahan yang dinilai dilarang. Tidak perlu bertanya lagi.',
+  konbiniUnknown: 'Belum diperiksa',
+  konbiniUnknownBody: 'Produk ini sedang dalam antrean. Untuk sementara, baca labelnya.',
+  konbiniExpired: 'Sertifikat sudah tidak berlaku',
+  konbiniExpiredBody:
+    'Produk ini pernah bersertifikat dan sertifikatnya sudah kedaluwarsa. Sampai diperpanjang, hanya label yang menjadi acuan.',
+  konbiniSourceCertificate: 'dari sertifikat halal',
+  konbiniSourceReply: 'dari jawaban tertulis produsen',
+  konbiniSourceLabel: 'dari label (原材料名)',
+  konbiniSourceAllergen: 'dari tabel alergen jaringan toko',
+  konbiniSourceNone: 'tidak ada sumber tercatat',
+  konbiniCheckedOn: 'Diperiksa',
+  konbiniTerms: 'Istilah yang perlu ditanyakan',
+  konbiniCertBody: 'Lembaga penerbit',
+  konbiniCertScope: 'Mencakup',
+  konbiniCertExpires: 'Berlaku sampai',
+  konbiniOfflineCopy: 'Salinan tersimpan, tanpa koneksi',
+  konbiniNeedsUpdate:
+    'Database yang diterbitkan lebih baru dari aplikasi ini. Perbarui aplikasi; sementara itu salinan tersimpan yang digunakan.',
+  konbiniUnknownCode:
+    'Versi aplikasi ini belum mengenal kode ini. Perbarui aplikasi untuk membaca penjelasannya.',
+  konbiniDisclaimer:
+    'Ini melaporkan bahan yang dicantumkan pada label. Ini tidak menyertifikasi apa pun, dan kontaminasi silang serta jalur produksi bersama berada di luar cakupannya.',
+  konbiniReadLabelToo:
+    'Kemasan di tangan Anda yang paling menentukan: jika labelnya berbeda, percayai label tersebut dan tempel di atas.',
+};

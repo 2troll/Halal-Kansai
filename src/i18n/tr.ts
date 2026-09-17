@@ -1,0 +1,370 @@
+import type { Dict } from './index';
+
+export const tr: Dict = {
+  appName: 'Halal Kansai',
+  tagline: 'Japonya\'daki Müslüman topluluğun günlük yol arkadaşı',
+
+  // Navigation
+  navSalat: 'Namaz',
+  navQibla: 'Kıble',
+  navPlaces: 'Mekânlar',
+  navKhutbah: 'Hutbe',
+  navGuide: 'Rehber',
+
+  // Salat
+  salatTitle: 'Namaz vakitleri',
+  fajr: 'Sabah',
+  sunrise: 'Güneş',
+  dhuhr: 'Öğle',
+  asr: 'İkindi',
+  maghrib: 'Akşam',
+  isha: 'Yatsı',
+  nextPrayer: 'Sıradaki namaz',
+  inTime: 'kalan',
+  useMyLocation: 'Konumumu kullan',
+  shareTimes: 'Vakitleri paylaş',
+  shareError: 'Görsel oluşturulamadı.',
+  locationDenied: 'Konum alınamadı — Osaka vakitleri gösteriliyor.',
+  city: 'Şehir',
+  methodMwl: 'Müslüman Dünya Birliği (MWL)',
+  methodKarachi: 'Karaçi (İslami İlimler Üniversitesi)',
+  methodIsna: 'ISNA (Kuzey Amerika)',
+  methodEgypt: 'Mısır Genel Harita Kurumu',
+  methodMakkah: 'Ümmü\'l-Kura (Mekke)',
+  methodIndonesia: 'Kemenag (Endonezya)',
+  asrShafii: 'İkindi Şafii',
+  asrHanafi: 'İkindi Hanefi',
+  calcSettings: 'Hesaplama yöntemi',
+  asrSchool: 'İkindi',
+  calcHint: 'Caminizin kullandığı yöntemi seçin. Emin değilseniz imama sorun.',
+  fastTitle: 'Bugünkü oruç',
+  fastSuhoor: 'Sahur bitişi',
+  fastIftar: 'İftar',
+  fastToIftar: 'İftara kalan',
+  fastToSuhoor: 'Sahurun bitmesine kalan',
+
+  // Qibla
+  qiblaTitle: 'Kıble yönü',
+  qiblaFromNorth: 'coğrafi kuzeyden',
+  qiblaDistance: 'Kâbe\'ye',
+  compassStart: 'Pusulayı başlat',
+  compassHint: 'Telefonunuzu düz tutun ve metal eşyalardan uzak durun.',
+  compassUnsupported: 'Bu cihazda pusula yok. Açıyı gerçek bir pusulayla kullanın.',
+  compassPermissionDenied: 'Pusula izni reddedildi.',
+  qiblaAligned: 'Kıbleye dönüksünüz',
+
+  // Places
+  placesTitle: 'Kansai\'de helal mekânlar',
+  filterAll: 'Tümü',
+  filterMosque: 'Camiler',
+  filterRestaurant: 'Restoranlar',
+  filterShop: 'Dükkânlar',
+  typeMosque: 'Cami',
+  typeRestaurant: 'Restoran',
+  typeShop: 'Helal dükkân',
+  unverified: 'Yerinde teyit edilmeli',
+  directions: 'Yol tarifi',
+  openMap: 'Harita',
+  kmAway: 'km uzakta',
+  suggestPlace: 'Mekân öner',
+  fieldName: 'Ad',
+  fieldAddress: 'Adres (isteğe bağlı)',
+  fieldNote: 'Moderatöre not (isteğe bağlı)',
+  attachLocation: 'Şu anki konumumu ekle',
+  send: 'Gönder',
+  suggestThanks: 'Teşekkürler! Öneriniz yayımlanmadan önce incelenecek.',
+  suggestError: 'Öneri gönderilemedi. Daha sonra tekrar deneyin.',
+
+  // Khutbah
+  khutbahTitle: 'Canlı hutbe çevirisi',
+  khutbahDisclaimer:
+    'Canlı çeviriler yalnızca anlamaya yardımcı olur — fetva ya da resmî dinî metin değildir.',
+  sourceLang: 'Hutbe dili',
+  targetLang: 'Çevrilecek dil',
+  startListening: 'Dinlemeye başla',
+  stopListening: 'Durdur',
+  listening: 'Dinleniyor…',
+  fridayMode: 'Cuma modu: dinlerken ekran açık kalır.',
+  modeLabel: 'Mod',
+  modeLocal: 'Kendi mikrofonumla dinle',
+  modeTransmit: 'Bir odaya yayın yap (telefon hoparlörün yanında)',
+  modeJoin: 'Bir yayına katıl',
+  roomCode: 'Oda kodu (ör. osaka-masjid)',
+  startBroadcast: 'Yayını başlat',
+  joinRoom: 'Katıl',
+  leaveRoom: 'Ayrıl',
+  broadcasting: 'Yayın yapılıyor…',
+  joinedRoom: 'Odaya bağlanıldı',
+  listenersLabel: 'dinleyici',
+  roomTaken: 'Bu odada zaten bir yayıncı var.',
+  roomFull: 'Oda dolu.',
+  connectionLost: 'Bağlantı koptu.',
+  speechUnsupported:
+    'Bu tarayıcı konuşma tanımayı desteklemiyor. Android\'de Chrome kullanın.',
+  backendUnavailable: 'Çeviri hizmetine ulaşılamıyor. Bağlantınızı kontrol edin.',
+  citationQuran: 'Kur\'an',
+  citationHadith: 'Hadis — kaynağını doğrulayın',
+  citationDua: 'Dua',
+  citationUnverified: 'Alıntı doğrulanmadı',
+  translationUnofficial: 'resmî olmayan çeviri',
+
+  // Guide
+  guideTitle: 'Rehber',
+  fbTitle: 'Neyi iyileştirelim?',
+  fbIntro: 'Neyin çalışmadığını, neyin eksik ya da kafa karıştırıcı olduğunu bize yazın. Her mesajı okuyoruz. Lütfen kişisel bilgi eklemeyin.',
+  fbKind: 'Konu nedir?',
+  fbKindBug: 'Bir şey çalışmıyor',
+  fbKindIdea: 'Bir fikir ya da eksik bir şey',
+  fbKindData: 'Yanlış bilgi (bir vakit, bir mekân, bir içerik)',
+  fbKindOther: 'Diğer',
+  fbRating: 'Uygulama sizin için ne kadar faydalı?',
+  fbRatingNone: 'Belirtmek istemiyorum',
+  fbMessage: 'Mesajınız',
+  fbSend: 'Gönder',
+  fbSent: 'Teşekkürler. Mesajınız ulaştı.',
+  fbQueued: 'Şu anda bağlantı yok. Tekrar çevrimiçi olduğunuzda otomatik olarak gönderilecek.',
+  fbTooShort: 'Anlayabilmemiz için biraz daha ayrıntı yazın.',
+  fbError: 'Gönderilemedi. Lütfen daha sonra tekrar deneyin.',
+  guideSalatH: 'Japonya\'da namaz',
+  guideSalatP:
+    'Buradaki namaz vakitleri astronomik olarak (MWL yöntemi) hesaplanır ve tamamen çevrimdışı çalışır. Kansai\'deki birçok istasyon ve alışveriş merkezinde artık namaz odası var — Mekânlar sekmesine bakın.',
+  guideHalalH: 'Helal yiyecek bulmak',
+  guideHalalP:
+    'Japonya\'da resmî bir helal etiketleme sistemi yoktur. Sertifika afişlerine (JMA, NAHA) bakın, personelden içerik listesini isteyin ve işlenmiş gıdalarda mirin, sake ve hayvansal kaynaklı katı yağa dikkat edin.',
+  guideJummahH: 'Cuma namazı',
+  guideJummahP:
+    'Kansai\'de hutbeler genellikle Urduca, Endonezce, Japonca veya Arapça okunur. Hutbe sekmesi vaazı canlı olarak kendi dilinize çevirir.',
+  guideAboutH: 'Bu uygulama hakkında',
+  guideAboutP:
+    'Ücretsiz, reklamsız, hesap yok, takip yok. Kansai\'nin Müslüman topluluğu tarafından ve onun için yapıldı.',
+
+  // Ingredient checker
+  scanSubtitle:
+    'Barkodu tarayın ya da ambalajdaki 原材料名 satırını yapıştırın. Okuma telefonunuzda yapılır: hesap gerekmez ve bağlantı olmadan da çalışır.',
+  scanPlaceholder: '原材料名：小麦粉、豚脂、しょうゆ、みりん…',
+  scanCheck: 'Etiketi kontrol et',
+  scanClear: 'Temizle',
+  scanExamples: 'Bir örnek deneyin',
+  scanCamera: 'Barkod tara',
+  scanCameraStop: 'Kamerayı durdur',
+  scanPointCamera: 'Kamerayı barkoda doğrultun.',
+  scanCameraUnsupported:
+    'Bu tarayıcı barkod okuyamıyor. Android\'de Chrome kullanın ya da içerik listesini aşağıya yapıştırın.',
+  scanCameraDenied: 'Kamera kullanılamıyor. İçerik listesini aşağıya yapıştırın.',
+  scanLookingUp: 'Barkod aranıyor…',
+  scanFound: 'Ürün',
+  scanNotFound:
+    'Bu barkod henüz açık veritabanında yok. Ambalajdaki içerik listesini yapıştırın.',
+  scanNoIngredients:
+    'Ürün veritabanında var ama içerik metni yok. Ambalajdan yapıştırın.',
+  scanOffline:
+    'Bağlantı olmadığı için barkod aranamıyor. İçerik listesini yapıştırın — analizin kendisi çevrimdışı çalışır.',
+  scanNetworkError: 'Ürün veritabanına ulaşılamadı. Bunun yerine içerik listesini yapıştırın.',
+  scanEmpty: 'Önce bir içerik listesi yapıştırın.',
+  scanVerdict: 'Sonuç',
+  verdictHaramTitle: 'Haram bir içerik bulundu',
+  verdictHaramBody: 'Etikette, açık nasla haram olan en az bir içerik yer alıyor.',
+  verdictMushboohTitle: 'Şüpheli — yemeden önce teyit edin',
+  verdictMushboohBody:
+    'Açıkça haram bir şey yok, ancak kaynağı etikette belirtilmemiş ya da âlimlerin görüş ayrılığı bulunan içerikler var. Üreticiye sorun.',
+  verdictNoHaramTitle: 'Tanınan haram içerik yok',
+  verdictNoHaramBody:
+    'Bu etikette tanınan tüm terimler sorunsuz. Uygulamanın tanımadığı her şey kontrol edilmemiş sayılır.',
+  verdictUnknownTitle: 'Hiçbir şey tanınmadı',
+  verdictUnknownBody:
+    'Tek bir terim bile tanınmadı. 原材料名 satırını yapıştırdığınızdan emin olun ve ambalajı kendiniz okuyun.',
+  scanNotClearance:
+    'Bu bir helal sertifikası değildir. Uygulama yalnızca bildiği kelimeleri okur ve asla onay vermez.',
+  scanNoFatwa:
+    'Âlimlerin görüş ayrılığı olan konularda uygulama bunu belirtir ve kararı size ve danıştığınız âlime bırakır.',
+  scanMarkedLabel: 'İşaretlenmiş etiket',
+  scanFoundTerms: 'Tanınanlar',
+  scanAskMaker: 'Üreticiye sorulacak soruyu kopyala (Japonca)',
+  scanCopied: 'Kopyalandı. Üreticinin iletişim adresine gönderin.',
+  statusHaram: 'Haram',
+  statusMushbooh: 'Şüpheli',
+  statusHalal: 'Sakınca yok',
+  scanOfflineNote: 'Analiz çevrimdışı, telefonunuzda çalışır.',
+  scanSource: 'Ürün verisi: Open Food Facts (ODbL)',
+
+  // Certificación en la pegatina
+  verdictCertConflictTitle: 'Etiket ile içerikler birbiriyle çelişiyor',
+  verdictCertConflictBody:
+    'Etiket helal sertifikalı olduğunu belirtiyor, ancak açık nasla haram olan bir içerik de yazıyor. Sertifika bunu ortadan kaldırmaz. Etikete güvenmeyin: yemeden önce sertifikayı veren kuruma sorun.',
+  verdictCertDoubtfulTitle: 'Sertifikalı — aşağıdaki şüpheli terimler, sertifika kurumunun denetlediği konulardır',
+  verdictCertDoubtfulBody:
+    'Etiket helal sertifikalı olduğunu belirtiyor ve açık nasla haram olan bir şey bulunmadı. Aşağıdaki şüpheli terimler (jelatinin, emülgatörlerin, yağların kaynağı) tam olarak bir sertifika kurumunun fabrikada denetlediği konulardır; dolayısıyla büyük ihtimalle zaten çözülmüştür. Sertifikanın geçerli olduğunu ve veren kuruma güvendiğinizi kontrol edin.',
+  certBadgeCertified: 'Etikette sertifika beyan edilmiş',
+  certBadgeFriendly: 'Sertifika değildir',
+  certFriendlyNote:
+    'Bu etikette “Muslim friendly”, “domuz içermez” ya da benzeri bir ifade var. Bu, üreticinin kendi beyanıdır, denetlenmiş bir sertifika değildir: diğer içeriklerin kaynağını kimse doğrulamamıştır. Aşağıdaki listeyi okuyun ve sorun.',
+  certVerifyNote: 'Sertifikayı veren kurumu ve son geçerlilik tarihini kontrol edin. Beyan tek başına kanıt değildir.',
+
+  notifyPrayers: 'Namaz vakitlerinde bildir',
+
+  // Apariencia
+  appearance: 'Görünüm',
+  appearanceHint: 'Gözünüzü en az yoran renkleri ve rahat okuduğunuz yazı boyutunu seçin.',
+  theme: 'Renkler',
+  themeNight: 'Gece',
+  themePaper: 'Kâğıt',
+  themeSand: 'Kum',
+  themeIndigo: 'Çivit',
+  themeContrast: 'Yüksek kontrast',
+  textSize: 'Yazı boyutu',
+  textNormal: 'Normal',
+  textLarge: 'Büyük',
+  textXLarge: 'Daha büyük',
+  textXXLarge: 'En büyük',
+  done: 'Tamam',
+
+  voiceOutput: 'Çeviriyi sesli oku',
+  voiceOutputHint: 'Kulaklık takın: imam konuşurken, telefon cebinizdeyken çeviriyi dinlersiniz.',
+  voiceOutputTest: 'Çeviri sesli okunacak.',
+
+  voicePick: 'Ses',
+  voiceNone: 'Bu dil için yüklü ses yok',
+
+  roomQrLabel: 'Bu odaya katılmak için QR kod',
+  roomQrHint: 'Bunu cemaate gösterin: kameralarını ona doğrultup kendi dillerinde katılırlar.',
+
+  micDenied: 'Mikrofon veya konuşma tanıma izni reddedildi.',
+
+  // El viernes, cuando la pantalla se queda muda, esto es lo único que
+  // distingue «el micrófono está sordo» de «no es este idioma».
+  micLevelLabel: 'Mikrofon',
+  micGood: 'Hutbeyi duyabiliyorum.',
+  micWeak: 'Ses çok zayıf — telefonu hoparlöre yaklaştırın.',
+  micSilence: 'Hiçbir şey duymuyorum. Telefonu hoparlöre yaklaştırın.',
+  micUnavailable: 'Bu cihazda mikrofon seviyesi ölçülemiyor.',
+  micNoMatch: 'Bir ses duyuyorum ama şu dilde kelime tanıyamıyorum:',
+  micNoMatchHint: 'İmam başka bir dilde konuşuyorsa yukarıdaki "Hutbe dili" ayarını değiştirin.',
+  errNetwork: 'Bağlantı yok: konuşma tanıma için internet gerekir.',
+  errAudioCapture: 'Mikrofon kullanılamıyor — başka bir uygulama kullanıyor olabilir.',
+  errLangUnsupported: 'Bu cihaz seçilen hutbe dilini tanıyamıyor.',
+  errStart: 'Konuşma tanıma başlamadı. Durdurup yeniden başlatın.',
+  earphonesNote: 'Çeviriyi okumak için kulaklık gerekmez. Kulaklık yalnızca sesli okunmasını dinlemek içindir.',
+
+  // Whisper en el aparato: el motor que funciona en iPhone, sin conexión y
+  // con la reverberación de una sala grande.
+  engineLabel: 'Tanıma',
+  engineBrowser: 'Tarayıcı (hızlı, internet gerekir)',
+  engineWhisper: 'Bu telefonda (çevrimdışı çalışır, salonda daha iyi)',
+  engineWhisperHint:
+    'Bir kez indirilir (yaklaşık 80 MB) ve sonra telefonda kalır. Hutbenin sesi cihazınızdan asla çıkmaz.',
+  whisperLoading: 'Tanıyıcı bu telefonda hazırlanıyor',
+  whisperReady: 'Hazır, bu telefonda çalışıyor',
+  whisperThinking: 'Yazıya dökülüyor…',
+  whisperOnGpu: 'grafik hızlandırmayla',
+  whisperOnCpu: 'grafik hızlandırma olmadan — daha yavaş ama çalışıyor',
+  whisperSize: 'Model',
+  whisperTiny: 'Küçük (80 MB, eski telefonlar)',
+  whisperBase: 'Standart (150 MB, aksanlarda daha iyi)',
+
+  scanPhoto: 'Etiketin fotoğrafını çek',
+  scanPhotoWorking: 'Etiket okunuyor…',
+  scanPhotoFailed: 'Etiket okunamadı. Daha yakından tekrar deneyin ya da listeyi aşağıya yazın.',
+
+  broadcasterLeft: 'Yayın sona erdi: vaazı gönderen telefonun bağlantısı koptu.',
+
+  screenMode: 'Ekranda göster',
+  screenExit: 'Çık',
+  screenWaiting: 'Vaazın başlaması bekleniyor…',
+
+  // Hoja de revisión
+  revisionTitle: 'İçerik kuralları — inceleme için',
+  revisionIntro: 'Bu uygulamanın verebileceği tüm sonuçlar tek sayfada. Düzeltmenizi rica ediyoruz: bir hüküm yanlışsa numarasını bize bildirin, değiştirelim.',
+  revisionP1T: 'Deterministiktir, bir yapay zekâ modeli değildir.',
+  revisionP1: 'Bu bir sözlüktür. Aynı etiket her zaman aynı sonucu verir ve her hüküm satır satır denetlenebilir.',
+  revisionP2T: 'Fetva vermez.',
+  revisionP2: 'Âlimlerin görüş ayrılığı olan konularda uygulama bunu belirtir, iki görüşü de aktarır ve kararı kullanıcıya ve danıştığı âlime bırakır.',
+  revisionP3T: 'Asla onay vermez.',
+  revisionP3: 'Söyleyebileceği en olumlu şey “tanınan haram içerik yok” ifadesidir. Bir ürünün helal olduğunu asla söylemez.',
+  revisionTerms: 'Ambalajda yazıldığı gibi',
+  revisionName: 'İçerik',
+  revisionWhy: 'Bu hükmün gerekçesi',
+  revisionPrint: 'Yazdır',
+  revisionFooter: 'Her kurala dair düzeltmeleriniz memnuniyetle karşılanır. Lütfen numarasını belirtin. Gelen her düzeltme uygulanacak ve size geri gösterilecektir.',
+
+  // Diagnóstico
+  diagTitle: 'Bu telefonda çalışıyor mu?',
+  diagIntro: 'Bu cihazın gerçekte neler yapabildiğini kontrol eder. Bir şey çalışmadığında nedenini öğrenmek için faydalıdır — cumadan önce, cuma sırasında değil.',
+  diagRun: 'Kontrolü başlat',
+  diagCopy: 'Sonucu kopyala',
+  diagPlatform: 'Çalışma şekli',
+  diagPlatformApp: 'yüklü uygulama',
+  diagPlatformWeb: 'web tarayıcısı',
+  diagServer: 'Çeviri sunucusu',
+  diagNoConnection: 'bağlantı yok',
+  diagSpeechIn: 'Konuşma tanıma',
+  diagUseRoomMode: 'burada yok — “bir yayına katıl” seçeneğini kullanın',
+  diagMic: 'Mikrofon izni',
+  diagVoices: 'Sesli okuma için sesler',
+  diagBarcode: 'Barkod tarayıcı',
+  diagTypeInstead: 'burada yok — içerik listesini yapıştırın',
+  diagPhoto: 'Etiketin fotoğrafını çek',
+  diagNotifications: 'Namaz bildirimleri',
+  diagWakeLock: 'Ekranı açık tut',
+  diagScreenMaySleep: 'vaaz sırasında ekran kapanabilir',
+  diagOffline: 'Bağlantı olmadan çalışır',
+  diagCachedFiles: 'dosya kayıtlı',
+  diagAvailable: 'mevcut',
+  diagNotSupported: 'burada desteklenmiyor',
+  diagOnlyInApp: 'yalnızca yüklü uygulamada',
+
+  // Misc
+  language: 'Dil',
+  offlineReady: 'Çevrimdışı kullanılabilir',
+  loading: 'Yükleniyor…',
+
+  // Comida
+  navFood: 'Yiyecek',
+  foodTitle: 'Japonca etiket ve menü okuma',
+  foodTabScan: 'İçerikler',
+  foodTabPhrases: 'Personele göster',
+  foodScanLabel: 'Bir içerik listesi yapıştırın ya da tek bir kelime yazın',
+  foodNoMatch: 'Veritabanında yok. Bu, helal olduğu anlamına gelmez — sorun.',
+  foodBrowseAll: 'Tüm terimlere göz at',
+  foodDisclaimer: 'Daha iyi sorular sormanıza yardımcı olacak bir rehberdir — fetva ya da helal sertifikası değildir. Âlimlerin görüş ayrılığı olan konularda bunu belirtir ve kararı size bırakırız.',
+  foodPhrasesHint: 'Personele tam ekran göstermek için bir ifadeye dokunun.',
+  foodClose: 'Kapat',
+  // Base de konbini (feed del productor)
+  konbiniFound: 'Konbini veritabanında',
+  konbiniCertified: 'Geçerli helal sertifikası var',
+  konbiniCertifiedBody:
+    'Sertifika tüm markayı değil, bu ürünü ve bu tesisi kapsar. Aşağıdaki kapsamı okuyun.',
+  konbiniConfirmed: 'Üretici bunu yazılı olarak teyit ediyor',
+  konbiniConfirmedBody:
+    'Üreticinin yazılı cevabına göre haram içerik yok. Bu bir sertifika değildir.',
+  konbiniLabelClear: 'Etikette işaretlenen bir şey yok',
+  konbiniLabelClearBody:
+    'Beyan edilen listede haram veya şüpheli terim yok. Ortak üretim hatları buradan görülemez.',
+  konbiniAmbiguous: 'Bilgi eksik',
+  konbiniAmbiguousBody: 'Bir veya daha fazla terim için üreticinin cevabı gerekiyor. Bu bir ret değildir.',
+  konbiniExcluded: 'Haram bir içerik beyan edilmiş',
+  konbiniExcludedBody: 'Ambalajın kendisi haram olarak sınıflandırılan bir içerik belirtiyor. Ayrıca sormaya gerek yok.',
+  konbiniUnknown: 'Henüz kontrol edilmedi',
+  konbiniUnknownBody: 'Ürün sırada. Şimdilik etiketi okuyun.',
+  konbiniExpired: 'Sertifikanın süresi dolmuş',
+  konbiniExpiredBody:
+    'Sertifikası vardı ve süresi doldu. Yenilenene kadar yalnızca etiket geçerlidir.',
+  konbiniSourceCertificate: 'helal sertifikasına göre',
+  konbiniSourceReply: 'üreticinin yazılı cevabına göre',
+  konbiniSourceLabel: 'etikete göre (原材料名)',
+  konbiniSourceAllergen: 'zincirin alerjen tablosuna göre',
+  konbiniSourceNone: 'kaynak kaydedilmemiş',
+  konbiniCheckedOn: 'Kontrol tarihi',
+  konbiniTerms: 'Sorulacak terimler',
+  konbiniCertBody: 'Sertifikayı veren kurum',
+  konbiniCertScope: 'Kapsam',
+  konbiniCertExpires: 'Geçerlilik sonu',
+  konbiniOfflineCopy: 'Kayıtlı kopya, bağlantı yok',
+  konbiniNeedsUpdate:
+    'Yayımlanan veritabanı bu uygulamadan daha yeni. Uygulamayı güncelleyin; bu sırada kayıtlı kopya kullanılıyor.',
+  konbiniUnknownCode:
+    'Uygulamanın bu sürümü bu kodu henüz tanımıyor. Açıklamayı okumak için güncelleyin.',
+  konbiniDisclaimer:
+    'Bu, etikette beyan edilen içerikleri bildirir. Hiçbir şeyi sertifikalandırmaz; çapraz bulaşma ve ortak üretim hatları kapsamı dışındadır.',
+  konbiniReadLabelToo:
+    'Son söz elinizdeki ambalajındır: etiket farklıysa etikete güvenin ve yukarıya yapıştırın.',
+};

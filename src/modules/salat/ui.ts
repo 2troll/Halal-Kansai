@@ -75,7 +75,7 @@ export function renderSalat(container: HTMLElement): void {
     <div class="mihrab-card">
       <div class="label">${t('nextPrayer')}</div>
       <div class="big">${t(next.name)}</div>
-      <div class="small">${formatTime(times[next.name])} · ${t('inTime')} ${countdown}</div>
+      <div class="small">${formatTime(times[next.name])} · ${withInTime(countdown)}</div>
     </div>
     <ul class="times-list">
       ${ORDER.map(
@@ -174,10 +174,35 @@ export function renderSalat(container: HTMLElement): void {
  *   porque ya no hay un trozo latino suelto dentro de un texto de derecha a
  *   izquierda.
  */
+/**
+ * «en 2 h 5 min». En urdu, bengalí, turco y nepalí la palabra va DETRÁS
+ * («2 h 5 min kalan»): delante se lee al revés. Lo señalaron las cuatro
+ * traducciones por separado.
+ */
+const IN_TIME_AFTER: ReadonlySet<Lang> = new Set(['ur', 'bn', 'tr', 'ne']);
+
+function withInTime(countdown: string): string {
+  return IN_TIME_AFTER.has(getLang()) ? `${countdown} ${t('inTime')}` : `${t('inTime')} ${countdown}`;
+}
+
+/** Unidades en la escritura de cada idioma: [horas, minutos]. */
+const UNITS: Partial<Record<Lang, [string, string]>> = {
+  // En urdu, con «h» y «min» latinos, el sentido de escritura dejaba
+  // «باقی min 36»: el mismo fallo que ya se vio en árabe.
+  ur: ['گھنٹے', 'منٹ'],
+  bn: ['ঘণ্টা', 'মিনিট'],
+  ne: ['घण्टा', 'मिनेट'],
+  id: ['jam', 'menit'],
+  ms: ['jam', 'minit'],
+  tr: ['sa', 'dk'],
+  vi: ['giờ', 'phút'],
+};
+
 function formatCountdown(h: number, m: number, lang: Lang): string {
   if (lang === 'ja') return h > 0 ? `${h}時間${m}分` : `${m}分`;
   if (lang === 'ar') return h > 0 ? `${h} ساعة و${m} دقيقة` : `${m} دقيقة`;
-  return h > 0 ? `${h} h ${m} min` : `${m} min`;
+  const [hu, mu] = UNITS[lang] ?? ['h', 'min'];
+  return h > 0 ? `${h} ${hu} ${m} ${mu}` : `${m} ${mu}`;
 }
 
 /**

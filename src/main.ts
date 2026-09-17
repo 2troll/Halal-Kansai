@@ -2,7 +2,7 @@ import './styles/main.css';
 import './styles/themes.css';
 import './styles/refined.css';
 import './styles/modern.css';
-import { applyDirection, getLang, onLangChange, setLang, t, type Lang } from './i18n';
+import { LANGS, applyDirection, getLang, onLangChange, setLang, t, type Lang } from './i18n';
 import { applyAppearance, openAppearanceSheet } from './modules/appearance';
 import { icon, type IconName } from './ui/icons';
 
@@ -13,10 +13,34 @@ import { icon, type IconName } from './ui/icons';
  * pantalla en todas las pestañas. En la lista, cada idioma en su propia
  * lengua, para que lo encuentre quien no lee la actual.
  */
-const LANG_LABEL: Record<Lang, string> = { ar: 'العربية', en: 'English', es: 'Español', ja: '日本語' };
-const LANG_CODE: Record<Lang, string> = { ar: 'ع', en: 'EN', es: 'ES', ja: '日本' };
+const LANG_LABEL: Record<Lang, string> = {
+  en: 'English',
+  ja: '日本語',
+  ar: 'العربية',
+  id: 'Bahasa Indonesia',
+  ur: 'اردو',
+  bn: 'বাংলা',
+  ms: 'Bahasa Melayu',
+  tr: 'Türkçe',
+  ne: 'नेपाली',
+  vi: 'Tiếng Việt',
+  es: 'Español',
+};
+const LANG_CODE: Record<Lang, string> = {
+  en: 'EN',
+  ja: '日本',
+  ar: 'ع',
+  id: 'ID',
+  ur: 'اردو',
+  bn: 'বাং',
+  ms: 'MS',
+  tr: 'TR',
+  ne: 'ने',
+  vi: 'VI',
+  es: 'ES',
+};
 import { renderSalat } from './modules/salat/ui';
-import { renderQibla } from './modules/qibla/ui';
+import { renderQibla, stopCompass } from './modules/qibla/ui';
 import { renderPlaces } from './modules/places/ui';
 import { renderKhutbah } from './modules/khutbah/ui';
 import { renderGuide } from './modules/guide/ui';
@@ -59,7 +83,7 @@ function renderShell(): void {
         <label class="lang-select" title="${t('language')}">
           <span class="lang-code" aria-hidden="true">${LANG_CODE[getLang()]}</span>
           <select id="sel-lang" aria-label="${t('language')}">
-            ${(['ar', 'en', 'es', 'ja'] as Lang[])
+            ${LANGS
               .map((l) => `<option value="${l}" ${l === getLang() ? 'selected' : ''}>${LANG_LABEL[l]}</option>`)
               .join('')}
           </select>
@@ -90,6 +114,8 @@ function renderShell(): void {
     btn.addEventListener('click', () => {
       // Salir de la pestaña de comida debe apagar la cámara, no dejarla viva.
       if (activeTab === 'food') stopFoodCamera();
+      // Y la de la qibla, el sensor de la brújula.
+      if (activeTab === 'qibla') stopCompass();
       activeTab = btn.dataset.tab as Tab;
       app
         .querySelectorAll<HTMLButtonElement>('.tabbar button')
