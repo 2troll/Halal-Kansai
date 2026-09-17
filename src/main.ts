@@ -191,6 +191,9 @@ applyDirection();
 renderShell();
 onLangChange(renderShell);
 
+// Un secreto: toca el arco del logo cinco veces seguidas.
+void import('./modules/hunt/ui').then(({ installHunt }) => installHunt());
+
 // Opiniones escritas sin conexión: salen ahora si ya hay red.
 void import('./modules/guide/feedback').then(({ flushFeedbackQueue }) => flushFeedbackQueue());
 

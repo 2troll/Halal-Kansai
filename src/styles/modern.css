@@ -889,3 +889,67 @@ main h2 {
 .tasbih-tap .note {
   color: color-mix(in srgb, var(--on-accent) 75%, transparent);
 }
+
+/* ---------- Búsqueda de las 20 pistas ---------- */
+.hunt-toast {
+  position: fixed;
+  left: 50%;
+  translate: -50% 0;
+  bottom: calc(5.4rem + env(safe-area-inset-bottom, 0px));
+  z-index: 1100;
+  width: min(30rem, calc(100% - 2rem));
+  padding: 0.9rem 1rem 0.7rem;
+  border: 1px solid var(--gold);
+  border-radius: 1rem;
+  background: var(--night-soft);
+  color: var(--on-surface);
+  box-shadow: 0 12px 32px rgb(0 0 0 / 35%);
+  animation: hunt-in 0.25s ease-out;
+}
+
+.hunt-toast strong {
+  display: block;
+  margin-bottom: 0.25rem;
+  color: var(--gold);
+}
+
+.hunt-toast p {
+  margin: 0 0 0.5rem;
+  line-height: 1.45;
+}
+
+.hunt-toast.finale {
+  top: 50%;
+  bottom: auto;
+  translate: -50% -50%;
+  text-align: center;
+  font-size: 1.05rem;
+}
+
+.hunt-toast.finale strong {
+  font-size: 2.4rem;
+}
+
+.hunt-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.hunt-toast.finale .hunt-actions {
+  justify-content: center;
+}
+
+@keyframes hunt-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+/* Kiswa: el rótulo dorado claro sobre la tarjeta dorada no se leía. */
+[data-theme='kiswah'] .mihrab-card .label {
+  color: var(--on-accent);
+  opacity: 0.85;
+}

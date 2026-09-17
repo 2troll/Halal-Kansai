@@ -1,4 +1,5 @@
 import L from 'leaflet';
+import { searchRank } from './search';
 import 'leaflet/dist/leaflet.css';
 import { PLACES, type Place, type PlaceType } from './data';
 import { fetchCommunityPlaces, submitSuggestion } from './community';
@@ -44,29 +45,27 @@ function distanceKm(aLat: number, aLng: number, bLat: number, bLng: number): num
 /** Texto de búsqueda actual (nombre, ciudad, dirección o notas). */
 let query = '';
 
-/** Sin tildes ni mayúsculas: «kyoto» encuentra «Kyōto». */
-const fold = (v: string) => v.normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
-
 /**
  * Lo que toca enseñar: filtro, búsqueda y, sobre todo, lo más cercano
  * primero. Con decenas de lugares en seis prefecturas, una lista en el orden
  * en que se escribieron obligaba a leerla entera para encontrar la mezquita
  * de tu barrio.
  */
-function visiblePlaces(): Array<{ place: Place; km?: number }> {
+function visiblePlaces(): Array<{ place: Place; rank: number; km?: number }> {
   const here = getCoords();
-  const q = fold(query.trim());
   return allPlaces
     .filter((p) => filter === 'all' || p.type === filter)
-    .filter((p) => !q || fold(`${p.name} ${p.city} ${p.address ?? ''} ${p.notes ?? ''}`).includes(q))
-    .map((place) => ({
+    .map((place) => ({ place, rank: searchRank(place, query) }))
+    .filter((r): r is { place: Place; rank: number } => r.rank !== null)
+    .map(({ place, rank }) => ({
       place,
+      rank,
       km:
         place.lat !== undefined && place.lng !== undefined
           ? distanceKm(here.lat, here.lng, place.lat, place.lng)
           : undefined,
     }))
-    .sort((a, b) => (a.km ?? Infinity) - (b.km ?? Infinity));
+    .sort((a, b) => a.rank - b.rank || (a.km ?? Infinity) - (b.km ?? Infinity));
 }
 
 function formatKm(km: number): string {
