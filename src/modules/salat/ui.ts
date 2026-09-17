@@ -12,7 +12,7 @@ import {
   timezoneHours,
 } from './settings';
 import { fastingCountdown } from '../ramadan/fasting';
-import { FARD, currentPrayerOf, hijriDate, loadPrayed, togglePrayed } from './today';
+import { FARD, currentPrayerOf, hijriDate, loadPrayed, prayerDate, togglePrayed } from './today';
 import { PLACES } from '../places/data';
 import { directionsUrl } from '../places/directions';
 import { escapeHtml } from '../escape';
@@ -70,7 +70,7 @@ export function renderSalat(container: HTMLElement): void {
   const m = next.minutesLeft % 60;
   const countdown = formatCountdown(h, m, getLang());
   const current = currentPrayerOf(times, now);
-  const prayed = loadPrayed(now);
+  const isPrayed = (name: string) => loadPrayed(prayerDate(name, times, now)).has(name);
   const hijri = hijriDate(now, getLang());
 
   // El widget de la pantalla de inicio se alimenta de este mismo cálculo.
@@ -90,7 +90,7 @@ export function renderSalat(container: HTMLElement): void {
         <li class="${name === next.name ? 'next' : ''}${name === current ? ' current' : ''}">
           ${
             FARD.includes(name)
-              ? `<button class="prayed-mark" type="button" data-prayer="${name}" aria-pressed="${String(prayed.has(name))}" aria-label="${t('markPrayed')}: ${t(name)}"></button>`
+              ? `<button class="prayed-mark" type="button" data-prayer="${name}" aria-pressed="${String(isPrayed(name))}" aria-label="${t('markPrayed')}: ${t(name)}"></button>`
               : '<span class="prayed-spacer" aria-hidden="true"></span>'
           }
           <span class="name">${t(name)}</span>
@@ -134,8 +134,11 @@ export function renderSalat(container: HTMLElement): void {
 
   container.querySelectorAll<HTMLButtonElement>('.prayed-mark').forEach((btn) => {
     btn.addEventListener('click', () => {
-      const set = togglePrayed(new Date(), btn.dataset.prayer!);
-      btn.setAttribute('aria-pressed', String(set.has(btn.dataset.prayer!)));
+      // La fecha de cuando se pintó la lista, no la de ahora: si la pestaña
+      // sigue abierta pasada la medianoche, el botón y lo guardado coinciden.
+      const name = btn.dataset.prayer!;
+      const set = togglePrayed(prayerDate(name, times, now), name);
+      btn.setAttribute('aria-pressed', String(set.has(name)));
       if (set.size === FARD.length) navigator.vibrate?.(30);
     });
   });

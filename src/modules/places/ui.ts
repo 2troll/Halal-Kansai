@@ -112,7 +112,7 @@ function renderList(listEl: HTMLElement): void {
       const p = allPlaces.find((x) => x.id === id);
       if (!p) return;
       const { shareText } = await import('../../ui/share');
-      await shareText(
+      const result = await shareText(
         p.name,
         [
           `📍 ${p.name}`,
@@ -123,6 +123,10 @@ function renderList(listEl: HTMLElement): void {
           .filter(Boolean)
           .join('\n'),
       );
+      if (result === 'copied' || result === 'failed') {
+        btn.textContent = result === 'copied' ? '✓' : '✕';
+        setTimeout(() => (btn.innerHTML = icon('share', 16)), 1800);
+      }
     });
   });
   listEl.querySelectorAll<HTMLButtonElement>('.show-map').forEach((btn) => {

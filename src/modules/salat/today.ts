@@ -40,14 +40,30 @@ export function hijriDate(date: Date, lang: string): string | null {
   }
 }
 
-/** El rezo cuyo tiempo está corriendo ahora; antes del fayr sigue siendo el isha de anoche. */
-export function currentPrayerOf(times: PrayerTimes, now: Date): keyof PrayerTimes {
+/**
+ * El rezo cuyo tiempo está corriendo ahora; antes del fayr sigue siendo el
+ * isha de anoche. Entre el amanecer y el dhuhr no hay ninguno: el tiempo del
+ * fayr ya terminó, y decir «Ahora: Fayr» a las nueve sería decir que aún vale.
+ */
+export function currentPrayerOf(times: PrayerTimes, now: Date): keyof PrayerTimes | null {
   const nowMin = now.getHours() * 60 + now.getMinutes();
+  const at = (name: keyof PrayerTimes) => Math.round(times[name] * 60);
+  if (nowMin >= at('sunrise') && nowMin < at('dhuhr')) return null;
   let current: keyof PrayerTimes = 'isha';
   for (const name of FARD) {
-    if (Math.round(times[name] * 60) <= nowMin) current = name;
+    if (at(name) <= nowMin) current = name;
   }
   return current;
+}
+
+/**
+ * A qué día pertenece marcar un rezo. De madrugada (antes del fayr) el isha
+ * que se marca es el de anoche: guardarlo con la fecha de hoy lo daría ya por
+ * rezado esta noche.
+ */
+export function prayerDate(name: string, times: PrayerTimes, now: Date): Date {
+  const beforeFajr = now.getHours() * 60 + now.getMinutes() < Math.round(times.fajr * 60);
+  return beforeFajr && name === 'isha' ? new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1, 12) : now;
 }
 
 /** Clave del día en hora local (no UTC: en Japón el día cambia 9 horas antes). */

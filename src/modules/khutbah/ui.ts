@@ -133,8 +133,16 @@ function stopAll(): void {
   void disableFridayMode();
 }
 
+/** Para todo si está escuchando (al cambiar de idioma se rehacen las pestañas). */
+export function stopKhutbah(): void {
+  if (running) stopAll();
+  delete document.documentElement.dataset.dim;
+}
+
 export function renderKhutbah(container: HTMLElement): void {
   if (running) stopAll();
+  // Atenuar no puede quedarse puesto en una pantalla nueva sin su botón.
+  delete document.documentElement.dataset.dim;
 
   const savedSource = localStorage.getItem(PREF_SOURCE) ?? SOURCE_LOCALES[0].code;
   const savedTarget = localStorage.getItem(PREF_TARGET) ?? getLang();
@@ -268,6 +276,7 @@ export function renderKhutbah(container: HTMLElement): void {
         : `${icon('listen', 19)}${t('startListening')}`;
 
   const setIdleUi = () => {
+    container.querySelector('#reader-dim')?.setAttribute('aria-pressed', 'false');
     btn.innerHTML = idleButtonLabel();
     btn.classList.remove('stop');
     status.hidden = true;
@@ -518,14 +527,15 @@ export function renderKhutbah(container: HTMLElement): void {
     // ya estaba al final: si subió a releer algo, no se le arrastra.
     const atEnd = window.innerHeight + window.scrollY >= document.body.scrollHeight - 160;
     transcript.querySelector('.seg.latest')?.classList.remove('latest');
-    transcript.insertAdjacentHTML('beforeend', segmentCardHtml(seg, selSource.value, selTarget.value));
+    transcript.insertAdjacentHTML('beforeend', segmentCardHtml(seg, mode() === 'join' ? '' : selSource.value, selTarget.value));
     const card = transcript.lastElementChild;
     card?.classList.add('latest');
     while (transcript.childElementCount > MAX_CARDS) transcript.firstElementChild?.remove();
     readerBar.hidden = false;
     if (atEnd && !container.hidden) card?.scrollIntoView({ block: 'end', behavior: 'smooth' });
     const saved: SavedSegment = toSaved(seg);
-    session?.segments.push(saved);
+    const owner = session;
+    owner?.segments.push(saved);
     // Solo la traducción: el árabe original ya lo está diciendo el imán.
     speakTranslation(seg.translation, selTarget.value);
 
@@ -543,6 +553,8 @@ export function renderKhutbah(container: HTMLElement): void {
       const line = card?.querySelector('.seg-tr');
       if (line) line.textContent = better;
       saved.translation = better;
+      // Si ya se paró y se guardó, se vuelve a guardar con la buena.
+      if (owner && owner !== session) saveKhutbah(owner);
       // El subtítulo grande solo se corrige si sigue siendo esta frase: si el
       // imán ya va por la siguiente, cambiarla sería peor que dejarla.
       if (caption.textContent === seg.translation) {
@@ -675,7 +687,9 @@ export function renderKhutbah(container: HTMLElement): void {
 
   const setRunningUi = (statusLabel: string) => {
     if (!running) {
-      session = { id: `k${Date.now()}`, startedAt: new Date().toISOString(), source: selSource.value, target: selTarget.value, segments: [] };
+      // Quien se une a una sala no elige el idioma del imán: no se sabe.
+      session = { id: `k${Date.now()}`, startedAt: new Date().toISOString(), source: mode() === 'join' ? '' : selSource.value, target: selTarget.value, segments: [] };
+      clearInterim();
       transcript.innerHTML = '';
       historyBox.hidden = true;
     }
@@ -703,17 +717,20 @@ export function renderKhutbah(container: HTMLElement): void {
       note.textContent = `⚠ ${errorText(code)}`;
       stopAll();
       setIdleUi();
+      renderHistory();
     },
     onClose: () => {
       note.textContent = `⚠ ${t('connectionLost')}`;
       stopAll();
       setIdleUi();
+      renderHistory();
     },
   });
 
   btn.addEventListener('click', () => {
     if (running) {
       stopAll();
+      clearInterim();
       setIdleUi();
       note.textContent = '';
       renderHistory();
@@ -727,6 +744,7 @@ export function renderKhutbah(container: HTMLElement): void {
           addSegment(await translateSegmentSmart(text, selSource.value, selTarget.value));
         } catch {
           note.textContent = t('backendUnavailable');
+          session?.segments.push({ kind: 'speech', translation: '', original: text, verified: false });
           transcript.insertAdjacentHTML(
             'beforeend',
             `<article class="seg"><p class="orig">${safeText(text)}</p></article>`,

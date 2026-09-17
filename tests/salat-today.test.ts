@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { currentPrayerOf, dayKey, hijriDate, parsePrayed } from '../src/modules/salat/today.ts';
+import { currentPrayerOf, dayKey, hijriDate, parsePrayed, prayerDate } from '../src/modules/salat/today.ts';
 import type { PrayerTimes } from '../src/modules/salat/calculator.ts';
 
 const TIMES = { fajr: 4.3, sunrise: 5.7, dhuhr: 11.87, asr: 15.38, maghrib: 18.05, isha: 19.37 } as PrayerTimes;
@@ -9,9 +9,17 @@ describe('rezos de hoy', () => {
   it('el rezo en curso', () => {
     expect(currentPrayerOf(TIMES, at(2, 0))).toBe('isha');
     expect(currentPrayerOf(TIMES, at(5, 0))).toBe('fajr');
-    expect(currentPrayerOf(TIMES, at(6, 30))).toBe('fajr');
+    // Entre el amanecer y el dhuhr el fayr ya no vale: no hay «Ahora».
+    expect(currentPrayerOf(TIMES, at(6, 30))).toBeNull();
+    expect(currentPrayerOf(TIMES, at(11, 0))).toBeNull();
     expect(currentPrayerOf(TIMES, at(12, 0))).toBe('dhuhr');
     expect(currentPrayerOf(TIMES, at(23, 0))).toBe('isha');
+  });
+
+  it('de madrugada, marcar el isha cuenta para anoche; el resto, para hoy', () => {
+    expect(dayKey(prayerDate('isha', TIMES, at(1, 0)))).toBe('2026-09-16');
+    expect(dayKey(prayerDate('fajr', TIMES, at(1, 0)))).toBe('2026-09-17');
+    expect(dayKey(prayerDate('isha', TIMES, at(21, 0)))).toBe('2026-09-17');
   });
 
   it('fecha hégira del 17-9-2026 (Rabi II 1448) en varios idiomas', () => {

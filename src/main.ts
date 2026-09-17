@@ -10,7 +10,7 @@ import { LANG_CODE, LANG_LABEL } from './i18n/labels';
 import { renderSalat } from './modules/salat/ui';
 import { renderQibla, stopCompass } from './modules/qibla/ui';
 import { refreshMapSize, renderPlaces } from './modules/places/ui';
-import { renderKhutbah } from './modules/khutbah/ui';
+import { renderKhutbah, stopKhutbah } from './modules/khutbah/ui';
 import { renderGuide } from './modules/guide/ui';
 import { renderFood, stopFoodCamera } from './modules/food/ui';
 import { DONATE_URL } from './config';
@@ -45,7 +45,10 @@ export function showDonate(): boolean {
 
 function renderShell(): void {
   const app = document.getElementById('app')!;
-  // Cambio de idioma: todo se vuelve a pintar en el idioma nuevo.
+  // Cambio de idioma: todo se vuelve a pintar en el idioma nuevo. La jutba se
+  // para antes: si no, seguiría escuchando en una pantalla que ya no existe,
+  // sin botón para pararla.
+  stopKhutbah();
   panes.clear();
   app.innerHTML = `
     <header class="header">

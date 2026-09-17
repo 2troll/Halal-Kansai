@@ -114,7 +114,8 @@ export function historyText(k: SavedKhutbah, quranLabel: string): string {
           ? `[${quranLabel} ${s.reference}] ${s.arabicVerified ?? ''}\n“${s.translation}” (Tanzil.net)`
           : `[${quranLabel}?] ${s.original}`;
       }
-      return s.translation;
+      // Si no se pudo traducir, al menos lo que dijo el imán.
+      return s.translation || s.original;
     })
     .join('\n\n');
 }
