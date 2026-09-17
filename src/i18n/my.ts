@@ -281,6 +281,8 @@ export const my: Dict = {
   historyCopy: "စာသား ကူးယူရန်",
   historyCopied: "ကူးယူပြီးပါပြီ",
   historyBack: "နောက်သို့",
+  share: "မျှဝေရန်",
+  scanWhy: "ဘာကြောင့်လဲ?",
   textSize: 'စာလုံးအရွယ်',
   textNormal: 'ပုံမှန်',
   textLarge: 'ကြီး',

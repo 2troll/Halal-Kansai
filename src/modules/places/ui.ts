@@ -92,6 +92,7 @@ function cardHtml({ place: p, km }: { place: Place; km?: number }): string {
             ? `<div class="place-actions">
                  <a class="btn directions" href="${directionsUrl(p.lat!, p.lng!)}" target="_blank" rel="noopener">${icon('location', 16)}${t('directions')}</a>
                  <button class="btn ghost show-map" type="button">${icon('map', 16)}${t('showOnMap')}</button>
+                 <button class="btn ghost share-place" type="button" aria-label="${t('share')}">${icon('share', 16)}</button>
                </div>`
             : ''
         }
@@ -105,6 +106,25 @@ function renderList(listEl: HTMLElement): void {
     ? items.map(cardHtml).join('')
     : `<p class="note empty">${t('noPlacesFound')}</p>`;
 
+  listEl.querySelectorAll<HTMLButtonElement>('.share-place').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const id = btn.closest<HTMLElement>('.place-card')?.dataset.id;
+      const p = allPlaces.find((x) => x.id === id);
+      if (!p) return;
+      const { shareText } = await import('../../ui/share');
+      await shareText(
+        p.name,
+        [
+          `📍 ${p.name}`,
+          p.address ?? p.city,
+          p.jumuah ? `${t('jumuah')}: ${p.jumuah}` : '',
+          p.lat !== undefined && p.lng !== undefined ? directionsUrl(p.lat, p.lng) : '',
+        ]
+          .filter(Boolean)
+          .join('\n'),
+      );
+    });
+  });
   listEl.querySelectorAll<HTMLButtonElement>('.show-map').forEach((btn) => {
     btn.addEventListener('click', () => {
       const id = btn.closest<HTMLElement>('.place-card')?.dataset.id;

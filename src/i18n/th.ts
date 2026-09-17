@@ -281,6 +281,8 @@ export const th: Dict = {
   historyCopy: "คัดลอกข้อความ",
   historyCopied: "คัดลอกแล้ว",
   historyBack: "ย้อนกลับ",
+  share: "แชร์",
+  scanWhy: "ทำไม?",
   textSize: 'ขนาดตัวอักษร',
   textNormal: 'ปกติ',
   textLarge: 'ใหญ่',

@@ -281,6 +281,8 @@ export const zh: Dict = {
   historyCopy: "复制文本",
   historyCopied: "已复制",
   historyBack: "返回",
+  share: "分享",
+  scanWhy: "为什么？",
   textSize: '文字大小',
   textNormal: '标准',
   textLarge: '大',

@@ -281,6 +281,8 @@ export const fil: Dict = {
   historyCopy: "Kopyahin ang teksto",
   historyCopied: "Nakopya",
   historyBack: "Bumalik",
+  share: "Ibahagi",
+  scanWhy: "Bakit?",
   textSize: 'Laki ng teksto',
   textNormal: 'Normal',
   textLarge: 'Malaki',

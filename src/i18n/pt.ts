@@ -290,6 +290,8 @@ export const pt: Dict = {
   historyCopy: "Copiar texto",
   historyCopied: "Copiado",
   historyBack: "Voltar",
+  share: "Compartilhar",
+  scanWhy: "Por quê?",
   textSize: 'Tamanho do texto',
   textNormal: 'Normal',
   textLarge: 'Grande',

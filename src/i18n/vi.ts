@@ -281,6 +281,8 @@ export const vi: Dict = {
   historyCopy: "Sao chép văn bản",
   historyCopied: "Đã sao chép",
   historyBack: "Quay lại",
+  share: "Chia sẻ",
+  scanWhy: "Vì sao?",
   textSize: 'Cỡ chữ',
   textNormal: 'Bình thường',
   textLarge: 'Lớn',

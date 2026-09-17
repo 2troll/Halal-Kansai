@@ -283,6 +283,8 @@ export const ar: Dict = {
   historyCopy: "نسخ النص",
   historyCopied: "تم النسخ",
   historyBack: "رجوع",
+  share: "مشاركة",
+  scanWhy: "لماذا؟",
   textSize: 'حجم الخط',
   textNormal: 'عادي',
   textLarge: 'كبير',

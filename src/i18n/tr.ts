@@ -290,6 +290,8 @@ export const tr: Dict = {
   historyCopy: "Metni kopyala",
   historyCopied: "Kopyalandı",
   historyBack: "Geri",
+  share: "Paylaş",
+  scanWhy: "Neden?",
   textSize: 'Yazı boyutu',
   textNormal: 'Normal',
   textLarge: 'Büyük',

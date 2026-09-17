@@ -281,6 +281,8 @@ export const si: Dict = {
   historyCopy: "පාඨය පිටපත් කරන්න",
   historyCopied: "පිටපත් කළා",
   historyBack: "ආපසු",
+  share: "බෙදාගන්න",
+  scanWhy: "ඇයි?",
   textSize: 'අකුරු ප්‍රමාණය',
   textNormal: 'සාමාන්‍ය',
   textLarge: 'විශාල',

@@ -297,6 +297,8 @@ export const ja: Dict = {
   historyCopy: "テキストをコピー",
   historyCopied: "コピーしました",
   historyBack: "戻る",
+  share: "共有",
+  scanWhy: "理由は？",
   textSize: '文字の大きさ',
   textNormal: '標準',
   textLarge: '大',

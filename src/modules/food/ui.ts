@@ -174,6 +174,11 @@ function resultHtml(label: string, analysis: Analysis, product: string): string 
       <p class="small">${VERDICT_BODY[verdict]()}</p>
       ${tally ? `<p class="tally">${tally}</p>` : ''}
     </section>
+    <div class="verdict-actions">
+      ${findings.length > 0 ? `<button class="btn ghost" type="button" id="verdict-why">ⓘ ${t('scanWhy')}</button>` : ''}
+      <button class="btn" type="button" id="verdict-share">${icon('share', 18)}${t('share')}</button>
+    </div>
+    <p class="note" id="verdict-share-note" role="status" hidden></p>
 
     ${certificationHtml(analysis.certification)}
 
@@ -183,14 +188,35 @@ function resultHtml(label: string, analysis: Analysis, product: string): string 
       findings.length > 0
         ? `<h3 class="section-h">${t('scanMarkedLabel')}</h3>
            <p class="marked-label" dir="auto" lang="ja">${markedLabel(label, findings)}</p>
-           <h3 class="section-h">${t('scanFoundTerms')}</h3>
+           <h3 class="section-h" id="verdict-reasons">${t('scanFoundTerms')}</h3>
            ${findings.map(findingHtml).join('')}
            <button class="btn ghost" id="copy-question">📋 ${t('scanAskMaker')}</button>
            <p class="note" id="copy-note" hidden>${t('scanCopied')}</p>
            <p class="note">${t('scanNoFatwa')}</p>`
         : ''
     }
-    <p class="note" data-question="${escapeHtml(makerQuestion(findings, product))}" hidden></p>`;
+    <p class="note" data-question="${escapeHtml(makerQuestion(findings, product))}" hidden></p>
+    <p data-share="${escapeHtml(verdictShareText(analysis, product))}" hidden></p>`;
+}
+
+/** Resumen para mandar al grupo: veredicto, términos y el aviso de siempre. */
+function verdictShareText(analysis: Analysis, product: string): string {
+  const lang = getLang();
+  const byStatus = (status: Finding['status']) =>
+    analysis.findings
+      .filter((f) => f.status === status)
+      .map((f) => `${ruleText(f.id, f.label, 'label', lang)} (${f.matched})`);
+  const haram = byStatus('haram');
+  const doubtful = byStatus('mushbooh');
+  return [
+    `${VERDICT_TITLE[analysis.verdict]()}${product ? ` — ${product}` : ''}`,
+    haram.length ? `⛔ ${haram.join(', ')}` : '',
+    doubtful.length ? `⚠️ ${doubtful.join(', ')}` : '',
+    '',
+    t('scanNotClearance'),
+  ]
+    .filter((line, i) => line !== '' || i === 3)
+    .join('\n');
 }
 
 function renderLabelMode(body: HTMLElement): void {
@@ -404,6 +430,20 @@ function renderLabelMode(body: HTMLElement): void {
   }
 
   function wireCopy(container: HTMLElement): void {
+    container.querySelector('#verdict-why')?.addEventListener('click', () =>
+      container.querySelector('#verdict-reasons')?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
+    );
+    const shareBtn = container.querySelector<HTMLButtonElement>('#verdict-share');
+    shareBtn?.addEventListener('click', async () => {
+      const text = container.querySelector<HTMLElement>('[data-share]')?.dataset.share ?? '';
+      const { shareText } = await import('../../ui/share');
+      const result = await shareText(t('appName'), text);
+      const shareNote = container.querySelector<HTMLElement>('#verdict-share-note');
+      if (shareNote && (result === 'copied' || result === 'failed')) {
+        shareNote.hidden = false;
+        shareNote.textContent = result === 'copied' ? `✓ ${t('historyCopied')}` : text;
+      }
+    });
     const btn = container.querySelector<HTMLButtonElement>('#copy-question');
     const question = container.querySelector<HTMLElement>('[data-question]')?.dataset.question;
     const note = container.querySelector<HTMLElement>('#copy-note');

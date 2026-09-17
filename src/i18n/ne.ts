@@ -290,6 +290,8 @@ export const ne: Dict = {
   historyCopy: "पाठ कपी गर्नुहोस्",
   historyCopied: "कपी भयो",
   historyBack: "पछाडि",
+  share: "सेयर गर्नुहोस्",
+  scanWhy: "किन?",
   textSize: 'अक्षरको आकार',
   textNormal: 'सामान्य',
   textLarge: 'ठूलो',

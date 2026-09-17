@@ -288,6 +288,8 @@ export const en = {
   historyCopy: "Copy text",
   historyCopied: "Copied",
   historyBack: "Back",
+  share: "Share",
+  scanWhy: "Why?",
   textSize: 'Text size',
   textNormal: 'Normal',
   textLarge: 'Large',

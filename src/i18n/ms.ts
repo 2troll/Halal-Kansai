@@ -281,6 +281,8 @@ export const ms: Dict = {
   historyCopy: "Salin teks",
   historyCopied: "Disalin",
   historyBack: "Kembali",
+  share: "Kongsi",
+  scanWhy: "Kenapa?",
   textSize: 'Saiz teks',
   textNormal: 'Biasa',
   textLarge: 'Besar',

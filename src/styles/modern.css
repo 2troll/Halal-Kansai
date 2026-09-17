@@ -1560,3 +1560,62 @@ main h2 {
 .khutbah-history {
   scroll-margin-top: calc(5rem + var(--safe-top, 0px));
 }
+
+/* ---------- Veredicto: «¿Por qué?» y Compartir (idea de Taste Halal) ---------- */
+.verdict-actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+  gap: 0.6rem;
+  margin: 0.8rem 0;
+}
+
+.verdict-actions .btn {
+  justify-content: center;
+  min-height: 48px;
+}
+
+.section-h[id] {
+  scroll-margin-top: calc(5rem + var(--safe-top, 0px));
+}
+
+.place-actions .share-place {
+  flex: 0 0 auto;
+  padding-inline: 0.8rem;
+}
+
+/* El arco del veredicto cortaba el título largo por los lados («udoso —
+   verifica antes de com»). El arco se queda, pero más bajo y con el texto
+   metido hacia dentro para que quepa entero en cualquier ancho. */
+.verdict {
+  border-radius: 180px 180px 18px 18px / 110px 110px 18px 18px;
+  padding: 2.6rem 1.4rem 1.2rem;
+}
+
+.verdict .big {
+  font-size: clamp(1.15rem, 5.2vw, 1.5rem);
+  line-height: 1.25;
+  padding-inline: 0.6rem;
+  overflow-wrap: anywhere;
+}
+
+/* Compartir un lugar: botón redondo en la esquina, sin robar una fila. */
+.place-card {
+  position: relative;
+}
+
+.place-card h3,
+.place-card .meta {
+  padding-inline-end: 2.8rem;
+}
+
+.place-actions .share-place {
+  position: absolute;
+  top: 0.7rem;
+  inset-inline-end: 0.7rem;
+  width: 40px;
+  height: 40px;
+  min-height: 40px;
+  padding: 0;
+  border-radius: 50%;
+  justify-content: center;
+}

@@ -281,6 +281,8 @@ export const hi: Dict = {
   historyCopy: "टेक्स्ट कॉपी करें",
   historyCopied: "कॉपी हो गया",
   historyBack: "वापस",
+  share: "शेयर करें",
+  scanWhy: "क्यों?",
   textSize: 'टेक्स्ट साइज़',
   textNormal: 'सामान्य',
   textLarge: 'बड़ा',

@@ -281,6 +281,8 @@ export const ur: Dict = {
   historyCopy: "متن کاپی کریں",
   historyCopied: "کاپی ہو گیا",
   historyBack: "واپس",
+  share: "شیئر کریں",
+  scanWhy: "کیوں؟",
   textSize: 'متن کا سائز',
   textNormal: 'عام',
   textLarge: 'بڑا',

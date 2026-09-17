@@ -290,6 +290,8 @@ export const id: Dict = {
   historyCopy: "Salin teks",
   historyCopied: "Tersalin",
   historyBack: "Kembali",
+  share: "Bagikan",
+  scanWhy: "Kenapa?",
   textSize: 'Ukuran teks',
   textNormal: 'Normal',
   textLarge: 'Besar',

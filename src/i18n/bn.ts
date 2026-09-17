@@ -262,6 +262,8 @@ export const bn: Dict = {
   historyCopy: "লেখা কপি করুন",
   historyCopied: "কপি হয়েছে",
   historyBack: "ফিরে যান",
+  share: "শেয়ার করুন",
+  scanWhy: "কেন?",
   textSize: 'লেখার আকার',
   textNormal: 'সাধারণ',
   textLarge: 'বড়',

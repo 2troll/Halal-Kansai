@@ -290,6 +290,8 @@ export const ko: Dict = {
   historyCopy: "텍스트 복사",
   historyCopied: "복사되었습니다",
   historyBack: "뒤로",
+  share: "공유",
+  scanWhy: "왜 그런가요?",
   textSize: '글자 크기',
   textNormal: '보통',
   textLarge: '크게',
