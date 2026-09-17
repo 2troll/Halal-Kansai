@@ -1724,3 +1724,159 @@ main h2 {
   justify-content: center;
   font-size: 1.1rem;
 }
+
+/* ============================================================
+   Limpieza general (17/09/2026, revisando cada pestaña en el Nothing)
+   ============================================================ */
+
+/* 1. «hidden» manda siempre. Una regla con display: flex le ganaba al
+      atributo y dejaba a la vista cosas que debían estar ocultas (el punto
+      suelto bajo la brújula era el aviso de precisión vacío). */
+[hidden] {
+  display: none !important;
+}
+
+/* 2. Todos los desplegables se abren igual: una fila de 48 px con el mismo
+      chevron a la derecha. Antes convivían ▶, › y ninguno. */
+details > summary {
+  list-style: none;
+  cursor: pointer;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+}
+
+details > summary::-webkit-details-marker {
+  display: none;
+}
+
+details > summary::after {
+  content: '';
+  flex-shrink: 0;
+  width: 0.5rem;
+  height: 0.5rem;
+  margin-inline: auto 0.25rem;
+  border-inline-end: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  rotate: -45deg;
+  opacity: 0.6;
+  transition: rotate 0.2s;
+}
+
+[dir='rtl'] details > summary::after {
+  rotate: 135deg;
+}
+
+details[open] > summary::after,
+[dir='rtl'] details[open] > summary::after {
+  rotate: 45deg;
+}
+
+/* Los de Ajustes tenían su propio «›» girado: se igualan al resto. */
+.settings-section > summary::after {
+  content: '';
+  font-size: 0;
+  rotate: -45deg;
+}
+
+[dir='rtl'] .settings-section > summary::after {
+  rotate: 135deg;
+}
+
+.settings-section[open] > summary::after,
+[dir='rtl'] .settings-section[open] > summary::after {
+  rotate: 45deg;
+}
+
+/* El resumen del ayuno lleva las horas: el chevron va después de ellas. */
+.fast-card summary {
+  flex-wrap: nowrap;
+}
+
+.fast-card .fast-times {
+  margin-inline-start: auto;
+}
+
+.fast-card summary::after {
+  margin-inline-start: 0.5rem;
+}
+
+.suggest summary {
+  width: auto;
+}
+
+/* 3. Avisos: interruptor en una tarjeta, no una casilla suelta. */
+.notify-row {
+  justify-content: space-between;
+  min-height: 56px;
+  padding: 0.5rem 0.9rem;
+  border-radius: var(--radius-card, 16px);
+  background: color-mix(in srgb, var(--on-surface) 6%, transparent);
+}
+
+.notify-row span {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  order: 0;
+}
+
+.notify-row input[type='checkbox'] {
+  order: 1;
+  appearance: none;
+  -webkit-appearance: none;
+  flex-shrink: 0;
+  width: 3rem;
+  height: 1.75rem;
+  min-height: 0;
+  margin: 0;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--on-surface) 25%, transparent);
+  position: relative;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.notify-row input[type='checkbox']::before {
+  content: '';
+  position: absolute;
+  top: 0.2rem;
+  inset-inline-start: 0.2rem;
+  width: 1.35rem;
+  height: 1.35rem;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 30%);
+  transition: inset-inline-start 0.2s;
+}
+
+.notify-row input[type='checkbox']:checked {
+  background: var(--emerald);
+}
+
+.notify-row input[type='checkbox']:checked::before {
+  inset-inline-start: 1.45rem;
+}
+
+/* 4. Botones: dos acciones van en una fila, la segunda en contorno. Apilar
+      dos verdes enormes hacía que todo pareciera igual de importante. */
+.btn-row,
+.scan-actions.primary {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.btn-row .btn,
+.scan-actions.primary .btn {
+  justify-content: center;
+  text-align: center;
+  line-height: 1.2;
+  padding-inline: 0.6rem;
+}
+
+.scan-actions.primary .btn + .btn {
+  background: transparent;
+  color: var(--on-surface);
+  border: 1.5px solid color-mix(in srgb, var(--on-surface) 30%, transparent);
+}
