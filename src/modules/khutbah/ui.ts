@@ -21,7 +21,7 @@ import { qrSvg } from './qr';
 import { closeScreenMode, openScreenMode, screenModeOpen } from './screen';
 import { isNative } from '../../backend';
 import { NativeKhutbahListener, speechPlugin } from './speech-native';
-import { MicMeter, NativeMicMeter, type MicReading } from './mic-level';
+import { MicMeter, NativeMicMeter, canMeterAlongsideSpeech, type MicReading } from './mic-level';
 import {
   WhisperKhutbahListener,
   webGpuAvailable,
@@ -676,11 +676,20 @@ export function renderKhutbah(container: HTMLElement): void {
     // El medidor va aparte del reconocedor a propósito: es lo único que
     // sigue informando cuando el reconocedor no devuelve nada.
     noMatch = false;
+    // En la app nativa, el nivel lo da el propio reconocedor: abrir el
+    // micrófono otra vez desde aquí hace que Android lo deje sordo. En la
+    // web del móvil pasa lo mismo y no hay otra fuente de nivel: sin medidor.
+    if (listener instanceof NativeKhutbahListener) {
+      meter = new NativeMicMeter(speechPlugin());
+    } else if (listener instanceof WhisperKhutbahListener || canMeterAlongsideSpeech(navigator.userAgent, navigator.maxTouchPoints ?? 0)) {
+      meter = new MicMeter();
+    } else {
+      meter = null;
+      meterBox.hidden = true;
+      return;
+    }
     meterBox.hidden = false;
     paintMeter();
-    // En la app nativa, el nivel lo da el propio reconocedor: abrir el
-    // micrófono otra vez desde aquí hace que Android lo deje sordo.
-    meter = listener instanceof NativeKhutbahListener ? new NativeMicMeter(speechPlugin()) : new MicMeter();
     void meter.start((reading) => {
       lastReading = reading;
       paintMeter();

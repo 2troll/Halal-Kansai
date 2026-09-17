@@ -128,6 +128,16 @@ export class WhisperKhutbahListener {
   async start(locale: string): Promise<void> {
     this.language = locale.split('-')[0];
 
+    // El contexto de audio se crea AQUÍ, antes de cualquier espera, mientras
+    // dura el toque en «empezar». Safari (iPhone) solo deja sonar/grabar un
+    // AudioContext nacido de un gesto; creado después de pedir el micrófono
+    // nacía suspendido y el modelo no recibía ni un segundo de audio.
+    const Ctx =
+      window.AudioContext ??
+      (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+    this.ctx = new Ctx();
+    void this.ctx.resume().catch(() => {});
+
     this.worker = new Worker(new URL('./whisper-worker.ts', import.meta.url), {
       type: 'module',
     });
@@ -181,10 +191,13 @@ export class WhisperKhutbahListener {
       return;
     }
 
-    const Ctx =
-      window.AudioContext ??
-      (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-    this.ctx = new Ctx();
+    if (!this.ctx) {
+      // Se paró mientras se pedía el micrófono: soltarlo.
+      for (const track of this.stream.getTracks()) track.stop();
+      this.stream = null;
+      return;
+    }
+    await this.ctx.resume().catch(() => {});
     const source = this.ctx.createMediaStreamSource(this.stream);
 
     // El audio se recoge en el hilo de audio (ver public/vad-worklet.js): en

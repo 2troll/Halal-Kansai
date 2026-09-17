@@ -46,16 +46,27 @@ export class MicMeter {
    * se toca.
    */
   async start(onReading: (r: MicReading) => void): Promise<void> {
+    // Contexto creado durante el toque, antes de esperar al micrófono: en
+    // Safari, creado después nace suspendido y el medidor marca silencio.
     try {
-      this.stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const Ctx = window.AudioContext ?? (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      this.ctx = new Ctx();
+      void this.ctx.resume().catch(() => {});
     } catch {
       onReading({ level: 0, state: 'unavailable' });
       return;
     }
+    try {
+      this.stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    } catch {
+      onReading({ level: 0, state: 'unavailable' });
+      this.stop();
+      return;
+    }
 
     try {
-      const Ctx = window.AudioContext ?? (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-      this.ctx = new Ctx();
+      if (!this.ctx) throw new Error('parado');
+      await this.ctx.resume().catch(() => {});
       const source = this.ctx.createMediaStreamSource(this.stream);
       const analyser = this.ctx.createAnalyser();
       analyser.fftSize = 1024;
@@ -158,4 +169,19 @@ export class NativeMicMeter {
     this.peak = 0;
     this.avg = null;
   }
+}
+
+/**
+ * ¿Se puede medir el micrófono aparte mientras el navegador reconoce voz?
+ *
+ * En ordenador sí. En un móvil (Chrome de Android, Safari de iPhone) el
+ * reconocimiento del navegador usa el mismo micrófono por debajo, y abrirlo
+ * otra vez para el medidor hace que el sistema deje sordo al reconocedor. Es
+ * lo que le pasó a quien lo probó en la mezquita: «te oigo» y ni una frase.
+ */
+export function canMeterAlongsideSpeech(ua: string, maxTouchPoints: number): boolean {
+  if (/Android|iPhone|iPad|iPod|Mobile/i.test(ua)) return false;
+  // iPad con iPadOS se presenta como Mac de escritorio, pero es táctil.
+  if (/Macintosh/.test(ua) && maxTouchPoints > 1) return false;
+  return true;
 }
