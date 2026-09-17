@@ -300,6 +300,8 @@ export const pt: Dict = {
   welcomePromise: "Grátis · Sem conta · Sem anúncios · Sem rastreamento",
   welcomeStart: "Começar",
   welcomeLangHint: "O app segue o idioma do seu celular. Você pode mudar aqui.",
+  recommendApp: "Recomende o app",
+  recommendText: "Horários de oração, qibla, lugares halal e o sermão de sexta no seu idioma. Grátis, sem conta e sem anúncios.",
   textSize: 'Tamanho do texto',
   textNormal: 'Normal',
   textLarge: 'Grande',

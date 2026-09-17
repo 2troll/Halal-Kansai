@@ -291,6 +291,8 @@ export const fil: Dict = {
   welcomePromise: "Libre · Walang account · Walang ads · Walang tracking",
   welcomeStart: "Magsimula",
   welcomeLangHint: "Sinusunod ng app ang wika ng iyong phone. Maaari mong palitan dito.",
+  recommendApp: "Irekomenda ang app",
+  recommendText: "Oras ng salah, qibla, mga halal na lugar at khutbah ng Biyernes sa iyong wika. Libre, walang account, walang ads.",
   textSize: 'Laki ng teksto',
   textNormal: 'Normal',
   textLarge: 'Malaki',

@@ -298,6 +298,8 @@ export const en = {
   welcomePromise: "Free · No account · No ads · No tracking",
   welcomeStart: "Start",
   welcomeLangHint: "The app follows your phone's language. You can change it here.",
+  recommendApp: "Recommend the app",
+  recommendText: "Prayer times, qibla, halal places and the Friday khutbah in your language. Free, no account, no ads.",
   textSize: 'Text size',
   textNormal: 'Normal',
   textLarge: 'Large',

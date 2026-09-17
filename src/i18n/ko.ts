@@ -300,6 +300,8 @@ export const ko: Dict = {
   welcomePromise: "무료 · 계정 불필요 · 광고 없음 · 추적 없음",
   welcomeStart: "시작하기",
   welcomeLangHint: "앱은 휴대폰 언어를 따릅니다. 여기에서 변경할 수 있어요.",
+  recommendApp: "앱 추천하기",
+  recommendText: "예배 시간, 키블라, 할랄 장소, 금요 설교를 내 언어로. 무료, 계정 없음, 광고 없음.",
   textSize: '글자 크기',
   textNormal: '보통',
   textLarge: '크게',

@@ -291,6 +291,8 @@ export const ms: Dict = {
   welcomePromise: "Percuma · Tanpa akaun · Tanpa iklan · Tanpa penjejakan",
   welcomeStart: "Mula",
   welcomeLangHint: "Aplikasi ini mengikut bahasa telefon anda. Anda boleh menukarnya di sini.",
+  recommendApp: "Syorkan aplikasi",
+  recommendText: "Waktu solat, kiblat, tempat halal dan khutbah Jumaat dalam bahasa anda. Percuma, tanpa akaun, tanpa iklan.",
   textSize: 'Saiz teks',
   textNormal: 'Biasa',
   textLarge: 'Besar',

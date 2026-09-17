@@ -291,6 +291,8 @@ export const zh: Dict = {
   welcomePromise: "免费 · 无需账号 · 无广告 · 无追踪",
   welcomeStart: "开始",
   welcomeLangHint: "应用会跟随手机的语言设置，你也可以在这里更改。",
+  recommendApp: "推荐这款应用",
+  recommendText: "礼拜时间、朝向、清真地点和主麻日呼图白，用你的语言。免费、无需账号、无广告。",
   textSize: '文字大小',
   textNormal: '标准',
   textLarge: '大',

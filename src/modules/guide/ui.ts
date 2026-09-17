@@ -16,6 +16,7 @@ export function renderGuide(container: HTMLElement): void {
     <h2>${t('guideTitle')}</h2>
     ${tasbihCardHtml()}
     ${feedbackCardHtml()}
+    <button class="btn ghost recommend-btn" type="button" id="btn-recommend">${icon('share', 18)}${t('recommendApp')}</button>
     ${donateCardHtml()}
     ${sections
       .map(
@@ -36,6 +37,13 @@ export function renderGuide(container: HTMLElement): void {
   `;
 
   wireFeedback(container);
+  // La forma más barata de crecer: que alguien se la pase a su grupo.
+  container.querySelector<HTMLButtonElement>('#btn-recommend')!.addEventListener('click', async (ev) => {
+    const btn = ev.currentTarget as HTMLButtonElement;
+    const { shareText } = await import('../../ui/share');
+    const result = await shareText(t('appName'), `🕌 ${t('appName')}\n${t('recommendText')}`);
+    if (result === 'copied') btn.textContent = `✓ ${t('historyCopied')}`;
+  });
   wireTasbih(container);
 
   container.querySelector<HTMLButtonElement>('#diag-run')!.addEventListener('click', () => {

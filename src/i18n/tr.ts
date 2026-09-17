@@ -300,6 +300,8 @@ export const tr: Dict = {
   welcomePromise: "Ücretsiz · Hesap yok · Reklam yok · Takip yok",
   welcomeStart: "Başla",
   welcomeLangHint: "Uygulama telefonunuzun dilini kullanır. Buradan değiştirebilirsiniz.",
+  recommendApp: "Uygulamayı öner",
+  recommendText: "Namaz vakitleri, kıble, helal mekânlar ve cuma hutbesi kendi dilinde. Ücretsiz, hesapsız, reklamsız.",
   textSize: 'Yazı boyutu',
   textNormal: 'Normal',
   textLarge: 'Büyük',

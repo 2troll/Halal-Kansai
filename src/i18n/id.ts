@@ -300,6 +300,8 @@ export const id: Dict = {
   welcomePromise: "Gratis · Tanpa akun · Tanpa iklan · Tanpa pelacakan",
   welcomeStart: "Mulai",
   welcomeLangHint: "Aplikasi mengikuti bahasa ponselmu. Kamu bisa mengubahnya di sini.",
+  recommendApp: "Rekomendasikan aplikasi",
+  recommendText: "Waktu salat, kiblat, tempat halal, dan khotbah Jumat dalam bahasamu. Gratis, tanpa akun, tanpa iklan.",
   textSize: 'Ukuran teks',
   textNormal: 'Normal',
   textLarge: 'Besar',

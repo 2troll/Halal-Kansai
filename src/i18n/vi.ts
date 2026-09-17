@@ -291,6 +291,8 @@ export const vi: Dict = {
   welcomePromise: "Miễn phí · Không cần tài khoản · Không quảng cáo · Không theo dõi",
   welcomeStart: "Bắt đầu",
   welcomeLangHint: "Ứng dụng dùng ngôn ngữ của điện thoại. Bạn có thể đổi tại đây.",
+  recommendApp: "Giới thiệu ứng dụng",
+  recommendText: "Giờ cầu nguyện, hướng qibla, địa điểm halal và bài giảng thứ Sáu bằng ngôn ngữ của bạn. Miễn phí, không cần tài khoản, không quảng cáo.",
   textSize: 'Cỡ chữ',
   textNormal: 'Bình thường',
   textLarge: 'Lớn',

@@ -1928,3 +1928,10 @@ details.guide-card[open] > summary {
 details.guide-card > p {
   padding-bottom: 0.7rem;
 }
+
+.recommend-btn {
+  width: 100%;
+  justify-content: center;
+  min-height: 48px;
+  margin: 0 0 1rem;
+}

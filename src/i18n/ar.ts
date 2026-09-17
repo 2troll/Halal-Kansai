@@ -293,6 +293,8 @@ export const ar: Dict = {
   welcomePromise: "مجاني · بلا حساب · بلا إعلانات · بلا تتبّع",
   welcomeStart: "ابدأ",
   welcomeLangHint: "يتبع التطبيق لغة هاتفك. يمكنك تغييرها من هنا.",
+  recommendApp: "انصح بالتطبيق",
+  recommendText: "مواقيت الصلاة والقبلة والأماكن الحلال وخطبة الجمعة بلغتك. مجاني، بلا حساب ولا إعلانات.",
   textSize: 'حجم الخط',
   textNormal: 'عادي',
   textLarge: 'كبير',

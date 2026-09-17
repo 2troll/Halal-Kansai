@@ -307,6 +307,8 @@ export const ja: Dict = {
   welcomePromise: "無料 · アカウント不要 · 広告なし · 追跡なし",
   welcomeStart: "はじめる",
   welcomeLangHint: "アプリはお使いのスマートフォンの言語に合わせて表示されます。ここで変更することもできます。",
+  recommendApp: "アプリをすすめる",
+  recommendText: "礼拝時刻、キブラ、ハラールの場所、金曜のフトバをあなたの言語で。無料・アカウント不要・広告なし。",
   textSize: '文字の大きさ',
   textNormal: '標準',
   textLarge: '大',
