@@ -221,6 +221,13 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
+  // El modelo de Whisper (Hugging Face y su CDN) NO pasa por aquí. Son
+  // ficheros de decenas de megas con redirecciones a otro dominio: dentro del
+  // service worker la descarga fallaba y se devolvía un 504, así que la jutba
+  // en la web publicada se quedaba sin modelo («not-loaded») todo el sermón.
+  // transformers.js ya guarda el modelo en su propia caché.
+  if (/(^|\.)(huggingface\.co|hf\.co|xethub\.hf\.co)$/.test(url.hostname) || url.hostname === 'cdn.jsdelivr.net') return;
+
   // Recursos externos (fuentes, tiles OSM): cache-first con tope.
   event.respondWith(
     cacheFirst(event.request, RUNTIME_CACHE).catch(() => new Response('', { status: 504 })),
