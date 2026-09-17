@@ -213,7 +213,7 @@ textarea {
   letter-spacing: 0;
 }
 
-.tabbar button[aria-selected='true'] {
+.tabbar button[aria-current='page'] {
   opacity: 1;
   color: var(--gold);
 }

@@ -210,11 +210,11 @@ main h2 {
   transition: background-color 0.2s ease;
 }
 
-.tabbar button[aria-selected='true'] .icon {
+.tabbar button[aria-current='page'] .icon {
   background: color-mix(in srgb, var(--gold) 22%, transparent);
 }
 
-.tabbar button[aria-selected='true'] {
+.tabbar button[aria-current='page'] {
   font-weight: 600;
 }
 

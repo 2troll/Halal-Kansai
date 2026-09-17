@@ -77,10 +77,10 @@ function renderShell(): void {
       </div>
     </header>
     <main id="view"></main>
-    <nav class="tabbar" role="tablist">
+    <nav class="tabbar" aria-label="${t('appName')}">
       ${TABS.map(
         (tab) => `
-        <button role="tab" data-tab="${tab.id}" aria-selected="${String(tab.id === activeTab)}">
+        <button type="button" data-tab="${tab.id}" ${tab.id === activeTab ? 'aria-current="page"' : ''}>
           ${icon(tab.icon, 25)}${t(tab.labelKey)}
         </button>`,
       ).join('')}
@@ -104,7 +104,7 @@ function renderShell(): void {
       activeTab = btn.dataset.tab as Tab;
       app
         .querySelectorAll<HTMLButtonElement>('.tabbar button')
-        .forEach((b) => b.setAttribute('aria-selected', String(b === btn)));
+        .forEach((b) => (b === btn ? b.setAttribute('aria-current', 'page') : b.removeAttribute('aria-current')));
       renderView();
     });
   });

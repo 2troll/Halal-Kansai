@@ -166,7 +166,7 @@ function renderMarkers(): void {
       .map((p) => {
         // Escapado: los lugares de la comunidad vienen del servidor, y un
         // nombre con HTML se ejecutaba en el globo del mapa.
-        const marker = L.marker([p.lat!, p.lng!], { icon: placeIcon(p.type) }).bindPopup(
+        const marker = L.marker([p.lat!, p.lng!], { icon: placeIcon(p.type), title: p.name, alt: p.name }).bindPopup(
           `<strong>${escapeHtml(p.name)}</strong><br>${escapeHtml(p.address ?? p.city)}<br>
            <a href="${directionsUrl(p.lat!, p.lng!)}" target="_blank" rel="noopener">${t('directions')}</a>`,
         );

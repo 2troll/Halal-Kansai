@@ -622,7 +622,7 @@ h2 {
   line-height: 1;
 }
 
-.tabbar button[aria-selected='true'] {
+.tabbar button[aria-current='page'] {
   color: var(--gold);
 }
 
