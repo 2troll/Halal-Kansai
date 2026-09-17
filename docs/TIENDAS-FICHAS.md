@@ -272,7 +272,7 @@ Luego TestFlight → grupo externo → enlace público → a la gente con iPhone
 | Reconocimiento con un imán real | 🔴 viernes 18/09 en la mezquita |
 | Probado en iPhone | 🔴 → TestFlight |
 | Cuenta Apple Developer | 🟡 pagada 17/09 (pedido W1411848888), esperando activación |
-| Cuenta Google Play | 🔴 sin comprar |
+| Cuenta Google Play | 🟡 creada y pagada 17/09 (ID 8915848332706435995); faltan verificación de identidad, dispositivo Android y teléfono |
 
 ## 8. Calendario
 
