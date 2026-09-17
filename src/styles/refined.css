@@ -749,3 +749,33 @@ body::before {
   min-height: 36px;
   text-decoration: none;
 }
+
+/* ---------- Zona segura de arriba (Android 15+ e iPhone con isla) ----------
+   Con targetSdk 36, Android dibuja la app por debajo de la barra de estado.
+   En el Nothing Phone 3a (Android 16) el título quedaba bajo la hora y el
+   engranaje bajo la batería. `env()` lo da el WebView moderno; la variable
+   `--safe-area-inset-top` la inyecta Capacitor en los que no. */
+:root {
+  --safe-top: max(env(safe-area-inset-top, 0px), var(--safe-area-inset-top, 0px));
+}
+
+.header {
+  padding-top: calc(1rem + var(--safe-top));
+}
+
+.screen-mode {
+  padding-top: calc(4vh + var(--safe-top));
+}
+
+.phrase-sheet {
+  padding-top: calc(1.2rem + var(--safe-top));
+}
+
+.sheet {
+  max-height: calc(88vh - var(--safe-top));
+}
+
+/* El subtítulo fijo se pega debajo de la cabecera, no debajo de la barra. */
+.live-caption {
+  top: calc(0.4rem + var(--safe-top));
+}
