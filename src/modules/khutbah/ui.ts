@@ -3,7 +3,18 @@ import { KhutbahRoom } from './room';
 import { refineTranslation, shouldRefine, type TranslatedSegment } from './translate';
 import { translateSegmentSmart, ensureModels } from './translate-ondevice';
 import { safeText } from '../escape';
-import { langAttrs, dirFor, baseLang } from '../text-direction';
+import { dirFor, baseLang } from '../text-direction';
+import { segmentCardHtml } from './reader';
+import {
+  deleteKhutbah,
+  historyText,
+  loadHistory,
+  saveKhutbah,
+  toSaved,
+  verseCount,
+  type SavedKhutbah,
+  type SavedSegment,
+} from './history';
 import { disableFridayMode, enableFridayMode } from './wakelock';
 import { t, getLang } from '../../i18n';
 import { qrSvg } from './qr';
@@ -79,50 +90,31 @@ function defaultEngine(): Engine {
   return isApple || !isSpeechSupported() ? 'whisper' : 'browser';
 }
 
-/**
- * Cada trozo lleva SU idioma y SU dirección.
- *
- * La app puede estar en español (documento en `ltr`) mientras la traducción va
- * al urdu y el original es árabe. Sin marcarlo aquí, esos dos salían de
- * izquierda a derecha. `lang` además hace que el lector de pantalla y la voz
- * del sistema no lean árabe con acento español.
- */
-function segmentCard(seg: TranslatedSegment, source: string, target: string): string {
-  const tr = langAttrs(target);
-  const or = langAttrs(source);
-  if (seg.kind === 'quran') {
-    const unofficial =
-      seg.verified && seg.translationSource !== 'tanzil' ? ` · ${t('translationUnofficial')}` : '';
-    return `
-      <div class="bubble quran">
-        ${seg.arabicVerified ? `<div class="arabic" lang="ar" dir="rtl">${safeText(seg.arabicVerified)}</div>` : ''}
-        <div${tr}>${safeText(seg.translation)}</div>
-        <span class="ref">${
-          seg.verified && seg.reference
-            ? `${t('citationQuran')} ${safeText(seg.reference)}${unofficial}`
-            : `⚠ ${t('citationUnverified')}`
-        }</span>
-      </div>`;
+/** Lo que se va leyendo en esta sesión, para guardarlo al parar. */
+let session: SavedKhutbah | null = null;
+
+function saveSession(): void {
+  if (session && session.segments.length > 0) saveKhutbah(session);
+  session = null;
+}
+
+const PREF_READER_SCALE = 'hk-reader-scale';
+const PREF_READER_ORIG = 'hk-reader-orig';
+
+function readPref(key: string): string | null {
+  try {
+    return localStorage.getItem(key);
+  } catch {
+    return null;
   }
-  if (seg.kind === 'hadith') {
-    return `
-      <div class="bubble hadith">
-        <div${tr}>${safeText(seg.translation)}</div>
-        <span class="ref">${t('citationHadith')}</span>
-      </div>`;
+}
+
+function writePref(key: string, value: string): void {
+  try {
+    localStorage.setItem(key, value);
+  } catch {
+    /* sin almacenamiento: vale para esta sesión */
   }
-  if (seg.kind === 'dua') {
-    return `
-      <div class="bubble dua">
-        <div${tr}>${safeText(seg.translation)}</div>
-        <span class="ref">${t('citationDua')}</span>
-      </div>`;
-  }
-  return `
-    <div class="bubble">
-      <div${tr}>${safeText(seg.translation)}</div>
-      <div class="orig"${or}>${safeText(seg.original)}</div>
-    </div>`;
 }
 
 function stopAll(): void {
@@ -133,6 +125,8 @@ function stopAll(): void {
   room?.close();
   room = null;
   running = false;
+  saveSession();
+  delete document.documentElement.dataset.dim;
   // Al parar, callar de inmediato: si no, la voz sigue diciendo la cola
   // pendiente después de que el usuario haya pulsado «parar».
   stopSpeaking();
@@ -156,8 +150,32 @@ export function renderKhutbah(container: HTMLElement): void {
 
   container.innerHTML = `
     <h2>${t('khutbahTitle')}</h2>
-    <div class="disclaimer">⚠ ${t('khutbahDisclaimer')}</div>
-    <div class="khutbah-controls">
+    <div class="khutbah-hero">
+      <div class="lang-pair">
+        <label id="lbl-source" ${savedMode === 'join' ? 'hidden' : ''}><span>${t('sourceLang')}</span>
+          <select id="sel-source">
+            ${SOURCE_LOCALES.map(
+              (l) =>
+                `<option value="${l.code}" ${l.code === savedSource ? 'selected' : ''}>${l.label}</option>`,
+            ).join('')}
+          </select>
+        </label>
+        <span class="lang-arrow" aria-hidden="true">→</span>
+        <label><span>${t('targetLang')}</span>
+          <select id="sel-target">
+            ${TARGET_LANGS.map(
+              (l) =>
+                `<option value="${l.code}" ${l.code === savedTarget ? 'selected' : ''}>${l.label}</option>`,
+            ).join('')}
+          </select>
+        </label>
+      </div>
+      <button class="btn listen-hero" id="btn-listen"></button>
+      <span class="status-pill" id="status" hidden><span class="dot"></span><span id="status-text"></span></span>
+      <p class="note" id="khutbah-note"></p>
+    </div>
+    <details class="khutbah-controls khutbah-more" ${savedMode !== 'local' ? 'open' : ''}>
+      <summary>${t('khutbahMoreOptions')}</summary>
       <label>${t('modeLabel')}
         <select id="sel-mode">
           <option value="local" ${savedMode === 'local' ? 'selected' : ''}>${t('modeLocal')}</option>
@@ -167,22 +185,6 @@ export function renderKhutbah(container: HTMLElement): void {
       </label>
       <input id="inp-room" maxlength="24" placeholder="${t('roomCode')}"
         value="${savedRoom}" ${savedMode === 'local' ? 'hidden' : ''} />
-      <label id="lbl-source" ${savedMode === 'join' ? 'hidden' : ''}>${t('sourceLang')}
-        <select id="sel-source">
-          ${SOURCE_LOCALES.map(
-            (l) =>
-              `<option value="${l.code}" ${l.code === savedSource ? 'selected' : ''}>${l.label}</option>`,
-          ).join('')}
-        </select>
-      </label>
-      <label>${t('targetLang')}
-        <select id="sel-target">
-          ${TARGET_LANGS.map(
-            (l) =>
-              `<option value="${l.code}" ${l.code === savedTarget ? 'selected' : ''}>${l.label}</option>`,
-          ).join('')}
-        </select>
-      </label>
       ${
         speechOutputSupported()
           ? `<label class="notify-row">
@@ -209,11 +211,9 @@ export function renderKhutbah(container: HTMLElement): void {
       </label>
       <p class="note" id="engine-note" ${savedEngine === 'whisper' ? '' : 'hidden'}>${t('engineWhisperHint')}</p>
       <p class="note">${t('earphonesNote')}</p>
-      <button class="btn" id="btn-listen"></button>
       <button class="btn ghost" id="btn-screen">${icon('guide', 19)}${t('screenMode')}</button>
-      <span class="status-pill" id="status" hidden><span class="dot"></span><span id="status-text"></span></span>
-      <p class="note" id="khutbah-note"></p>
-    </div>
+      <div class="disclaimer">⚠ ${t('khutbahDisclaimer')}</div>
+    </details>
     <div class="room-qr" id="room-qr" hidden></div>
     <div class="mic-meter" id="mic-meter" hidden>
       <div class="mic-bar"><span id="mic-fill"></span></div>
@@ -221,7 +221,14 @@ export function renderKhutbah(container: HTMLElement): void {
       <p class="mic-state whisper-state" id="whisper-state" aria-live="polite" hidden></p>
     </div>
     <div class="live-caption" id="live-caption" hidden aria-live="polite"></div>
-    <div class="transcript" id="transcript"></div>
+    <div class="reader-bar" id="reader-bar" hidden>
+      <button class="btn ghost" type="button" id="reader-smaller" aria-label="${t('readerTextSmaller')}">A−</button>
+      <button class="btn ghost" type="button" id="reader-bigger" aria-label="${t('readerTextBigger')}">A+</button>
+      <button class="btn ghost" type="button" id="reader-orig" aria-pressed="false">${t('readerOriginal')}</button>
+      <button class="btn ghost" type="button" id="reader-dim" aria-pressed="false">🌙 ${t('readerDim')}</button>
+    </div>
+    <div class="transcript reader" id="transcript"></div>
+    <section class="khutbah-history" id="khutbah-history"></section>
   `;
 
   const btn = container.querySelector<HTMLButtonElement>('#btn-listen')!;
@@ -383,8 +390,8 @@ export function renderKhutbah(container: HTMLElement): void {
   const showInterim = (text: string) => {
     if (!interimEl) {
       interimEl = document.createElement('div');
-      interimEl.className = 'bubble interim';
-      transcript.prepend(interimEl);
+      interimEl.className = 'seg interim';
+      transcript.append(interimEl);
     }
     interimEl.textContent = text;
   };
@@ -394,6 +401,104 @@ export function renderKhutbah(container: HTMLElement): void {
   };
 
   const caption = container.querySelector<HTMLElement>('#live-caption')!;
+  const readerBar = container.querySelector<HTMLElement>('#reader-bar')!;
+  const historyBox = container.querySelector<HTMLElement>('#khutbah-history')!;
+
+  // --- Opciones de lectura (Manarah): tamaño, original y atenuar ---
+  let scale = Number(readPref(PREF_READER_SCALE)) || 1;
+  const applyScale = (): void => {
+    scale = Math.min(1.8, Math.max(0.85, Math.round(scale * 100) / 100));
+    transcript.style.setProperty('--reader-scale', String(scale));
+    writePref(PREF_READER_SCALE, String(scale));
+  };
+  applyScale();
+  container.querySelector('#reader-smaller')!.addEventListener('click', () => {
+    scale -= 0.1;
+    applyScale();
+  });
+  container.querySelector('#reader-bigger')!.addEventListener('click', () => {
+    scale += 0.1;
+    applyScale();
+  });
+  const origBtn = container.querySelector<HTMLButtonElement>('#reader-orig')!;
+  const applyOrig = (show: boolean): void => {
+    transcript.classList.toggle('hide-orig', !show);
+    origBtn.setAttribute('aria-pressed', String(show));
+    writePref(PREF_READER_ORIG, show ? '1' : '0');
+  };
+  applyOrig(readPref(PREF_READER_ORIG) !== '0');
+  origBtn.addEventListener('click', () => applyOrig(origBtn.getAttribute('aria-pressed') !== 'true'));
+  const dimBtn = container.querySelector<HTMLButtonElement>('#reader-dim')!;
+  dimBtn.addEventListener('click', () => {
+    const on = document.documentElement.dataset.dim !== '1';
+    if (on) document.documentElement.dataset.dim = '1';
+    else delete document.documentElement.dataset.dim;
+    dimBtn.setAttribute('aria-pressed', String(on));
+  });
+
+  // --- Jutbas anteriores (Baian), guardadas solo en el teléfono ---
+  const formatWhen = (iso: string): string => {
+    try {
+      return new Date(iso).toLocaleString(getLang(), { dateStyle: 'medium', timeStyle: 'short' });
+    } catch {
+      return iso;
+    }
+  };
+  const langLabel = (code: string): string =>
+    SOURCE_LOCALES.find((l) => l.code === code)?.label ?? TARGET_LANGS.find((l) => l.code === code)?.label ?? code;
+  const renderHistory = (): void => {
+    if (running) return;
+    const list = loadHistory();
+    historyBox.hidden = false;
+    historyBox.innerHTML = `
+      <h3>${t('historyTitle')}</h3>
+      ${
+        list.length === 0
+          ? `<p class="note">${t('historyEmpty')}</p>`
+          : `<ul class="history-list">${list
+              .map(
+                (k) => `
+            <li><button type="button" class="history-item" data-id="${safeText(k.id)}">
+              <strong>${safeText(formatWhen(k.startedAt))}</strong>
+              <span>${safeText(langLabel(k.source))} → ${safeText(langLabel(k.target))}${verseCount(k) ? ` · ◆ ${t('citationQuran')} ×${verseCount(k)}` : ''}</span>
+            </button></li>`,
+              )
+              .join('')}</ul>`
+      }`;
+    historyBox.querySelectorAll<HTMLButtonElement>('.history-item').forEach((b) =>
+      b.addEventListener('click', () => {
+        const k = loadHistory().find((x) => x.id === b.dataset.id);
+        if (k) openSaved(k);
+      }),
+    );
+  };
+  const openSaved = (k: SavedKhutbah): void => {
+    historyBox.innerHTML = `
+      <div class="history-head">
+        <button type="button" class="btn ghost" id="hist-back">← ${t('historyBack')}</button>
+        <button type="button" class="btn ghost" id="hist-copy">${t('historyCopy')}</button>
+        <button type="button" class="btn ghost danger" id="hist-delete">${t('historyDelete')}</button>
+      </div>
+      <h3>${safeText(formatWhen(k.startedAt))}</h3>
+      <div class="transcript reader saved">${k.segments.map((sg) => segmentCardHtml(sg, k.source, k.target)).join('')}</div>`;
+    historyBox.querySelector('.saved')?.setAttribute('style', `--reader-scale:${scale}`);
+    historyBox.querySelector('#hist-back')!.addEventListener('click', renderHistory);
+    historyBox.querySelector('#hist-delete')!.addEventListener('click', () => {
+      deleteKhutbah(k.id);
+      renderHistory();
+    });
+    const copyBtn = historyBox.querySelector<HTMLButtonElement>('#hist-copy')!;
+    copyBtn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(historyText(k, t('citationQuran')));
+        copyBtn.textContent = `✓ ${t('historyCopied')}`;
+      } catch {
+        /* sin portapapeles: el texto sigue en pantalla para seleccionarlo */
+      }
+    });
+    historyBox.scrollIntoView({ block: 'start' });
+  };
+  renderHistory();
 
   /** Actualiza la proyección, si está abierta. */
   let proyectar: ((texto: string) => void) | null = null;
@@ -409,12 +514,18 @@ export function renderKhutbah(container: HTMLElement): void {
     caption.dir = dirFor(selTarget.value);
     caption.hidden = false;
     proyectar?.(seg.translation);
-    transcript.insertAdjacentHTML(
-      'afterbegin',
-      segmentCard(seg, selSource.value, selTarget.value),
-    );
-    const card = transcript.firstElementChild;
-    while (transcript.childElementCount > MAX_CARDS) transcript.lastElementChild?.remove();
+    // Se lee de arriba abajo, como un texto. Solo se baja sola si quien lee
+    // ya estaba al final: si subió a releer algo, no se le arrastra.
+    const atEnd = window.innerHeight + window.scrollY >= document.body.scrollHeight - 160;
+    transcript.querySelector('.seg.latest')?.classList.remove('latest');
+    transcript.insertAdjacentHTML('beforeend', segmentCardHtml(seg, selSource.value, selTarget.value));
+    const card = transcript.lastElementChild;
+    card?.classList.add('latest');
+    while (transcript.childElementCount > MAX_CARDS) transcript.firstElementChild?.remove();
+    readerBar.hidden = false;
+    if (atEnd && !container.hidden) card?.scrollIntoView({ block: 'end', behavior: 'smooth' });
+    const saved: SavedSegment = toSaved(seg);
+    session?.segments.push(saved);
     // Solo la traducción: el árabe original ya lo está diciendo el imán.
     speakTranslation(seg.translation, selTarget.value);
 
@@ -429,8 +540,9 @@ export function renderKhutbah(container: HTMLElement): void {
       // El idioma pudo cambiar mientras tanto: no pisar la pantalla con una
       // traducción al idioma de antes.
       if (selTarget.value !== target) return;
-      const line = card?.querySelector('div');
+      const line = card?.querySelector('.seg-tr');
       if (line) line.textContent = better;
+      saved.translation = better;
       // El subtítulo grande solo se corrige si sigue siendo esta frase: si el
       // imán ya va por la siguiente, cambiarla sería peor que dejarla.
       if (caption.textContent === seg.translation) {
@@ -562,6 +674,11 @@ export function renderKhutbah(container: HTMLElement): void {
   };
 
   const setRunningUi = (statusLabel: string) => {
+    if (!running) {
+      session = { id: `k${Date.now()}`, startedAt: new Date().toISOString(), source: selSource.value, target: selTarget.value, segments: [] };
+      transcript.innerHTML = '';
+      historyBox.hidden = true;
+    }
     running = true;
     void enableFridayMode();
     note.textContent = `🔆 ${t('fridayMode')}`;
@@ -599,6 +716,7 @@ export function renderKhutbah(container: HTMLElement): void {
       stopAll();
       setIdleUi();
       note.textContent = '';
+      renderHistory();
       return;
     }
 
@@ -610,8 +728,8 @@ export function renderKhutbah(container: HTMLElement): void {
         } catch {
           note.textContent = t('backendUnavailable');
           transcript.insertAdjacentHTML(
-            'afterbegin',
-            `<div class="bubble"><div class="orig">${text}</div></div>`,
+            'beforeend',
+            `<article class="seg"><p class="orig">${safeText(text)}</p></article>`,
           );
         }
       });
