@@ -110,6 +110,35 @@ async function load(model: string): Promise<void> {
   post({ type: 'ready', device, ms: Math.round(performance.now() - t0) });
 }
 
+/**
+ * El modelo se descarga de Hugging Face, y a veces responde con un «Gateway
+ * timeout» puntual. Antes bastaba UNO para que la escucha se quedara muerta
+ * todo el sermón: cada frase contestaba «not-loaded» y nadie volvía a
+ * intentar la descarga. Ahora se reintenta con esperas crecientes.
+ */
+const RETRY_WAIT_MS = [2000, 5000, 10000, 20000];
+let lastModel = '';
+
+async function loadWithRetry(model: string): Promise<void> {
+  for (let attempt = 0; ; attempt++) {
+    try {
+      await load(model);
+      return;
+    } catch (err) {
+      if (attempt >= RETRY_WAIT_MS.length) throw err;
+      await new Promise((r) => setTimeout(r, RETRY_WAIT_MS[attempt]));
+    }
+  }
+}
+
+function startLoading(model: string): Promise<void> {
+  lastModel = model;
+  loading ??= loadWithRetry(model).finally(() => {
+    loading = null;
+  });
+  return loading;
+}
+
 self.addEventListener('message', (ev: MessageEvent<WhisperRequest>) => {
   const msg = ev.data;
   void (async () => {
@@ -119,13 +148,13 @@ self.addEventListener('message', (ev: MessageEvent<WhisperRequest>) => {
           post({ type: 'ready', device, ms: 0 });
           return;
         }
-        loading ??= load(msg.model).finally(() => {
-          loading = null;
-        });
-        await loading;
+        await startLoading(msg.model);
         return;
       }
 
+      // Si la descarga falló del todo, una frase nueva la vuelve a lanzar:
+      // la conexión de la mezquita puede volver a mitad del sermón.
+      if (!transcriber && !loading && lastModel) void startLoading(lastModel).catch(() => {});
       if (!transcriber && loading) await loading.catch(() => {});
       if (!transcriber) {
         post({ type: 'error', message: 'not-loaded', id: msg.id });
