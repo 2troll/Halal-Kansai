@@ -14,9 +14,17 @@
     <link rel="apple-touch-icon" href="icons/icon-192.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Fuentes SIN bloquear el arranque. Como hoja de estilos normal, el
+         navegador no ejecuta la app hasta que responde fonts.googleapis.com:
+         sin cobertura (dentro de una mezquita) o con esa conexión lenta, el
+         Nothing Phone 3a se quedaba en la pantalla de carga hasta agotar el
+         tiempo de espera. Con media="print" se descarga aparte y se aplica si
+         llega; si no, se usan las del sistema, que es lo que usa el diseño. -->
     <link
       href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Inter:wght@400;600&family=Amiri:wght@400;700&display=swap"
       rel="stylesheet"
+      media="print"
+      onload="this.media='all'"
     />
   </head>
   <body>
