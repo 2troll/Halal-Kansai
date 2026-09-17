@@ -42,6 +42,10 @@ interface SpeechRecognitionLike {
  */
 export const SOURCE_LOCALES: Array<{ code: string; label: string }> = [
   { code: 'ar-SA', label: 'العربية' },
+  // Dariya: las jutbas de muchas mezquitas de Canarias y del resto de España
+  // (y de comunidades magrebíes en Japón) mezclan árabe clásico con el dialecto.
+  { code: 'ar-MA', label: 'الدارجة المغربية (Darija)' },
+  { code: 'ar-DZ', label: 'الدارجة الجزائرية (Darija)' },
   { code: 'ur-PK', label: 'اردو (Urdu)' },
   { code: 'id-ID', label: 'Bahasa Indonesia' },
   { code: 'ms-MY', label: 'Bahasa Melayu' },

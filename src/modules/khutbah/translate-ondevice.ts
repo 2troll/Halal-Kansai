@@ -126,11 +126,33 @@ export async function translateOnDevice(
  * verificación coránica offline queda como mejora futura (ver el doc de
  * arquitectura); mientras, con conexión el servidor sigue verificando.
  */
+/**
+ * Variedades de árabe dialectal. ML Kit solo conoce el árabe estándar y con el
+ * dariya produce frases sin sentido; el servidor usa un modelo al que se le
+ * dice que es dariya marroquí o argelina. Así que para estas va primero el
+ * servidor y el móvil solo si no hay red: mejor una traducción aproximada que
+ * ninguna.
+ */
+export const DIALECT_LOCALES: ReadonlySet<string> = new Set(['ar-ma', 'ar-dz']);
+
+export function isDialect(locale: string): boolean {
+  return DIALECT_LOCALES.has(locale.toLowerCase());
+}
+
 export async function translateSegmentSmart(
   text: string,
   sourceLocale: string,
   targetLocale: string,
 ): Promise<TranslatedSegment> {
+  if (isDialect(sourceLocale)) {
+    try {
+      return await translateSegment(text, sourceLocale, targetLocale);
+    } catch (err) {
+      const local = await translateOnDevice(text, sourceLocale, targetLocale);
+      if (!local) throw err;
+      return { kind: 'speech', translation: local, original: text, verified: false, translationSource: 'ondevice' };
+    }
+  }
   const local = await translateOnDevice(text, sourceLocale, targetLocale);
   if (local) {
     return {

@@ -59,7 +59,21 @@ const LANG_NAME: Record<string, string> = {
   am: 'Amharic',
 };
 
+/**
+ * Variedades dialectales: se le dice al modelo cuál es, porque el dariya no se
+ * entiende leyéndolo como árabe estándar (palabras francesas y españolas,
+ * verbos y negación distintos).
+ */
+const DIALECT_NAME: Record<string, string> = {
+  'ar-ma':
+    'Moroccan Arabic (Darija), a spoken dialect mixed with Classical Arabic for Qur\'an and hadith quotations and with French and Spanish loanwords',
+  'ar-dz':
+    'Algerian Arabic (Darja), a spoken dialect mixed with Classical Arabic for Qur\'an and hadith quotations and with French loanwords',
+};
+
 function langName(code: string): string {
+  const dialect = DIALECT_NAME[code.toLowerCase()];
+  if (dialect) return dialect;
   const short = code.split('-')[0]!.toLowerCase();
   return LANG_NAME[short] ?? short;
 }
