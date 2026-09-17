@@ -134,6 +134,7 @@ export const zh: Dict = {
   fbQueued: '当前没有网络。恢复连接后将自动发送。',
   fbTooShort: '请再多写一点，方便我们理解。',
   fbError: '发送失败，请稍后再试。',
+  fbByEmail: '改用电子邮件发送',
   guideSalatH: '在日本礼拜',
   guideSalatP:
     '这里的礼拜时间通过天文计算得出（MWL 方法），完全可以离线使用。关西许多车站和商场现在都设有礼拜室——请查看“地点”页面。',

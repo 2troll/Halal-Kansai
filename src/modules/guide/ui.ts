@@ -1,6 +1,6 @@
 import { getLang, t } from '../../i18n';
 import { MESSAGE_MIN, submitFeedback, type FeedbackKind } from './feedback';
-import { DONATE_URL } from '../../config';
+import { DONATE_URL, FEEDBACK_EMAIL } from '../../config';
 import { isNative } from '../../backend';
 import { icon } from '../../ui/icons';
 
@@ -105,6 +105,7 @@ function feedbackCardHtml(): string {
         </label>
         <button class="btn" type="submit">${t('fbSend')}</button>
         <p class="note" id="feedback-note" role="status"></p>
+        <a class="btn ghost" id="feedback-mail" hidden>✉️ ${t('fbByEmail')}</a>
       </form>
     </details>`;
 }
@@ -133,6 +134,18 @@ function wireFeedback(container: HTMLElement): void {
     })
       .then((result) => {
         note.textContent = result === 'sent' ? t('fbSent') : result === 'queued' ? t('fbQueued') : t('fbError');
+        // Sin conexión (o con una VPN/bloqueador que corta la app) el mensaje
+        // se queda en la cola del móvil. Por si tarda en salir, se ofrece
+        // mandarlo ya por el correo del teléfono, que sí suele tener red.
+        const mail = container.querySelector<HTMLAnchorElement>('#feedback-mail')!;
+        if (result !== 'sent') {
+          const subject = `Halal Kansai — ${String(data.get('kind'))}`;
+          const body = `${message}\n\n(${getLang()} · v${__APP_VERSION__})`;
+          mail.href = `mailto:${FEEDBACK_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+          mail.hidden = false;
+        } else {
+          mail.hidden = true;
+        }
         if (result !== 'rejected') form.reset();
       })
       .finally(() => {

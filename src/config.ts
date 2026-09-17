@@ -6,3 +6,9 @@
  * sistema de pagos), y mostrarlo ahí haría que rechazaran la app.
  */
 export const DONATE_URL = '';
+
+/**
+ * Correo de respaldo del buzón: el mismo que ya publica la política de
+ * privacidad. Solo se usa si la opinión no ha podido salir por internet.
+ */
+export const FEEDBACK_EMAIL = 'pagos.euros73@gmail.com';

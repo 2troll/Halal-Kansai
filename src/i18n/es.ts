@@ -135,6 +135,7 @@ export const es: Dict = {
   fbQueued: 'Ahora no hay conexión. Se enviará solo cuando vuelva la red.',
   fbTooShort: 'Escribe un poco más para que podamos entenderlo.',
   fbError: 'No se ha podido enviar. Inténtalo más tarde.',
+  fbByEmail: 'Enviar por correo',
   guideSalatH: 'La oración en Japón',
   guideSalatP:
     'Las horas se calculan astronómicamente (método MWL) y funcionan sin conexión. Muchas estaciones y centros comerciales de Kansai ya tienen salas de oración — mira la pestaña Lugares.',

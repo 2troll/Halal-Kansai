@@ -134,6 +134,7 @@ export const ms: Dict = {
   fbQueued: 'Tiada sambungan buat masa ini. Mesej akan dihantar secara automatik apabila anda kembali dalam talian.',
   fbTooShort: 'Tulis sedikit lagi supaya kami dapat memahaminya.',
   fbError: 'Mesej tidak dapat dihantar. Sila cuba lagi nanti.',
+  fbByEmail: 'Hantar melalui e-mel',
   guideSalatH: 'Solat di Jepun',
   guideSalatP:
     'Waktu solat di sini dikira secara astronomi (kaedah MWL) dan berfungsi sepenuhnya tanpa internet. Banyak stesen dan pusat beli-belah di Kansai kini ada surau — lihat tab Lokasi.',

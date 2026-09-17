@@ -134,6 +134,7 @@ export const vi: Dict = {
   fbQueued: 'Hiện không có kết nối. Tin nhắn sẽ tự động gửi khi có mạng trở lại.',
   fbTooShort: 'Hãy viết thêm một chút để chúng tôi hiểu rõ.',
   fbError: 'Không gửi được. Vui lòng thử lại sau.',
+  fbByEmail: 'Gửi qua email',
   guideSalatH: 'Cầu nguyện ở Nhật Bản',
   guideSalatP:
     'Giờ cầu nguyện ở đây được tính theo thiên văn (phương pháp MWL) và hoạt động hoàn toàn không cần mạng. Nhiều nhà ga và trung tâm thương mại ở Kansai hiện có phòng cầu nguyện — xem mục Địa điểm.',

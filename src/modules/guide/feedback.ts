@@ -46,18 +46,30 @@ function writeQueue(items: Payload[]): void {
   }
 }
 
+/**
+ * Límite de espera. Con una VPN o un bloqueador que corta la app, la conexión
+ * no falla: se queda colgada. Sin tope, en un Nothing Phone con DuckDuckGo la
+ * pantalla se quedaba esperando sin decir nada y sin ofrecer el correo.
+ */
+const TIMEOUT_MS = 8000;
+
 async function post(payload: Payload): Promise<'sent' | 'rejected' | 'offline'> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
   try {
     const res = await fetch(apiUrl('/api/feedback'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
+      signal: controller.signal,
     });
     if (res.ok) return 'sent';
     // 400: el servidor no lo acepta nunca; reintentar no sirve. 429 y 5xx sí.
     return res.status === 400 ? 'rejected' : 'offline';
   } catch {
     return 'offline';
+  } finally {
+    clearTimeout(timer);
   }
 }
 

@@ -134,6 +134,7 @@ export const fil: Dict = {
   fbQueued: 'Walang koneksyon ngayon. Awtomatikong ipapadala kapag kayo ay online muli.',
   fbTooShort: 'Magsulat ng kaunti pa para maunawaan namin.',
   fbError: 'Hindi naipadala. Subukan muli mamaya.',
+  fbByEmail: 'Ipadala sa email',
   guideSalatH: 'Pagdarasal sa Japan',
   guideSalatP:
     'Ang oras ng salah dito ay kinakalkula ayon sa astronomiya (paraang MWL) at ganap na gumagana offline. Maraming istasyon at mall sa Kansai ang may prayer room — tingnan ang tab na Mga Lugar.',

@@ -138,6 +138,7 @@ export const en = {
   fbQueued: 'No connection right now. It will be sent automatically when you are back online.',
   fbTooShort: 'Write a little more so we can understand it.',
   fbError: 'It could not be sent. Please try again later.',
+  fbByEmail: 'Send by email instead',
   guideSalatH: 'Prayer in Japan',
   guideSalatP:
     'Prayer times here are computed astronomically (MWL method) and work fully offline. Many stations and malls in Kansai now have prayer rooms — check the Places tab.',

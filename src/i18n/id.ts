@@ -140,6 +140,7 @@ export const id: Dict = {
   fbQueued: 'Saat ini tidak ada koneksi. Pesan akan terkirim otomatis begitu Anda kembali online.',
   fbTooShort: 'Tulis sedikit lebih banyak agar kami bisa memahaminya.',
   fbError: 'Pesan tidak dapat dikirim. Silakan coba lagi nanti.',
+  fbByEmail: 'Kirim lewat email',
   guideSalatH: 'Salat di Jepang',
   guideSalatP:
     'Jadwal salat di sini dihitung secara astronomis (metode MWL) dan berfungsi sepenuhnya tanpa internet. Kini banyak stasiun dan pusat perbelanjaan di Kansai yang memiliki musala — lihat tab Tempat.',

@@ -140,6 +140,7 @@ export const pt: Dict = {
   fbQueued: 'Sem conexão agora. Ela será enviada automaticamente quando você voltar a ficar online.',
   fbTooShort: 'Escreva um pouco mais para podermos entender.',
   fbError: 'Não foi possível enviar. Tente novamente mais tarde.',
+  fbByEmail: 'Enviar por e-mail',
   guideSalatH: 'A oração no Japão',
   guideSalatP:
     'Os horários de oração são calculados astronomicamente (método MWL) e funcionam totalmente offline. Muitas estações e shoppings de Kansai já têm salas de oração — veja a aba Lugares.',

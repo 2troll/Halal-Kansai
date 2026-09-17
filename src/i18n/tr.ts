@@ -140,6 +140,7 @@ export const tr: Dict = {
   fbQueued: 'Şu anda bağlantı yok. Tekrar çevrimiçi olduğunuzda otomatik olarak gönderilecek.',
   fbTooShort: 'Anlayabilmemiz için biraz daha ayrıntı yazın.',
   fbError: 'Gönderilemedi. Lütfen daha sonra tekrar deneyin.',
+  fbByEmail: 'E-postayla gönder',
   guideSalatH: 'Japonya\'da namaz',
   guideSalatP:
     'Buradaki namaz vakitleri astronomik olarak (MWL yöntemi) hesaplanır ve tamamen çevrimdışı çalışır. Kansai\'deki birçok istasyon ve alışveriş merkezinde artık namaz odası var — Mekânlar sekmesine bakın.',
