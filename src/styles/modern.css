@@ -671,3 +671,137 @@ main h2 {
   text-align: center;
   line-height: 1.2;
 }
+
+/* ---------- Rezo: lugar más cercano y semana ---------- */
+.nearest-card {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin: 0.8rem 0;
+  padding: 0.85rem 1rem;
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--emerald) 16%, transparent);
+  color: var(--on-surface);
+  text-decoration: none;
+}
+
+.nearest-icon,
+.nearest-go {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+}
+
+.nearest-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: var(--emerald);
+  color: var(--on-accent);
+}
+
+.nearest-go {
+  color: var(--gold);
+}
+
+.nearest-body {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+
+.nearest-body .eyebrow {
+  margin: 0;
+}
+
+.nearest-body strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.week-card {
+  margin: 0.8rem 0;
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--on-surface) 6%, transparent);
+  padding: 0.2rem 0.9rem 0.6rem;
+}
+
+.week-card summary {
+  cursor: pointer;
+  padding: 0.7rem 0;
+  font-weight: 600;
+}
+
+.week-scroll {
+  overflow-x: auto;
+}
+
+.week-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.week-table th,
+.week-table td {
+  padding: 0.45rem 0.3rem;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.week-table thead th {
+  font-size: 0.72rem;
+  color: var(--on-surface-dim);
+  font-weight: 600;
+}
+
+.week-table tbody th {
+  text-align: start;
+  font-weight: 600;
+}
+
+.week-table tbody tr + tr {
+  border-top: 1px solid var(--hairline);
+}
+
+.week-table tr.today {
+  color: var(--gold);
+}
+
+@media (max-width: 360px) {
+  .week-card {
+    padding-inline: 0.5rem;
+  }
+
+  .week-table {
+    font-size: 0.74rem;
+  }
+
+  .week-table th,
+  .week-table td {
+    padding: 0.4rem 0.12rem;
+  }
+
+  .week-table thead th {
+    font-size: 0.62rem;
+  }
+}
+
+/* Cabeceras largas (japonés, bengalí): en varias líneas, columnas iguales. */
+.week-table {
+  table-layout: fixed;
+}
+
+.week-table thead th {
+  white-space: normal;
+  word-break: break-word;
+  line-height: 1.15;
+  vertical-align: bottom;
+}
+
+.week-table th:first-child {
+  width: 18%;
+}

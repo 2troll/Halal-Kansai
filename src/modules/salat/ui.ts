@@ -12,6 +12,9 @@ import {
   timezoneHours,
 } from './settings';
 import { fastingCountdown } from '../ramadan/fasting';
+import { PLACES } from '../places/data';
+import { directionsUrl } from '../places/directions';
+import { escapeHtml } from '../escape';
 import { getLang, t, type Lang } from '../../i18n';
 import { icon } from '../../ui/icons';
 import { updatePrayerWidget } from '../../native/widget';
@@ -87,6 +90,8 @@ export function renderSalat(container: HTMLElement): void {
       ).join('')}
     </ul>
     ${fastingCardHtml(now, coords)}
+    ${nearestPlaceHtml(coords)}
+    ${weekTableHtml(now, coords)}
     ${
       isNative()
         ? `<label class="notify-row">
@@ -232,6 +237,67 @@ function fastingCardHtml(now: Date, coords: Coordinates): string {
         <span class="fast-times">${t('fastSuhoor')} <b>${formatTime(day.imsak)}</b> · ${t('fastIftar')} <b>${formatTime(day.iftar)}</b></span>
       </summary>
       <p class="fast-left">${c.phase === 'fasting' ? t('fastToIftar') : t('fastToSuhoor')}: <b>${left}</b></p>
+    </details>`;
+}
+
+/**
+ * La mezquita o sala de oración con coordenadas más cercana, con su ruta.
+ * Sale de los datos de la app, sin red: justo lo que hace falta cuando entra
+ * la hora del rezo fuera de casa.
+ */
+function nearestPlaceHtml(coords: Coordinates): string {
+  const R = 6371;
+  const rad = (d: number) => (d * Math.PI) / 180;
+  const km = (lat: number, lng: number) => {
+    const x =
+      Math.sin(rad(lat - coords.lat) / 2) ** 2 +
+      Math.cos(rad(coords.lat)) * Math.cos(rad(lat)) * Math.sin(rad(lng - coords.lng) / 2) ** 2;
+    return 2 * R * Math.asin(Math.sqrt(x));
+  };
+  const best = PLACES.filter((p) => (p.type === 'mosque' || p.type === 'prayer') && p.lat !== undefined)
+    .map((p) => ({ p, d: km(p.lat!, p.lng!) }))
+    .sort((a, b) => a.d - b.d)[0];
+  if (!best) return '';
+  const { p, d } = best;
+  return `
+    <a class="nearest-card" href="${directionsUrl(p.lat!, p.lng!)}" target="_blank" rel="noopener">
+      <span class="nearest-icon" aria-hidden="true">${icon(p.type === 'mosque' ? 'salat' : 'prayer', 22)}</span>
+      <span class="nearest-body">
+        <span class="eyebrow">${t('nearestTitle')}</span>
+        <strong>${escapeHtml(p.name)}</strong>
+        <span class="note">${escapeHtml(p.city)} · ${d < 10 ? d.toFixed(1) : Math.round(d)} ${t('kmAway')}</span>
+      </span>
+      <span class="nearest-go" aria-hidden="true">${icon('location', 20)}</span>
+    </a>`;
+}
+
+/** Horario de los próximos 7 días, plegado: para planear la semana o imprimirlo. */
+function weekTableHtml(now: Date, coords: Coordinates): string {
+  const cols: Array<keyof PrayerTimes> = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'];
+  const locale = getLang() === 'ar' || getLang() === 'ur' ? 'en' : getLang();
+  const rows = Array.from({ length: 7 }, (_, i) => {
+    const d = new Date(now);
+    d.setDate(now.getDate() + i);
+    const times = computePrayerTimes(
+      { year: d.getFullYear(), month: d.getMonth() + 1, day: d.getDate() },
+      coords,
+      timezoneHours(d),
+      currentMethod(),
+    );
+    const label = i === 0 ? t('today') : d.toLocaleDateString(locale, { weekday: 'short', day: 'numeric' });
+    return `<tr${i === 0 ? ' class="today"' : ''}><th scope="row">${label}</th>${cols
+      .map((c) => `<td>${formatTime(times[c])}</td>`)
+      .join('')}</tr>`;
+  }).join('');
+  return `
+    <details class="week-card">
+      <summary>${t('weekTitle')}</summary>
+      <div class="week-scroll" dir="ltr">
+        <table class="week-table">
+          <thead><tr><th></th>${cols.map((c) => `<th scope="col">${t(c)}</th>`).join('')}</tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
     </details>`;
 }
 
