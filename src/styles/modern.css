@@ -260,3 +260,147 @@ main h2 {
   padding: 0.9rem;
   margin-bottom: 1rem;
 }
+
+/* ---------- Qibla ---------- */
+.compass {
+  position: relative;
+  width: min(300px, 82vw);
+  aspect-ratio: 1;
+  margin: 0.6rem auto 1.2rem;
+}
+
+.compass-dial {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: none;
+  border-radius: 50%;
+  transition: transform 0.15s ease-out;
+}
+
+.dial-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.dial-face {
+  fill: color-mix(in srgb, var(--on-surface) 5%, transparent);
+  stroke: color-mix(in srgb, var(--on-surface) 14%, transparent);
+  stroke-width: 1.5;
+}
+
+.dial-svg .tick {
+  stroke: color-mix(in srgb, var(--on-surface) 35%, transparent);
+  stroke-width: 1.2;
+  stroke-linecap: round;
+}
+
+.dial-svg .tick.major {
+  stroke: color-mix(in srgb, var(--on-surface) 75%, transparent);
+  stroke-width: 2;
+}
+
+.dial-svg .cardinal {
+  fill: var(--on-surface-dim);
+  font: 600 15px var(--font-system, system-ui);
+  text-anchor: middle;
+}
+
+.dial-svg .cardinal.north {
+  fill: var(--gold);
+}
+
+.dial-svg .qibla-arc {
+  fill: none;
+  stroke: var(--gold);
+  stroke-width: 6;
+  stroke-linecap: round;
+}
+
+.dial-svg .kaaba {
+  font-size: 22px;
+  text-anchor: middle;
+}
+
+.compass .compass-needle {
+  position: absolute;
+  inset: 12% 45%;
+  width: auto;
+  height: auto;
+  translate: none;
+  background: none;
+  transform-origin: 50% 50%;
+  transition: transform 0.15s ease-out;
+}
+
+.compass-needle svg {
+  width: 100%;
+  height: 50%;
+  display: block;
+}
+
+.needle-head {
+  fill: var(--gold);
+}
+
+.needle-body {
+  fill: color-mix(in srgb, var(--gold) 55%, transparent);
+}
+
+.compass-hub {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 18px;
+  height: 18px;
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 0 5px color-mix(in srgb, var(--gold) 25%, transparent);
+}
+
+/* Alineado: el anillo se ilumina en verde. */
+.compass.aligned .dial-face {
+  stroke: var(--emerald);
+  stroke-width: 4;
+}
+
+.compass.aligned {
+  filter: drop-shadow(0 0 18px color-mix(in srgb, var(--emerald) 60%, transparent));
+}
+
+.qibla-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.9rem 1.1rem;
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--on-surface) 6%, transparent);
+}
+
+.qibla-deg {
+  font-size: 1.9rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.qibla-turn {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--gold);
+  font-variant-numeric: tabular-nums;
+  direction: ltr;
+}
+
+.qibla-actions {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.qibla-actions .btn {
+  min-height: 48px;
+  padding-inline: 1.6rem;
+}
