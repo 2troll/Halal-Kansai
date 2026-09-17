@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Icono generado con Gemini (17/09/2026). Android enseña solo el 66 % central
+     de cada capa: con un 15 % de margen el emblema cabe entero en círculo,
+     squircle o gota, y los bordes de la imagen quedan fuera de la vista. -->
 <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
-    <background>
-        <inset android:drawable="@mipmap/ic_launcher_background" android:inset="16.7%" />
-    </background>
+    <background android:drawable="@mipmap/ic_launcher_background" />
     <foreground>
-        <inset android:drawable="@mipmap/ic_launcher_foreground" android:inset="16.7%" />
+        <inset android:drawable="@mipmap/ic_launcher_foreground" android:inset="15%" />
     </foreground>
 </adaptive-icon>
