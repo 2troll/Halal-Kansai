@@ -805,3 +805,21 @@ main h2 {
 .week-table th:first-child {
   width: 18%;
 }
+
+.map-offline {
+  margin: -0.4rem 0 1rem;
+  padding: 0.7rem 0.9rem;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--gold) 14%, transparent);
+  color: var(--on-surface);
+}
+
+.qibla-actions .calib {
+  color: var(--gold);
+  font-weight: 600;
+}
+
+.qibla-actions .decl {
+  opacity: 0.7;
+  font-size: 0.72rem;
+}

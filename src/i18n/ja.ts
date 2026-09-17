@@ -57,6 +57,8 @@ export const ja: Dict = {
   qiblaDistance: 'カアバまで',
   compassStart: 'コンパスを開始',
   compassHint: 'スマートフォンを水平に持ち、金属製品から離してください。',
+  compassCalibrate: 'スマートフォンを8の字に数回動かして、コンパスを補正してください。',
+  compassTrueNorth: '真北に補正済み',
   compassUnsupported:
     'この端末ではコンパスを利用できません。表示された角度を方位磁石でお使いください。',
   compassPermissionDenied: 'コンパスの利用が許可されませんでした。',
@@ -78,6 +80,7 @@ export const ja: Dict = {
   searchPlaces: '名前や地域で検索',
   jumuah: 'ジュムア（金曜礼拝）',
   showOnMap: '地図で見る',
+  mapOffline: '地図を読み込めませんでした（インターネット未接続、またはVPN・ブロッカーが妨げています）。下のリストと経路案内は使えます。',
   noPlacesFound: '検索に一致する場所はありません。',
   donate: '寄付',
   donateTitle: 'Halal Kansaiを応援する',

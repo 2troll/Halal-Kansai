@@ -49,6 +49,8 @@ export const es: Dict = {
   qiblaDistance: 'hasta la Kaaba',
   compassStart: 'Activar brújula',
   compassHint: 'Sostén el móvil en horizontal y lejos de objetos metálicos.',
+  compassCalibrate: 'Mueve el móvil dibujando un 8 varias veces para calibrar la brújula.',
+  compassTrueNorth: 'Corregido al norte geográfico',
   compassUnsupported:
     'Brújula no disponible en este dispositivo. Usa el rumbo con una brújula física.',
   compassPermissionDenied: 'Permiso de brújula denegado.',
@@ -69,6 +71,7 @@ export const es: Dict = {
   searchPlaces: 'Buscar por nombre o ciudad',
   jumuah: 'Jumu‘ah',
   showOnMap: 'Ver en el mapa',
+  mapOffline: 'El mapa no ha podido cargar (sin internet, o una VPN o bloqueador lo impide). La lista de abajo sigue funcionando, con «Cómo llegar».',
   noPlacesFound: 'Ningún lugar coincide con la búsqueda.',
   donate: 'Donar',
   donateTitle: 'Apoya Halal Kansai',

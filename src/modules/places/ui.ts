@@ -216,6 +216,11 @@ function wireSuggestForm(container: HTMLElement): void {
   });
 }
 
+/** El mapa se creó con la pestaña oculta: al mostrarla hay que recalcular su tamaño. */
+export function refreshMapSize(): void {
+  requestAnimationFrame(() => map?.invalidateSize());
+}
+
 export function renderPlaces(container: HTMLElement): void {
   // Leaflet no sobrevive a innerHTML: destruir y recrear.
   if (map) {
@@ -258,10 +263,24 @@ export function renderPlaces(container: HTMLElement): void {
     zoom: 9,
     attributionControl: true,
   });
-  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  const tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
     attribution: '© OpenStreetMap',
   }).addTo(map);
+
+  // Sin esto, sin red el mapa era un recuadro vacío y parecía roto. Si en unos
+  // segundos no ha llegado ninguna imagen, se dice por qué y que la lista sirve.
+  let loaded = 0;
+  tiles.on('tileload', () => {
+    loaded++;
+    container.querySelector('#map-offline')?.remove();
+  });
+  window.setTimeout(() => {
+    if (loaded > 0 || !map || container.querySelector('#map-offline')) return;
+    container
+      .querySelector('#map')
+      ?.insertAdjacentHTML('afterend', `<p class="note map-offline" id="map-offline" role="status">${t('mapOffline')}</p>`);
+  }, 8000);
 
   renderMarkers();
   renderList(listEl);

@@ -41,7 +41,7 @@ const LANG_CODE: Record<Lang, string> = {
 };
 import { renderSalat } from './modules/salat/ui';
 import { renderQibla, stopCompass } from './modules/qibla/ui';
-import { renderPlaces } from './modules/places/ui';
+import { refreshMapSize, renderPlaces } from './modules/places/ui';
 import { renderKhutbah } from './modules/khutbah/ui';
 import { renderGuide } from './modules/guide/ui';
 import { renderFood, stopFoodCamera } from './modules/food/ui';
@@ -77,6 +77,8 @@ export function showDonate(): boolean {
 
 function renderShell(): void {
   const app = document.getElementById('app')!;
+  // Cambio de idioma: todo se vuelve a pintar en el idioma nuevo.
+  panes.clear();
   app.innerHTML = `
     <header class="header">
       <div class="brand">
@@ -139,9 +141,33 @@ function renderShell(): void {
   renderView();
 }
 
+/**
+ * Pestañas que conservan su estado al salir y volver.
+ *
+ * Antes cada cambio de pestaña volvía a pintar la pantalla desde cero. En la
+ * jutba eso PARABA la escucha y borraba la traducción: quien miraba un momento
+ * la hora del rezo perdía el sermón. Ahora estas se crean una vez y solo se
+ * ocultan; siguen trabajando por detrás. Rezo y qibla sí se repintan, porque
+ * la hora y el sensor deben estar al día al entrar.
+ */
+const KEEP_ALIVE: ReadonlySet<Tab> = new Set(['places', 'food', 'khutbah', 'guide']);
+const panes = new Map<Tab, HTMLElement>();
+
 function renderView(): void {
   const view = document.getElementById('view')!;
-  RENDERERS[activeTab](view);
+  let pane = panes.get(activeTab);
+  const fresh = !pane;
+  if (!pane) {
+    pane = document.createElement('section');
+    pane.className = 'pane';
+    pane.dataset.pane = activeTab;
+    view.appendChild(pane);
+    panes.set(activeTab, pane);
+  }
+  panes.forEach((el, tab) => (el.hidden = tab !== activeTab));
+  if (fresh || !KEEP_ALIVE.has(activeTab)) RENDERERS[activeTab](pane);
+  if (activeTab === 'places') refreshMapSize();
+  window.scrollTo(0, 0);
 }
 
 applyAppearance();
