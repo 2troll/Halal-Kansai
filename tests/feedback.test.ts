@@ -93,3 +93,47 @@ describe('CORS de la app nativa', () => {
     expect(res.headers.get('access-control-allow-origin')).toBeNull();
   });
 });
+
+describe('aviso a Telegram', () => {
+  it('manda el texto de la opinión al chat configurado, sin interpretar HTML', async () => {
+    const calls: Array<{ url: string; body: Record<string, unknown> }> = [];
+    const realFetch = globalThis.fetch;
+    globalThis.fetch = (async (url: string, init: RequestInit) => {
+      calls.push({ url, body: JSON.parse(String(init.body)) });
+      return new Response('{}');
+    }) as typeof fetch;
+    try {
+      const app = createApp({
+        store: fakeQuran,
+        llm: { apiKey: '' },
+        allowedOrigins: ['*'],
+        feedback: new MemoryFeedbackStore(),
+        telegram: { botToken: 'TOKEN', chatId: '42' },
+      });
+      await app.request('/api/feedback', post({ kind: 'bug', message: 'El mapa <b>no</b> carga', rating: 2, platform: 'android' }));
+    } finally {
+      globalThis.fetch = realFetch;
+    }
+    expect(calls).toHaveLength(1);
+    expect(calls[0]!.url).toBe('https://api.telegram.org/botTOKEN/sendMessage');
+    expect(calls[0]!.body.chat_id).toBe('42');
+    expect(calls[0]!.body).not.toHaveProperty('parse_mode');
+    expect(String(calls[0]!.body.text)).toContain('El mapa <b>no</b> carga');
+  });
+
+  it('sin configuración no llama a Telegram y la opinión se guarda igual', async () => {
+    const realFetch = globalThis.fetch;
+    let called = false;
+    globalThis.fetch = (async () => {
+      called = true;
+      return new Response('{}');
+    }) as typeof fetch;
+    try {
+      const res = await makeApp().request('/api/feedback', post(VALID));
+      expect(res.status).toBe(201);
+    } finally {
+      globalThis.fetch = realFetch;
+    }
+    expect(called).toBe(false);
+  });
+});

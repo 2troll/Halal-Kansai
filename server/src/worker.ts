@@ -34,6 +34,9 @@ interface Env {
   ANTHROPIC_MODEL?: string;
   ALLOWED_ORIGINS?: string;
   ADMIN_TOKEN?: string;
+  /** Aviso de opiniones a Telegram: secretos TELEGRAM_BOT_TOKEN y TELEGRAM_CHAT_ID. */
+  TELEGRAM_BOT_TOKEN?: string;
+  TELEGRAM_CHAT_ID?: string;
   /**
    * Opcional: URL de un Ollama accesible desde el Worker (p. ej. un túnel
    * cloudflared/ngrok al Mac de la mezquita). Sin definir, no cambia nada:
@@ -48,7 +51,7 @@ const ROOM_RE = /^[a-z0-9-]{3,24}$/i;
 let app: Hono | null = null;
 
 export default {
-  fetch(request: Request, env: Env): Response | Promise<Response> {
+  fetch(request: Request, env: Env, ctx?: unknown): Response | Promise<Response> {
     const url = new URL(request.url);
 
     // Modo transmisor: cada sala es un Durable Object (estado compartido
@@ -75,11 +78,12 @@ export default {
         // Misma KV que las sugerencias, clave «feedback»: sin recursos nuevos
         // que crear en Cloudflare.
         feedback: env.SUGGESTIONS ? new KVFeedbackStore(env.SUGGESTIONS) : undefined,
+        telegram: { botToken: env.TELEGRAM_BOT_TOKEN, chatId: env.TELEGRAM_CHAT_ID },
         adminToken: env.ADMIN_TOKEN,
         ai: env.AI,
         ollama: env.OLLAMA_URL ? { baseUrl: env.OLLAMA_URL, model: env.OLLAMA_MODEL } : undefined,
       });
     }
-    return app.fetch(request);
+    return app.fetch(request, env as never, ctx as never);
   },
 };

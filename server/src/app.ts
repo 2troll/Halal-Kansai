@@ -18,6 +18,7 @@ import { usableTranslation } from './quality.ts';
 import { getMatcher, type QuranStore } from './store.ts';
 import { parseSuggestion, type SuggestionStatus, type SuggestionStore } from './suggestions.ts';
 import { parseFeedback, type FeedbackStore } from './feedback.ts';
+import { notifyTelegram, type TelegramConfig } from './notify.ts';
 import type { AiBinding } from './ai-translate.ts';
 
 export interface AppConfig {
@@ -31,6 +32,8 @@ export interface AppConfig {
   suggestions?: SuggestionStore;
   /** Opiniones de los usuarios (qué falla, qué mejorar). */
   feedback?: FeedbackStore;
+  /** Aviso de cada opinión a Telegram (opcional). */
+  telegram?: TelegramConfig;
   /** Token Bearer del panel admin; sin él, las rutas admin devuelven 503. */
   adminToken?: string;
   /** Workers AI: traduce dentro de Cloudflare, sin cuotas de terceros por IP. */
@@ -143,6 +146,17 @@ export function createApp(config: AppConfig): Hono {
     const feedback = parseFeedback(await c.req.json().catch(() => null));
     if (!feedback) return c.json({ error: 'datos inválidos' }, 400);
     await config.feedback.add(feedback);
+    if (config.telegram) {
+      const sending = notifyTelegram(config.telegram, feedback);
+      // En Workers, waitUntil deja terminar el envío sin retrasar la respuesta.
+      const ctx = (c as unknown as { executionCtx?: { waitUntil(p: Promise<unknown>): void } }).executionCtx;
+      try {
+        if (ctx) ctx.waitUntil(sending);
+        else await sending;
+      } catch {
+        await sending;
+      }
+    }
     return c.json({ ok: true, id: feedback.id }, 201);
   });
 
