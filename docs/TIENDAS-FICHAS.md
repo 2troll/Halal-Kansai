@@ -200,24 +200,19 @@ No account is required. There is no paid content.
 
 ---
 
-## 4. Capturas y gráficos ✅ (17/09/2026)
+## 4. Capturas y gráficos ✅ (17/09/2026, diseño nuevo)
 
-Todo en `~/Documents/Trabajo/Halal-Kansai-tiendas/`:
+Todo en `~/Documents/Trabajo/Halal-Kansai-tiendas/`, en inglés y modo oscuro:
 
 | Tienda | Qué | Tamaño |
 |---|---|---|
-| Google Play | 5 capturas (emulador Android 15, build release) | 1080×1920 |
-| Google Play | Icono | 512×512, sin transparencia |
-| Google Play | Gráfico destacado | 1024×500 |
+| Google Play | 5 capturas del **Nothing Phone 3a real** (Lugares, renderizada: en ese móvil el mapa no cargaba) | 1080×2160 |
+| Google Play | Icono / gráfico destacado | 512×512 / 1024×500 |
 | Google Play | `halal-kansai-1.0.0.aab` firmado | 39 MB |
-| App Store | 5 capturas iPhone 6,9" | 1320×2868 |
+| App Store | 5 capturas iPhone 6,9" (mismo código renderizado en Chrome) | 1320×2868 |
 
-Orden: rezo, qibla, lugares, lector de etiquetas, jutba.
-
-- Las de iPhone salen del mismo código renderizado en Chrome a tamaño de
-  iPhone (la app no abre en el simulador, ver §5). Es la misma interfaz.
-- **La de la jutba enseña la pantalla vacía.** Cámbiala por una real el
-  viernes 18/09 con una traducción en marcha: es la que vende la app.
+Orden: rezo, qibla, lugares, lector de etiquetas, jutba. La de la jutba
+enseña la pantalla vacía: cámbiala por una real el viernes.
 
 ---
 
@@ -267,7 +262,7 @@ Luego TestFlight → grupo externo → enlace público → a la gente con iPhone
 
 | Cosa | Estado |
 |---|---|
-| Build · tests · lint | ✅ 253 tests en verde |
+| Build · tests · lint | ✅ 264 tests en verde |
 | AAB firmado para Google Play | ✅ 39 MB, firma verificada |
 | iOS release para iPhone real | ✅ compila (sin firmar: falta tu cuenta) |
 | Probado en emulador Android (release) | ✅ 6 pestañas, árabe RTL, avisos de rezo, lector de etiquetas |
