@@ -12,7 +12,12 @@
  */
 import { t } from '../../i18n';
 
-export const THEMES = ['night', 'paper', 'sand', 'indigo', 'contrast'] as const;
+export const THEMES = ['night', 'paper', 'sand', 'indigo', 'contrast', 'amoled', 'sakura', 'matcha', 'ramadan', 'kiswah'] as const;
+/** Temas con fondo claro: comparten los ajustes de legibilidad de [data-tone='light']. */
+export const LIGHT_THEMES: ReadonlySet<Theme> = new Set(['paper', 'sand', 'sakura', 'matcha']);
+/** Se gana al terminar la búsqueda de las 20 pistas (ver modules/hunt). */
+export const SECRET_THEMES: ReadonlySet<Theme> = new Set(['kiswah']);
+const UNLOCK_KEY = 'hk-unlocked-themes';
 export type Theme = (typeof THEMES)[number];
 
 export const TEXT_SIZES = ['normal', 'large', 'xlarge', 'xxlarge'] as const;
@@ -28,6 +33,11 @@ const SWATCH: Record<Theme, { bg: string; accent: string }> = {
   sand: { bg: '#efe4d2', accent: '#8a6520' },
   indigo: { bg: '#101a2e', accent: '#3a76ad' },
   contrast: { bg: '#000000', accent: '#ffd400' },
+  amoled: { bg: '#000000', accent: '#2a8169' },
+  sakura: { bg: '#fbeff2', accent: '#9b3a5a' },
+  matcha: { bg: '#eef2e3', accent: '#3f6b2a' },
+  ramadan: { bg: '#1a1330', accent: '#d9a441' },
+  kiswah: { bg: '#0a0a0a', accent: '#d4af37' },
 };
 
 const THEME_LABEL: Record<Theme, () => string> = {
@@ -36,6 +46,11 @@ const THEME_LABEL: Record<Theme, () => string> = {
   sand: () => t('themeSand'),
   indigo: () => t('themeIndigo'),
   contrast: () => t('themeContrast'),
+  amoled: () => t('themeAmoled'),
+  sakura: () => t('themeSakura'),
+  matcha: () => t('themeMatcha'),
+  ramadan: () => t('themeRamadan'),
+  kiswah: () => t('themeKiswah'),
 };
 
 const SIZE_LABEL: Record<TextSize, () => string> = {
@@ -53,16 +68,46 @@ function isTextSize(v: string | null): v is TextSize {
   return v !== null && (TEXT_SIZES as readonly string[]).includes(v);
 }
 
+/** Lee localStorage sin romper si el navegador lo bloquea. */
+function read(key: string): string | null {
+  try {
+    return localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+}
+
+export function isUnlocked(theme: Theme): boolean {
+  if (!SECRET_THEMES.has(theme)) return true;
+  return (read(UNLOCK_KEY) ?? '').split(',').includes(theme);
+}
+
+export function unlockTheme(theme: Theme): void {
+  if (isUnlocked(theme)) return;
+  const list = (read(UNLOCK_KEY) ?? '').split(',').filter(Boolean);
+  try {
+    localStorage.setItem(UNLOCK_KEY, [...list, theme].join(','));
+  } catch {
+    /* sin almacenamiento: el tema no se recuerda, pero la app sigue */
+  }
+}
+
+/** Los temas que se enseñan en el panel: los normales y los ya ganados. */
+export function visibleThemes(): Theme[] {
+  return THEMES.filter(isUnlocked);
+}
+
 export function getTheme(): Theme {
-  const saved = localStorage.getItem(THEME_KEY);
-  if (isTheme(saved)) return saved;
+  const saved = read(THEME_KEY);
+  // Un tema secreto guardado pero no ganado (p. ej. copiado a mano) no vale.
+  if (isTheme(saved) && isUnlocked(saved)) return saved;
   // Sin elección previa: seguimos al sistema. Quien tiene el móvil en claro
   // suele tenerlo así por la vista, no por capricho.
   return window.matchMedia?.('(prefers-color-scheme: light)').matches ? 'paper' : 'night';
 }
 
 export function getTextSize(): TextSize {
-  const saved = localStorage.getItem(TEXT_KEY);
+  const saved = read(TEXT_KEY);
   return isTextSize(saved) ? saved : 'normal';
 }
 
@@ -82,7 +127,9 @@ export function setTextSize(size: TextSize): void {
  */
 export function applyAppearance(): void {
   const root = document.documentElement;
-  root.dataset.theme = getTheme();
+  const theme = getTheme();
+  root.dataset.theme = theme;
+  root.dataset.tone = LIGHT_THEMES.has(theme) ? 'light' : 'dark';
   root.dataset.text = getTextSize();
   // La barra del navegador y la del móvil, a juego con el fondo real.
   const bg = getComputedStyle(root).getPropertyValue('--night').trim();
@@ -109,7 +156,7 @@ export function openAppearanceSheet(onChange: () => void): void {
 
       <h3>${t('theme')}</h3>
       <div class="theme-grid">
-        ${THEMES.map(
+        ${visibleThemes().map(
           (name) => `
           <button class="theme-option" data-theme-option="${name}"
                   aria-pressed="${String(name === getTheme())}">

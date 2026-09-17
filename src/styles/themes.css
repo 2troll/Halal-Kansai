@@ -397,31 +397,110 @@ input[type='checkbox'] {
   color: var(--on-accent);
 }
 
+/* ---------- Negro puro: pantallas OLED, ahorra batería de noche ---------- */
+[data-theme='amoled'] {
+  --night: #000000;
+  --night-soft: #0f0f0f;
+  --emerald: #1d6a55;
+  --emerald-soft: #2a8169;
+  --gold: #c9a24b;
+  --gold-soft: #e0c684;
+  --paper: #f6f1e6;
+  --paper-dim: #efe7d5;
+  --ink: #21302c;
+  --ink-soft: #5c6f69;
+  --danger: #c0604d;
+  --on-surface: #f2f2f2;
+  --on-surface-dim: #a9b3af;
+}
+
+/* ---------- Sakura: claro y rosado, la primavera de Kansai ---------- */
+[data-theme='sakura'] {
+  --night: #fbeff2;
+  --night-soft: #fff8fa;
+  --emerald: #9b3a5a;
+  --emerald-soft: #7f2d49;
+  --gold: #8a5a1f;
+  --gold-soft: #6b4516;
+  --paper: #ffffff;
+  --paper-dim: #f7e6ec;
+  --ink: #2b1d22;
+  --ink-soft: #6a5259;
+  --danger: #a3322b;
+  --on-surface: #2b1d22;
+  --on-surface-dim: #6a5259;
+}
+
+/* ---------- Matcha: claro y verde, el té de Uji ---------- */
+[data-theme='matcha'] {
+  --night: #eef2e3;
+  --night-soft: #f8faf2;
+  --emerald: #3f6b2a;
+  --emerald-soft: #31561f;
+  --gold: #7a6320;
+  --gold-soft: #5c4a15;
+  --paper: #ffffff;
+  --paper-dim: #e7eed8;
+  --ink: #1f2a17;
+  --ink-soft: #56624a;
+  --danger: #9a3b2c;
+  --on-surface: #1f2a17;
+  --on-surface-dim: #56624a;
+}
+
+/* ---------- Ramadán: violeta de noche con farol dorado ---------- */
+[data-theme='ramadan'] {
+  --night: #1a1330;
+  --night-soft: #271d45;
+  --emerald: #5b3f9e;
+  --emerald-soft: #6d51b3;
+  --gold: #d9a441;
+  --gold-soft: #f0c878;
+  --paper: #f5f1fb;
+  --paper-dim: #e9e2f5;
+  --ink: #1f1830;
+  --ink-soft: #5d5475;
+  --danger: #b8524a;
+  --on-surface: #f5f1fb;
+  --on-surface-dim: #c3b9da;
+}
+
+/* ---------- Kiswa: negro y oro. Secreto: se gana al terminar las 20 pistas ---------- */
+[data-theme='kiswah'] {
+  --night: #0a0a0a;
+  --night-soft: #161513;
+  --emerald: #7d6219;
+  --emerald-soft: #957622;
+  --gold: #d4af37;
+  --gold-soft: #e8cc6e;
+  --paper: #faf6ea;
+  --paper-dim: #efe8d4;
+  --ink: #1a1710;
+  --ink-soft: #5a523e;
+  --danger: #b0493a;
+  --on-surface: #f3ecd8;
+  --on-surface-dim: #d4af37;
+}
+
 /* Las tarjetas grandes (próximo rezo, veredicto) son un degradado que acaba
    en el fondo de la app. En un tema claro ese degradado terminaba en blanco y
    el texto se perdía a media altura, así que ahí se quedan oscuras enteras.
    La legibilidad manda sobre la coherencia cromática. */
-[data-theme='paper'] .mihrab-card,
-[data-theme='sand'] .mihrab-card,
-[data-theme='paper'] .verdict,
-[data-theme='sand'] .verdict {
+[data-tone='light'] .mihrab-card,
+[data-tone='light'] .verdict {
   background: linear-gradient(180deg, var(--emerald) 0%, var(--emerald-soft) 130%);
   color: var(--on-accent);
 }
 
-[data-theme='paper'] .mihrab-card *,
-[data-theme='sand'] .mihrab-card *,
-[data-theme='paper'] .verdict *,
-[data-theme='sand'] .verdict * {
+[data-tone='light'] .mihrab-card *,
+[data-tone='light'] .verdict * {
   color: var(--on-accent);
 }
 
 /* El veredicto de prohibido conserva el rojo en todos los temas: es la única
    pantalla que no puede confundirse con ninguna otra. */
-[data-theme='paper'] .verdict.haram,
-[data-theme='sand'] .verdict.haram,
-[data-theme='paper'] .verdict.certified-conflict,
-[data-theme='sand'] .verdict.certified-conflict {
+[data-tone='light'] .verdict.haram,
+[data-tone='light'] .verdict.certified-conflict {
   background: linear-gradient(180deg, var(--danger) 0%, #7d3527 130%);
 }
 

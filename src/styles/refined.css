@@ -506,8 +506,7 @@ body::before {
 
 /* El oro sobre fondo claro se queda corto para texto pequeño: se oscurece en
    los dos temas claros. Sigue siendo oro. */
-[data-theme='paper'],
-[data-theme='sand'] {
+[data-tone='light'] {
   --gold: #7a5c14;
 }
 
@@ -549,12 +548,9 @@ body::before {
   color: var(--on-accent);
 }
 
-[data-theme='paper'] .hit.mushbooh,
-[data-theme='sand'] .hit.mushbooh,
-[data-theme='paper'] .badge.mushbooh,
-[data-theme='sand'] .badge.mushbooh,
-[data-theme='paper'] .badge.shop,
-[data-theme='sand'] .badge.shop {
+[data-tone='light'] .hit.mushbooh,
+[data-tone='light'] .badge.mushbooh,
+[data-tone='light'] .badge.shop {
   color: var(--on-accent);
 }
 

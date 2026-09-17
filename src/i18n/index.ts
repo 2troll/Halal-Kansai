@@ -40,10 +40,17 @@ const listeners = new Set<() => void>();
 
 function loadLang(): Lang {
   const isLang = (v: string | null): v is Lang => (LANGS as readonly string[]).includes(v ?? '');
-  const saved = localStorage.getItem(STORAGE_KEY);
+  // En modo privado localStorage puede lanzar: sin idioma guardado, no sin app.
+  let saved: string | null = null;
+  try {
+    saved = globalThis.localStorage?.getItem(STORAGE_KEY) ?? null;
+  } catch {
+    /* seguimos con el idioma del teléfono */
+  }
   if (isLang(saved)) return saved;
   // El idioma del teléfono, si lo tenemos: un indonesio abre la app en indonesio.
-  const phone = navigator.languages?.length ? navigator.languages : [navigator.language];
+  const nav = globalThis.navigator;
+  const phone = nav?.languages?.length ? nav.languages : [nav?.language ?? 'en'];
   return pickLang(phone, LANGS) as Lang;
 }
 
@@ -57,7 +64,11 @@ export function isRTL(lang: Lang = current): boolean {
 
 export function setLang(lang: Lang): void {
   current = lang;
-  localStorage.setItem(STORAGE_KEY, lang);
+  try {
+    localStorage.setItem(STORAGE_KEY, lang);
+  } catch {
+    /* cambia igual en esta sesión */
+  }
   applyDirection();
   listeners.forEach((fn) => fn());
 }
