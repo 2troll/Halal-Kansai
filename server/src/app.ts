@@ -17,6 +17,7 @@ import { glossaryHints } from './glossary.ts';
 import { usableTranslation } from './quality.ts';
 import { getMatcher, type QuranStore } from './store.ts';
 import { parseSuggestion, type SuggestionStatus, type SuggestionStore } from './suggestions.ts';
+import { parseFeedback, type FeedbackStore } from './feedback.ts';
 import type { AiBinding } from './ai-translate.ts';
 
 export interface AppConfig {
@@ -28,6 +29,8 @@ export interface AppConfig {
   rateLimitPerMinute?: number;
   /** Cola de moderación de lugares sugeridos (Fase 3). */
   suggestions?: SuggestionStore;
+  /** Opiniones de los usuarios (qué falla, qué mejorar). */
+  feedback?: FeedbackStore;
   /** Token Bearer del panel admin; sin él, las rutas admin devuelven 503. */
   adminToken?: string;
   /** Workers AI: traduce dentro de Cloudflare, sin cuotas de terceros por IP. */
@@ -60,6 +63,20 @@ function makeRateLimiter(limit: number) {
   };
 }
 
+/**
+ * Orígenes de la propia app instalada: Capacitor sirve la app desde
+ * https://localhost en Android y capacitor://localhost en iOS.
+ *
+ * Van en el código y no en ALLOWED_ORIGINS porque sin ellos la app nativa no
+ * puede hablar con su propio servidor. Con la variable vacía en producción,
+ * en el Nothing Phone 3a fallaban TODAS las llamadas («Failed to fetch»):
+ * lugares de la comunidad, sugerencias y traducción por servidor.
+ */
+export const NATIVE_APP_ORIGINS: ReadonlySet<string> = new Set([
+  'https://localhost',
+  'capacitor://localhost',
+]);
+
 function clientIp(headers: Headers): string {
   return (
     headers.get('cf-connecting-ip') ??
@@ -76,7 +93,9 @@ export function createApp(config: AppConfig): Hono {
     '/api/*',
     cors({
       origin: (origin) =>
-        config.allowedOrigins.includes('*') || config.allowedOrigins.includes(origin)
+        config.allowedOrigins.includes('*') ||
+        config.allowedOrigins.includes(origin) ||
+        NATIVE_APP_ORIGINS.has(origin)
           ? origin
           : null,
       allowMethods: ['GET', 'POST'],
@@ -116,6 +135,17 @@ export function createApp(config: AppConfig): Hono {
     return c.json({ ok: true, id: suggestion.id }, 201);
   });
 
+  app.post('/api/feedback', async (c) => {
+    if (!config.feedback) return c.json({ error: 'no disponible' }, 503);
+    if (!allowRequest(clientIp(c.req.raw.headers))) {
+      return c.json({ error: 'rate limit' }, 429);
+    }
+    const feedback = parseFeedback(await c.req.json().catch(() => null));
+    if (!feedback) return c.json({ error: 'datos inválidos' }, 400);
+    await config.feedback.add(feedback);
+    return c.json({ ok: true, id: feedback.id }, 201);
+  });
+
   // ---------- Panel admin (token Bearer) ----------
 
   const requireAdmin = (authHeader: string | undefined): boolean =>
@@ -126,6 +156,12 @@ export function createApp(config: AppConfig): Hono {
     if (!requireAdmin(c.req.header('Authorization'))) return c.json({ error: 'no autorizado' }, 401);
     const status = c.req.query('status') as SuggestionStatus | undefined;
     return c.json({ suggestions: await config.suggestions.list(status) });
+  });
+
+  app.get('/api/admin/feedback', async (c) => {
+    if (!config.feedback || !config.adminToken) return c.json({ error: 'no disponible' }, 503);
+    if (!requireAdmin(c.req.header('Authorization'))) return c.json({ error: 'no autorizado' }, 401);
+    return c.json({ feedback: await config.feedback.list() });
   });
 
   app.post('/api/admin/suggestions/:id', async (c) => {
