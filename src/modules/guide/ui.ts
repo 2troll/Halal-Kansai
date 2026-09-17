@@ -9,7 +9,7 @@ export function renderGuide(container: HTMLElement): void {
     { h: t('guideSalatH'), p: t('guideSalatP') },
     { h: t('guideHalalH'), p: t('guideHalalP') },
     { h: t('guideJummahH'), p: t('guideJummahP') },
-    { h: t('guideAboutH'), p: t('guideAboutP') },
+    // «Sobre esta app» ya vive en Ajustes → Acerca de, con más detalle.
   ];
 
   container.innerHTML = `
@@ -20,10 +20,10 @@ export function renderGuide(container: HTMLElement): void {
     ${sections
       .map(
         (s) => `
-      <div class="guide-card">
-        <h3>${s.h}</h3>
+      <details class="guide-card">
+        <summary><h3>${s.h}</h3></summary>
         <p>${s.p}</p>
-      </div>`,
+      </details>`,
       )
       .join('')}
 

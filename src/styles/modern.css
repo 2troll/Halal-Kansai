@@ -1758,7 +1758,9 @@ details > summary::after {
   width: 0.5rem;
   height: 0.5rem;
   margin-inline: auto 0.25rem;
-  border-inline-end: 2px solid currentColor;
+  /* Borde físico (right), no lógico: con inline-end el dibujo ya salía
+     reflejado en árabe y el giro lo dejaba apuntando hacia arriba. */
+  border-right: 2px solid currentColor;
   border-bottom: 2px solid currentColor;
   rotate: -45deg;
   opacity: 0.6;
@@ -1906,4 +1908,23 @@ details[open] > summary::after,
   border-color: var(--emerald);
   color: var(--on-accent);
   text-decoration: none;
+}
+
+/* Guía: fichas plegadas. Se ve la lista de temas de un vistazo y se abre la
+   que interesa; antes eran cuatro bloques de texto seguidos. */
+details.guide-card {
+  padding-block: 0.2rem;
+}
+
+details.guide-card > summary h3 {
+  margin: 0;
+  flex: 1;
+}
+
+details.guide-card[open] > summary {
+  margin-bottom: 0.3rem;
+}
+
+details.guide-card > p {
+  padding-bottom: 0.7rem;
 }
