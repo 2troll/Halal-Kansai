@@ -1935,3 +1935,88 @@ details.guide-card > p {
   min-height: 48px;
   margin: 0 0 1rem;
 }
+
+/* ============================================================
+   Contraste (escaneo de los 10 temas, 17/09/2026). Mínimo WCAG AA 4,5:1.
+   ============================================================ */
+
+/* «Tienda halal» en temas claros: 1,1:1, invisible. Una regla vieja le ponía
+   letra crema (pensada para la etiqueta dorada llena) y ganaba a la de la
+   tarjeta de lugar, que ahora tiene fondo tenue. */
+[data-tone='light'] .place-card .badge,
+.place-card .badge.shop {
+  color: var(--on-surface);
+}
+
+/* Cuenta atrás del siguiente rezo: píldora sólida, no translúcida. */
+.times-list .pill.soon {
+  background: var(--on-accent);
+  color: var(--emerald);
+}
+
+[data-theme='kiswah'] .times-list .pill.soon {
+  color: #3d2f08;
+}
+
+/* «Próxima oración» sobre la tarjeta del mihrab: la letra dorada tenue no
+   llegaba en los temas oscuros. */
+.mihrab-card .label {
+  color: var(--on-accent);
+  opacity: 1;
+}
+
+[data-theme='kiswah'] .mihrab-card .label {
+  opacity: 1;
+}
+
+/* Etiquetas de veredicto con fondo lleno: letra blanca pura y fondo algo
+   más oscuro para que siempre pase de 4,5. */
+.badge.halal,
+.badge.haram {
+  color: #fff;
+}
+
+.badge.halal {
+  background: color-mix(in srgb, var(--emerald) 85%, #000);
+}
+
+.badge.haram {
+  background: color-mix(in srgb, var(--danger) 85%, #000);
+}
+
+/* «Borrar» del historial: rojo aclarado en los temas oscuros. */
+.history-head .danger {
+  color: color-mix(in srgb, var(--danger) 55%, var(--on-surface));
+}
+
+[data-tone='light'] .history-head .danger {
+  color: var(--danger);
+}
+
+/* Notas pequeñas que se quedaban justo por debajo. */
+.qibla-actions .decl {
+  opacity: 1;
+  color: var(--on-surface-dim);
+}
+
+.nearest-body .eyebrow,
+.nearest-body .note {
+  color: color-mix(in srgb, var(--on-surface) 82%, transparent);
+}
+
+.week-table tr.today {
+  color: var(--on-surface);
+  font-weight: 700;
+}
+
+/* «Ayuno de hoy» no se parte: el título entero, las horas se ajustan. */
+.fast-card summary > span:first-child {
+  white-space: nowrap;
+}
+
+.fast-card summary .fast-times {
+  flex: 1;
+  min-width: 0;
+  text-align: end;
+  font-size: 0.9rem;
+}
