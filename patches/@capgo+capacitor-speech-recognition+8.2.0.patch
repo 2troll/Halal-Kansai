@@ -44675,7 +44675,7 @@ new file mode 100644
 index 0000000..2a02dd3
 Binary files /dev/null and b/node_modules/@capgo/capacitor-speech-recognition/android/build/tmp/compileReleaseJavaWithJavac/previous-compilation-data.bin differ
 diff --git a/node_modules/@capgo/capacitor-speech-recognition/android/src/main/java/app/capgo/speechrecognition/SpeechRecognitionPlugin.java b/node_modules/@capgo/capacitor-speech-recognition/android/src/main/java/app/capgo/speechrecognition/SpeechRecognitionPlugin.java
-index 70c49a7..a22c1b6 100644
+index 70c49a7..4dd8ba8 100644
 --- a/node_modules/@capgo/capacitor-speech-recognition/android/src/main/java/app/capgo/speechrecognition/SpeechRecognitionPlugin.java
 +++ b/node_modules/@capgo/capacitor-speech-recognition/android/src/main/java/app/capgo/speechrecognition/SpeechRecognitionPlugin.java
 @@ -598,7 +598,12 @@ public class SpeechRecognitionPlugin extends Plugin implements Constants {
@@ -44714,7 +44714,32 @@ index 70c49a7..a22c1b6 100644
                  if (activeStartCall != null && !lastPartialResults && ("userStop".equals(reason) || "forceStop".equals(reason))) {
                      startCallToReject = activeStartCall;
                  }
-@@ -1106,7 +1115,16 @@ public class SpeechRecognitionPlugin extends Plugin implements Constants {
+@@ -1042,6 +1051,14 @@ public class SpeechRecognitionPlugin extends Plugin implements Constants {
+             }
+             audioManager.setStreamVolume(AudioManager.STREAM_NOTIFICATION, 0, 0);
+             audioManager.setStreamVolume(AudioManager.STREAM_SYSTEM, 0, 0);
++            // Halal Kansai: en algunos móviles (notificación ligada al timbre) poner 0 no
++            // cambia nada sin permiso de «No molestar», y el pitido de Google seguía
++            // sonando en la mezquita. ADJUST_MUTE silencia sin tocar el modo de timbre.
++            if (audioManager.getStreamVolume(AudioManager.STREAM_NOTIFICATION) > 0) {
++                audioManager.adjustStreamVolume(AudioManager.STREAM_NOTIFICATION, AudioManager.ADJUST_MUTE, 0);
++            }
++            Logger.info(TAG, "Beep mute: notification=" + audioManager.getStreamVolume(AudioManager.STREAM_NOTIFICATION)
++                + " muted=" + audioManager.isStreamMute(AudioManager.STREAM_NOTIFICATION));
+         } catch (SecurityException ex) {
+             Logger.warn(TAG, "Unable to mute recognizer beep: " + ex.getMessage());
+         }
+@@ -1055,6 +1072,9 @@ public class SpeechRecognitionPlugin extends Plugin implements Constants {
+         AudioManager audioManager = (AudioManager) getContext().getSystemService(Context.AUDIO_SERVICE);
+         if (audioManager != null) {
+             try {
++                if (audioManager.isStreamMute(AudioManager.STREAM_NOTIFICATION)) {
++                    audioManager.adjustStreamVolume(AudioManager.STREAM_NOTIFICATION, AudioManager.ADJUST_UNMUTE, 0);
++                }
+                 audioManager.setStreamVolume(AudioManager.STREAM_NOTIFICATION, savedNotificationVolume, 0);
+                 if (savedSystemVolume != null) {
+                     audioManager.setStreamVolume(AudioManager.STREAM_SYSTEM, savedSystemVolume, 0);
+@@ -1106,7 +1126,16 @@ public class SpeechRecognitionPlugin extends Plugin implements Constants {
          public void onBeginningOfSpeech() {}
  
          @Override
