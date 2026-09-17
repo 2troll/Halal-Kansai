@@ -779,3 +779,30 @@ body::before {
 .live-caption {
   top: calc(0.4rem + var(--safe-top));
 }
+
+/* ---------- Opiniones ---------- */
+.feedback-card {
+  margin: 0 0 1rem;
+  border-radius: var(--radius-card);
+  background: color-mix(in srgb, var(--on-surface) 6%, transparent);
+  padding: 0.2rem 0.9rem 0.6rem;
+}
+
+.feedback-card summary {
+  cursor: pointer;
+  padding: 0.7rem 0;
+  font-weight: 600;
+}
+
+.feedback-card label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.85rem;
+}
+
+.feedback-card textarea {
+  resize: vertical;
+  min-height: 6rem;
+  font: inherit;
+}

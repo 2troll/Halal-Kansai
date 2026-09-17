@@ -11,6 +11,7 @@ import { buildSegment } from './segment.ts';
 import { RoomHub, type RoomConnection } from './room.ts';
 import { NodeStore } from './store.ts';
 import { FileSuggestionStore } from './suggestions.ts';
+import { MemoryFeedbackStore } from './feedback.ts';
 import { ollamaHealth, type OllamaConfig } from './ollama-translate.ts';
 
 const apiKey = process.env.ANTHROPIC_API_KEY;
@@ -47,6 +48,7 @@ const app = createApp({
   allowedOrigins: ['*'], // solo desarrollo; en producción ver worker.ts
   rateLimitPerMinute: 60,
   suggestions: new FileSuggestionStore(`${dataDir}/suggestions.json`),
+  feedback: new MemoryFeedbackStore(),
   adminToken: process.env.ADMIN_TOKEN ?? 'dev-admin-token',
 });
 

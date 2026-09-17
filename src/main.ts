@@ -101,6 +101,9 @@ applyDirection();
 renderShell();
 onLangChange(renderShell);
 
+// Opiniones escritas sin conexión: salen ahora si ya hay red.
+void import('./modules/guide/feedback').then(({ flushFeedbackQueue }) => flushFeedbackQueue());
+
 // App nativa: barra de estado, splash y reprogramación de avisos al volver.
 void (async () => {
   const [{ initNative }, { rescheduleNotifications }] = await Promise.all([

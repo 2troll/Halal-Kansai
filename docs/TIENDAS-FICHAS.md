@@ -140,6 +140,8 @@ Responde exactamente esto. Está comprobado contra el código.
 | Fotos / vídeos | **No se recopila.** El OCR de etiquetas es local; la foto no se sube. |
 | Contenido generado por el usuario — *texto del sermón* | **Sí se recopila** · Finalidad: **funcionalidad de la app** · **Procesado de forma efímera** (no se almacena) · No se comparte con terceros. Solo cuando el par de idiomas no puede traducirse en el aparato, o en modo sala. |
 | Contenido generado por el usuario — *sugerencia de un lugar* | **Sí se recopila y se almacena** · Finalidad: funcionalidad de la app · Opcional para el usuario · Se revisa antes de publicarse. |
+| Contenido generado por el usuario — *opinión desde «¿Qué mejorarías?»* | **Sí se recopila y se almacena** · Finalidad: **analítica / mejorar la app** · Opcional · No se comparte. Va con idioma, plataforma y versión; sin identificadores. |
+| Actividad en la app — *valoración de 1 a 5* | **Sí, opcional**, junto a la opinión · Finalidad: mejorar la app · No se comparte. |
 | Información personal (nombre, correo, teléfono) | **No.** La app no tiene cuentas. |
 | Identificadores del dispositivo / publicidad | **No.** |
 | ¿Se cifran los datos en tránsito? | **Sí** (HTTPS/WSS). |
@@ -167,7 +169,8 @@ caso de reserva. Lo correcto es:
 
 | Sección | Respuesta |
 |---|---|
-| **Data Not Linked to You** → *User Content* | Marcado. Uso: **App Functionality**. No se usa para seguimiento. |
+| **Data Not Linked to You** → *User Content* | Marcado. Uso: **App Functionality** (jutba, lugares) y **Product Personalization**: no · **Analytics**: sí (opiniones). No se usa para seguimiento. |
+| **Data Not Linked to You** → *Other Data* (valoración 1–5) | Marcado. Uso: **Analytics**. |
 | **Tracking** | **No.** La app no rastrea y no usa el IDFA. |
 | Location | **No recopilado** (se usa solo en el dispositivo). |
 | Audio Data | **No recopilado.** |

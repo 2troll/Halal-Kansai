@@ -15,6 +15,7 @@ import type { Hono } from 'hono';
 import { createApp } from './app.ts';
 import { WorkersAssetsStore } from './store.ts';
 import { KVSuggestionStore } from './suggestions.ts';
+import { KVFeedbackStore } from './feedback.ts';
 import type { AiBinding } from './ai-translate.ts';
 
 export { KhutbahRoomDO } from './room-do.ts';
@@ -71,6 +72,9 @@ export default {
         // abusos, pero dimensionado para una congregacion, no para una persona.
         rateLimitPerMinute: 600,
         suggestions: env.SUGGESTIONS ? new KVSuggestionStore(env.SUGGESTIONS) : undefined,
+        // Misma KV que las sugerencias, clave «feedback»: sin recursos nuevos
+        // que crear en Cloudflare.
+        feedback: env.SUGGESTIONS ? new KVFeedbackStore(env.SUGGESTIONS) : undefined,
         adminToken: env.ADMIN_TOKEN,
         ai: env.AI,
         ollama: env.OLLAMA_URL ? { baseUrl: env.OLLAMA_URL, model: env.OLLAMA_MODEL } : undefined,

@@ -108,6 +108,21 @@ export const en = {
 
   // Guide
   guideTitle: 'Guide',
+  fbTitle: 'What should we improve?',
+  fbIntro: 'Tell us what does not work, what is missing or what is confusing. We read every message. Please do not include personal data.',
+  fbKind: 'What is it about?',
+  fbKindBug: 'Something does not work',
+  fbKindIdea: 'An idea or something missing',
+  fbKindData: 'Wrong information (a time, a place, an ingredient)',
+  fbKindOther: 'Other',
+  fbRating: 'How useful is the app for you?',
+  fbRatingNone: 'Prefer not to say',
+  fbMessage: 'Your message',
+  fbSend: 'Send',
+  fbSent: 'Thank you. Your message has arrived.',
+  fbQueued: 'No connection right now. It will be sent automatically when you are back online.',
+  fbTooShort: 'Write a little more so we can understand it.',
+  fbError: 'It could not be sent. Please try again later.',
   guideSalatH: 'Prayer in Japan',
   guideSalatP:
     'Prayer times here are computed astronomically (MWL method) and work fully offline. Many stations and malls in Kansai now have prayer rooms — check the Places tab.',
