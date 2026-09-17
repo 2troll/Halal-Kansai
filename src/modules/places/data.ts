@@ -1,4 +1,4 @@
-export type PlaceType = 'mosque' | 'restaurant' | 'shop';
+export type PlaceType = 'mosque' | 'prayer' | 'restaurant' | 'shop';
 
 export interface Place {
   id: string;
@@ -12,6 +12,12 @@ export interface Place {
   address?: string;
   /** false hasta que Luigi verifique coordenadas y datos in situ (pendiente del fundador). */
   verified: boolean;
+  /** Dato útil y corto: planta, sala de mujeres, certificación… */
+  notes?: string;
+  /** Hora u observación del rezo del viernes, si la publica el lugar. */
+  jumuah?: string;
+  /** De dónde sale el dato (página oficial). No se muestra; es para revisar. */
+  source?: string;
 }
 
 /**

@@ -6,7 +6,7 @@
  * y el frontend los fusiona con los lugares de fábrica.
  */
 
-export type PlaceType = 'mosque' | 'restaurant' | 'shop';
+export type PlaceType = 'mosque' | 'prayer' | 'restaurant' | 'shop';
 export type SuggestionStatus = 'pending' | 'approved' | 'rejected';
 
 export interface Suggestion {
@@ -28,7 +28,7 @@ export interface SuggestionStore {
   setStatus(id: string, status: SuggestionStatus): Promise<Suggestion | null>;
 }
 
-const PLACE_TYPES: ReadonlySet<string> = new Set(['mosque', 'restaurant', 'shop']);
+const PLACE_TYPES: ReadonlySet<string> = new Set(['mosque', 'prayer', 'restaurant', 'shop']);
 
 /** Valida y sanea la entrada del formulario público. Devuelve null si no vale. */
 export function parseSuggestion(body: unknown): Suggestion | null {

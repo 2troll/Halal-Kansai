@@ -18,15 +18,17 @@ let allPlaces: Place[] = [...PLACES];
 
 const TYPE_LABEL: Record<PlaceType, () => string> = {
   mosque: () => t('typeMosque'),
+  prayer: () => t('typePrayer'),
   restaurant: () => t('typeRestaurant'),
   shop: () => t('typeShop'),
 };
 
 /** Mismo trazo que la barra de pestañas: la app se ve de una pieza. */
 const TYPE_ICON: Record<PlaceType, string> = {
-  mosque: icon('salat', 18),
-  restaurant: icon('food', 18),
-  shop: icon('places', 18),
+  mosque: icon('salat', 20),
+  prayer: icon('prayer', 20),
+  restaurant: icon('food', 20),
+  shop: icon('places', 20),
 };
 
 function distanceKm(aLat: number, aLng: number, bLat: number, bLng: number): number {
@@ -39,69 +41,115 @@ function distanceKm(aLat: number, aLng: number, bLat: number, bLng: number): num
   return 2 * R * Math.asin(Math.sqrt(x));
 }
 
-function filtered(): Place[] {
-  return filter === 'all' ? allPlaces : allPlaces.filter((p) => p.type === filter);
+/** Texto de búsqueda actual (nombre, ciudad, dirección o notas). */
+let query = '';
+
+/** Sin tildes ni mayúsculas: «kyoto» encuentra «Kyōto». */
+const fold = (v: string) => v.normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+
+/**
+ * Lo que toca enseñar: filtro, búsqueda y, sobre todo, lo más cercano
+ * primero. Con decenas de lugares en seis prefecturas, una lista en el orden
+ * en que se escribieron obligaba a leerla entera para encontrar la mezquita
+ * de tu barrio.
+ */
+function visiblePlaces(): Array<{ place: Place; km?: number }> {
+  const here = getCoords();
+  const q = fold(query.trim());
+  return allPlaces
+    .filter((p) => filter === 'all' || p.type === filter)
+    .filter((p) => !q || fold(`${p.name} ${p.city} ${p.address ?? ''} ${p.notes ?? ''}`).includes(q))
+    .map((place) => ({
+      place,
+      km:
+        place.lat !== undefined && place.lng !== undefined
+          ? distanceKm(here.lat, here.lng, place.lat, place.lng)
+          : undefined,
+    }))
+    .sort((a, b) => (a.km ?? Infinity) - (b.km ?? Infinity));
+}
+
+function formatKm(km: number): string {
+  return km < 10 ? km.toFixed(1) : String(Math.round(km));
+}
+
+function cardHtml({ place: p, km }: { place: Place; km?: number }): string {
+  const hasCoords = p.lat !== undefined && p.lng !== undefined;
+  const meta = [escapeHtml(p.city), km !== undefined ? `${formatKm(km)} ${t('kmAway')}` : '']
+    .filter(Boolean)
+    .join(' · ');
+  return `
+    <article class="place-card type-${p.type}" data-id="${escapeHtml(p.id)}">
+      <div class="place-icon" aria-hidden="true">${TYPE_ICON[p.type]}</div>
+      <div class="place-body">
+        <h3>${escapeHtml(p.name)}</h3>
+        <div class="meta"><span class="badge ${p.type}">${TYPE_LABEL[p.type]()}</span><span>${meta}</span></div>
+        ${p.address ? `<p class="place-address">${escapeHtml(p.address)}</p>` : ''}
+        ${p.notes ? `<p class="place-notes">${escapeHtml(p.notes)}</p>` : ''}
+        ${p.jumuah ? `<p class="place-jumuah">${icon('salat', 15)}${t('jumuah')}: ${escapeHtml(p.jumuah)}</p>` : ''}
+        ${p.verified ? '' : `<span class="badge warn">${t('unverified')}</span>`}
+        ${
+          hasCoords
+            ? `<div class="place-actions">
+                 <a class="btn directions" href="${directionsUrl(p.lat!, p.lng!)}" target="_blank" rel="noopener">${icon('location', 16)}${t('directions')}</a>
+                 <button class="btn ghost show-map" type="button">${icon('map', 16)}${t('showOnMap')}</button>
+               </div>`
+            : ''
+        }
+      </div>
+    </article>`;
 }
 
 function renderList(listEl: HTMLElement): void {
-  const here = getCoords();
-  listEl.innerHTML = filtered()
-    .map((p) => {
-      const distance =
-        p.lat !== undefined && p.lng !== undefined
-          ? `<span>${distanceKm(here.lat, here.lng, p.lat, p.lng).toFixed(1)} ${t('kmAway')}</span>`
-          : '';
-      return `
-      <article class="place-card" data-id="${escapeHtml(p.id)}">
-        <h3>${TYPE_ICON[p.type]} ${escapeHtml(p.name)}</h3>
-        <div class="meta">
-          <span class="badge ${p.type}">${TYPE_LABEL[p.type]()}</span>
-          <span>${escapeHtml(p.city)}</span>
-          ${distance}
-          ${p.verified ? '' : `<span class="badge warn">⚠ ${t('unverified')}</span>`}
-        </div>
-        ${
-          p.lat !== undefined && p.lng !== undefined
-            ? `<a class="btn ghost directions" href="${directionsUrl(p.lat, p.lng)}" target="_blank" rel="noopener">${icon('location', 16)}${t('directions')}</a>`
-            : ''
-        }
-      </article>`;
-    })
-    .join('');
+  const items = visiblePlaces();
+  listEl.innerHTML = items.length
+    ? items.map(cardHtml).join('')
+    : `<p class="note empty">${t('noPlacesFound')}</p>`;
 
-  listEl.querySelectorAll<HTMLElement>('.place-card').forEach((card) => {
-    card.addEventListener('click', (ev) => {
-      // «Cómo llegar» abre el mapa del teléfono; no debe mover además el de aquí.
-      if ((ev.target as HTMLElement).closest('.directions')) return;
-      const p = allPlaces.find((x) => x.id === card.dataset.id);
-      if (p && map && p.lat !== undefined && p.lng !== undefined) {
-        map.setView([p.lat, p.lng], 15);
-      }
+  listEl.querySelectorAll<HTMLButtonElement>('.show-map').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const id = btn.closest<HTMLElement>('.place-card')?.dataset.id;
+      const p = allPlaces.find((x) => x.id === id);
+      if (!p || !map || p.lat === undefined || p.lng === undefined) return;
+      map.setView([p.lat, p.lng], 16);
+      document.getElementById('map')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      markerById.get(p.id)?.openPopup();
     });
   });
 }
 
+/** Marcadores por id, para abrir el globo desde «Ver en el mapa». */
+const markerById = new Map<string, L.Marker>();
+
 function placeIcon(type: PlaceType): L.DivIcon {
   // divIcon evita el problema clásico de rutas de iconos de Leaflet con bundlers.
   return L.divIcon({
-    html: `<span style="font-size:22px;line-height:1">${TYPE_ICON[type]}</span>`,
-    className: '',
-    iconSize: [24, 24],
-    iconAnchor: [12, 22],
+    html: `<span class="pin type-${type}">${TYPE_ICON[type]}</span>`,
+    className: 'pin-wrap',
+    iconSize: [34, 34],
+    iconAnchor: [17, 17],
+    popupAnchor: [0, -16],
   });
 }
 
 function renderMarkers(): void {
   if (!map) return;
   if (markers) markers.remove();
+  markerById.clear();
   markers = L.layerGroup(
-    filtered()
+    visiblePlaces()
+      .map(({ place: p }) => p)
       .filter((p) => p.lat !== undefined && p.lng !== undefined)
-      .map((p) =>
-        L.marker([p.lat!, p.lng!], { icon: placeIcon(p.type) }).bindPopup(
-          `<strong>${TYPE_ICON[p.type]} ${p.name}</strong><br>${p.address ?? p.city}`,
-        ),
-      ),
+      .map((p) => {
+        // Escapado: los lugares de la comunidad vienen del servidor, y un
+        // nombre con HTML se ejecutaba en el globo del mapa.
+        const marker = L.marker([p.lat!, p.lng!], { icon: placeIcon(p.type) }).bindPopup(
+          `<strong>${escapeHtml(p.name)}</strong><br>${escapeHtml(p.address ?? p.city)}<br>
+           <a href="${directionsUrl(p.lat!, p.lng!)}" target="_blank" rel="noopener">${t('directions')}</a>`,
+        );
+        markerById.set(p.id, marker);
+        return marker;
+      }),
   ).addTo(map);
 }
 
@@ -113,6 +161,7 @@ function suggestFormHtml(): string {
         <input name="name" required maxlength="120" placeholder="${t('fieldName')}" />
         <select name="type">
           <option value="mosque">${t('typeMosque')}</option>
+          <option value="prayer">${t('typePrayer')}</option>
           <option value="restaurant">${t('typeRestaurant')}</option>
           <option value="shop">${t('typeShop')}</option>
         </select>
@@ -178,13 +227,18 @@ export function renderPlaces(container: HTMLElement): void {
   const filters: Array<{ value: Filter; label: string }> = [
     { value: 'all', label: t('filterAll') },
     { value: 'mosque', label: t('filterMosque') },
+    { value: 'prayer', label: t('filterPrayer') },
     { value: 'restaurant', label: t('filterRestaurant') },
     { value: 'shop', label: t('filterShop') },
   ];
 
   container.innerHTML = `
     <h2>${t('placesTitle')}</h2>
-    <div class="filters" role="group">
+    <label class="place-search">
+      ${icon('search', 18)}
+      <input type="search" id="place-q" placeholder="${t('searchPlaces')}" value="${escapeHtml(query)}" autocomplete="off" />
+    </label>
+    <div class="filters chip-row" role="group">
       ${filters
         .map(
           (f) =>
@@ -219,6 +273,16 @@ export function renderPlaces(container: HTMLElement): void {
     allPlaces = [...PLACES, ...community.filter((c) => !PLACES.some((p) => p.id === c.id))];
     renderMarkers();
     renderList(listEl);
+  });
+
+  let typing: ReturnType<typeof setTimeout> | undefined;
+  container.querySelector<HTMLInputElement>('#place-q')!.addEventListener('input', (ev) => {
+    clearTimeout(typing);
+    typing = setTimeout(() => {
+      query = (ev.target as HTMLInputElement).value;
+      renderMarkers();
+      renderList(listEl);
+    }, 150);
   });
 
   container.querySelectorAll<HTMLButtonElement>('.filters button').forEach((btn) => {
