@@ -1118,3 +1118,169 @@ main h2 {
   overflow-wrap: normal;
   word-break: keep-all;
 }
+
+/* ---------- Lista de rezos: marcar hecho, «Ahora» y cuenta atrás ----------
+   Tomado de Muslim Pro (revisada en el Nothing el 17/09/2026). */
+.times-list li {
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 52px;
+  padding-block: 0.4rem;
+  padding-inline: 0.8rem 1.1rem;
+}
+
+.times-list li .name {
+  flex: 1;
+  min-width: 0;
+}
+
+.prayed-mark,
+.prayed-spacer {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+}
+
+.prayed-mark {
+  min-height: 28px;
+  padding: 0;
+  border-radius: 50%;
+  border: 2px solid color-mix(in srgb, currentColor 45%, transparent);
+  background: transparent;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  /* Zona táctil de 44 px sin agrandar el círculo. */
+  position: relative;
+}
+
+.prayed-mark::before {
+  content: '';
+  position: absolute;
+  inset: -8px;
+}
+
+.prayed-mark[aria-pressed='true'] {
+  background: var(--emerald);
+  border-color: var(--emerald);
+}
+
+.times-list li.next .prayed-mark[aria-pressed='true'] {
+  background: var(--on-accent);
+  border-color: var(--on-accent);
+}
+
+.prayed-mark[aria-pressed='true']::after {
+  content: '✓';
+  color: var(--on-accent);
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.times-list li.next .prayed-mark[aria-pressed='true']::after {
+  color: var(--emerald);
+}
+
+.times-list .pill {
+  flex-shrink: 0;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.times-list .pill.now {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.times-list .pill.soon {
+  background: color-mix(in srgb, var(--on-accent) 22%, transparent);
+  color: var(--on-accent);
+}
+
+/* ---------- Qibla: instrucción en palabras y precisión ---------- */
+.qibla-instr {
+  margin: 0.2rem 0 0.4rem;
+  text-align: center;
+  font-size: 1.35rem;
+  font-weight: 600;
+  min-height: 1.8rem;
+}
+
+.accuracy-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0 auto 0.6rem;
+  padding: 0.2rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  background: color-mix(in srgb, var(--on-surface) 10%, transparent);
+}
+
+.accuracy-chip::before {
+  content: '';
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background: var(--emerald-soft);
+}
+
+.accuracy-chip.low::before {
+  background: var(--danger);
+}
+
+.accuracy-row {
+  display: flex;
+  justify-content: center;
+}
+
+/* ---------- Ajustes menos apretados (revisado en el Nothing Phone 3a) ----------
+   Los cuatro tamaños de letra iban en 3 + 1 (el cuarto a lo ancho, raro) y la
+   etiqueta del elegido no se veía. Ahora una fila de cuatro iguales. */
+.sheet {
+  padding-inline: 1.25rem;
+}
+
+.sheet h3 {
+  margin-top: 1.6rem;
+}
+
+.theme-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.6rem;
+}
+
+.theme-option {
+  min-height: 56px;
+}
+
+.size-row {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.size-option {
+  min-width: 0;
+  padding: 0.6rem 0.2rem;
+}
+
+.size-option .size-name {
+  display: block;
+  font-size: 0.72rem;
+  overflow-wrap: anywhere;
+}
+
+.size-option[aria-pressed='true'] .size-name,
+.size-option[aria-pressed='true'] .sample {
+  color: var(--on-accent);
+}
+
+.settings-section {
+  margin-top: 0.7rem;
+}

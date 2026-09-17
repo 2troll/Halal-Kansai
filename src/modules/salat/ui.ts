@@ -12,6 +12,7 @@ import {
   timezoneHours,
 } from './settings';
 import { fastingCountdown } from '../ramadan/fasting';
+import { FARD, currentPrayerOf, hijriDate, loadPrayed, togglePrayed } from './today';
 import { PLACES } from '../places/data';
 import { directionsUrl } from '../places/directions';
 import { escapeHtml } from '../escape';
@@ -68,13 +69,16 @@ export function renderSalat(container: HTMLElement): void {
   const h = Math.floor(next.minutesLeft / 60);
   const m = next.minutesLeft % 60;
   const countdown = formatCountdown(h, m, getLang());
+  const current = currentPrayerOf(times, now);
+  const prayed = loadPrayed(now);
+  const hijri = hijriDate(now, getLang());
 
   // El widget de la pantalla de inicio se alimenta de este mismo cálculo.
   void updatePrayerWidget(t(next.name), formatTime(times[next.name]), t('city'));
 
   container.innerHTML = `
     <h2>${t('salatTitle')}</h2>
-    <p class="subtitle">${methodSummary()}</p>
+    <p class="subtitle">${hijri ? `${escapeHtml(hijri)} · ` : ''}${methodSummary()}</p>
     <div class="mihrab-card">
       <div class="label">${t('nextPrayer')}</div>
       <div class="big">${t(next.name)}</div>
@@ -83,8 +87,15 @@ export function renderSalat(container: HTMLElement): void {
     <ul class="times-list">
       ${ORDER.map(
         (name) => `
-        <li class="${name === next.name ? 'next' : ''}">
-          <span>${t(name)}</span>
+        <li class="${name === next.name ? 'next' : ''}${name === current ? ' current' : ''}">
+          ${
+            FARD.includes(name)
+              ? `<button class="prayed-mark" type="button" data-prayer="${name}" aria-pressed="${String(prayed.has(name))}" aria-label="${t('markPrayed')}: ${t(name)}"></button>`
+              : '<span class="prayed-spacer" aria-hidden="true"></span>'
+          }
+          <span class="name">${t(name)}</span>
+          ${name === current ? `<span class="pill now">${t('salatNow')}</span>` : ''}
+          ${name === next.name ? `<span class="pill soon">${withInTime(countdown)}</span>` : ''}
           <span class="t">${formatTime(times[name])}</span>
         </li>`,
       ).join('')}
@@ -120,6 +131,14 @@ export function renderSalat(container: HTMLElement): void {
     </div>
     <p class="note" id="salat-note"></p>
   `;
+
+  container.querySelectorAll<HTMLButtonElement>('.prayed-mark').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const set = togglePrayed(new Date(), btn.dataset.prayer!);
+      btn.setAttribute('aria-pressed', String(set.has(btn.dataset.prayer!)));
+      if (set.size === FARD.length) navigator.vibrate?.(30);
+    });
+  });
 
   container.querySelector<HTMLButtonElement>('#btn-share')!.addEventListener('click', async () => {
     const { shareTimesImage } = await import('./share');

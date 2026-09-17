@@ -97,6 +97,8 @@ export function renderQibla(container: HTMLElement): void {
       </div>
       <div class="compass-hub"></div>
     </div>
+    <p class="qibla-instr" id="qibla-instr" aria-live="polite"></p>
+    <div class="accuracy-row"><span class="accuracy-chip" id="qibla-acc" hidden></span></div>
     <div class="qibla-card">
       <div>
         <div class="qibla-deg">${bearing.toFixed(1)}°</div>
@@ -118,6 +120,8 @@ export function renderQibla(container: HTMLElement): void {
   const note = container.querySelector<HTMLElement>('#qibla-note')!;
   const turn = container.querySelector<HTMLElement>('#qibla-turn')!;
   const calib = container.querySelector<HTMLElement>('#qibla-calib')!;
+  const instr = container.querySelector<HTMLElement>('#qibla-instr')!;
+  const acc = container.querySelector<HTMLElement>('#qibla-acc')!;
   let wasAligned = false;
   let smoothed: number | null = null;
   const declination = magneticDeclination(lat, lng);
@@ -137,6 +141,11 @@ export function renderQibla(container: HTMLElement): void {
         (webkitEv.webkitCompassAccuracy < 0 || webkitEv.webkitCompassAccuracy > 15)) ||
       (webkit === undefined && ev.absolute === false);
     calib.hidden = !needsCalibration;
+    // En palabras además de la flecha: «gira a tu derecha» se entiende sin
+    // saber leer una brújula (idea de Muslim Pro).
+    acc.hidden = false;
+    acc.classList.toggle('low', needsCalibration);
+    acc.textContent = t(needsCalibration ? 'compassAccuracyLow' : 'compassAccuracyGood');
     // La esfera gira con el norte; la aguja marca la qibla relativa a la pantalla.
     dial.style.transform = `rotate(${-heading}deg)`;
     needle.style.transform = `rotate(${bearing - heading}deg)`;
@@ -147,6 +156,7 @@ export function renderQibla(container: HTMLElement): void {
     note.textContent = aligned ? `✅ ${t('qiblaAligned')}` : t('compassHint');
     // Sin palabras a propósito: una flecha y los grados se leen en los once idiomas.
     turn.textContent = aligned ? '🕋' : signed > 0 ? `${Math.round(signed)}° →` : `← ${Math.round(-signed)}°`;
+    instr.textContent = aligned ? t('qiblaAligned') : t(signed > 0 ? 'qiblaTurnRight' : 'qiblaTurnLeft');
     if (aligned && !wasAligned) void buzz();
     wasAligned = aligned;
   };
