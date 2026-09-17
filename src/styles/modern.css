@@ -953,3 +953,168 @@ main h2 {
   color: var(--on-accent);
   opacity: 0.85;
 }
+
+/* ---------- Ajustes: permisos, acerca de, legal, créditos ---------- */
+.settings-section {
+  margin-top: 0.8rem;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--night) 70%, transparent);
+  border: 1px solid color-mix(in srgb, var(--on-surface) 12%, transparent);
+  padding: 0 0.9rem;
+}
+
+.settings-section > summary {
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+}
+
+.settings-section > summary::-webkit-details-marker {
+  display: none;
+}
+
+.settings-section > summary::after {
+  content: '›';
+  margin-inline-start: auto;
+  font-size: 1.3rem;
+  transition: rotate 0.2s;
+}
+
+.settings-section[open] > summary::after {
+  rotate: 90deg;
+}
+
+.settings-section[open] {
+  padding-bottom: 0.9rem;
+}
+
+.perm-list,
+.legal-list,
+.credit-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.perm {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.65rem 0;
+  border-top: 1px solid color-mix(in srgb, var(--on-surface) 10%, transparent);
+}
+
+.perm-icon {
+  font-size: 1.3rem;
+}
+
+.perm-body {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  gap: 0.15rem;
+}
+
+.perm-why {
+  font-size: 0.85rem;
+  color: var(--on-surface-dim);
+}
+
+.perm-side {
+  display: grid;
+  justify-items: end;
+  gap: 0.3rem;
+  text-align: end;
+}
+
+.perm-state {
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  white-space: nowrap;
+  background: color-mix(in srgb, var(--on-surface) 12%, transparent);
+}
+
+.perm-state[data-state='granted'] {
+  background: var(--emerald);
+  color: var(--on-accent);
+}
+
+.perm-state[data-state='denied'] {
+  background: var(--danger);
+  color: var(--on-accent);
+}
+
+.perm-ask {
+  min-height: 36px;
+  padding: 0.2rem 0.8rem;
+  font-size: 0.85rem;
+}
+
+.about-facts {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.35rem 1rem;
+  margin: 0.2rem 0 0.8rem;
+}
+
+.about-facts dt {
+  color: var(--on-surface-dim);
+}
+
+.about-facts dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.settings-section h4 {
+  margin: 0.6rem 0 0.3rem;
+  font-size: 0.95rem;
+}
+
+.about-why {
+  line-height: 1.55;
+  margin: 0 0 0.4rem;
+}
+
+.settings-section a {
+  color: var(--gold);
+}
+
+.settings-section a.btn {
+  color: var(--on-surface);
+}
+
+.legal-list li,
+.credit-list li {
+  padding: 0.5rem 0;
+  border-top: 1px solid color-mix(in srgb, var(--on-surface) 10%, transparent);
+  line-height: 1.5;
+  font-size: 0.9rem;
+}
+
+.credit-list .licence {
+  color: var(--on-surface-dim);
+}
+
+.sheet .sheet-close {
+  margin-top: 1.2rem;
+}
+
+/* En árabe y urdu el › se refleja: al abrir tiene que girar hacia el otro lado. */
+[dir='rtl'] .settings-section[open] > summary::after {
+  rotate: -90deg;
+}
+
+/* El correo cortado a mitad («gmail.c / om») parecía un error: letra algo
+   menor para que quepa entero en un móvil de 360 px. */
+.about-facts dd a[href^='mailto:'] {
+  font-size: 0.85rem;
+  overflow-wrap: normal;
+  word-break: keep-all;
+}

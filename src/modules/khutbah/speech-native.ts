@@ -53,6 +53,7 @@ interface SpeechEvent {
 interface SpeechPlugin {
   available(): Promise<{ available: boolean }>;
   requestPermissions(): Promise<{ speechRecognition?: string; microphone?: string }>;
+  checkPermissions(): Promise<{ speechRecognition?: string; microphone?: string }>;
   start(options?: Record<string, unknown>): Promise<unknown>;
   stop(): Promise<void>;
   addListener(
@@ -79,6 +80,11 @@ function plugin(): SpeechPlugin | null {
 }
 
 /** ¿Puede esta app escuchar por el micrófono del teléfono? */
+/** El plugin, para la pantalla de permisos. */
+export function speechPlugin(): SpeechPlugin {
+  return SpeechRecognition;
+}
+
 export async function nativeSpeechAvailable(): Promise<boolean> {
   const sr = plugin();
   if (!sr) return false;

@@ -11,6 +11,7 @@
  * qué tema está puesto.
  */
 import { t } from '../../i18n';
+import { bindSettingsSections, settingsSectionsHtml } from '../settings/sections';
 
 export const THEMES = ['night', 'paper', 'sand', 'indigo', 'contrast', 'amoled', 'sakura', 'matcha', 'ramadan', 'kiswah'] as const;
 /** Temas con fondo claro: comparten los ajustes de legibilidad de [data-tone='light']. */
@@ -147,11 +148,11 @@ export function openAppearanceSheet(onChange: () => void): void {
   backdrop.className = 'sheet-backdrop';
   backdrop.setAttribute('role', 'dialog');
   backdrop.setAttribute('aria-modal', 'true');
-  backdrop.setAttribute('aria-label', t('appearance'));
+  backdrop.setAttribute('aria-label', t('settings'));
 
   backdrop.innerHTML = `
     <div class="sheet">
-      <h2>${t('appearance')}</h2>
+      <h2>${t('settings')}</h2>
       <p class="sheet-sub">${t('appearanceHint')}</p>
 
       <h3>${t('theme')}</h3>
@@ -178,6 +179,8 @@ export function openAppearanceSheet(onChange: () => void): void {
           </button>`,
         ).join('')}
       </div>
+
+      ${settingsSectionsHtml()}
 
       <button class="sheet-close">${t('done')}</button>
     </div>
@@ -217,6 +220,7 @@ export function openAppearanceSheet(onChange: () => void): void {
   });
 
   backdrop.querySelector<HTMLButtonElement>('.sheet-close')!.addEventListener('click', close);
+  bindSettingsSections(backdrop);
 
   document.body.appendChild(backdrop);
   backdrop.querySelector<HTMLButtonElement>('.sheet-close')!.focus();

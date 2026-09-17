@@ -7,6 +7,9 @@ PODS:
     - Capacitor
     - IONCameraLib (~> 2.0.0)
   - CapacitorCordova (8.5.1)
+  - CapacitorGeolocation (8.2.2):
+    - Capacitor
+    - IONGeolocationLib (= 2.1.0)
   - CapacitorHaptics (8.0.2):
     - Capacitor
   - CapacitorLocalNotifications (8.3.1):
@@ -76,6 +79,7 @@ PODS:
     - GoogleUtilities/Privacy
   - GTMSessionFetcher/Core (3.5.0)
   - IONCameraLib (2.0.0)
+  - IONGeolocationLib (2.1.0)
   - MLImage (1.0.0-beta7)
   - MLKitBarcodeScanning (7.0.0):
     - MLKitCommon (~> 13.0)
@@ -138,6 +142,7 @@ DEPENDENCIES:
   - "CapacitorApp (from `../../node_modules/@capacitor/app`)"
   - "CapacitorCamera (from `../../node_modules/@capacitor/camera`)"
   - "CapacitorCordova (from `../../node_modules/@capacitor/ios`)"
+  - "CapacitorGeolocation (from `../../node_modules/@capacitor/geolocation`)"
   - "CapacitorHaptics (from `../../node_modules/@capacitor/haptics`)"
   - "CapacitorLocalNotifications (from `../../node_modules/@capacitor/local-notifications`)"
   - "CapacitorMlkitBarcodeScanning (from `../../node_modules/@capacitor-mlkit/barcode-scanning`)"
@@ -156,6 +161,7 @@ SPEC REPOS:
     - GoogleUtilities
     - GTMSessionFetcher
     - IONCameraLib
+    - IONGeolocationLib
     - MLImage
     - MLKitBarcodeScanning
     - MLKitCommon
@@ -181,6 +187,8 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/@capacitor/camera"
   CapacitorCordova:
     :path: "../../node_modules/@capacitor/ios"
+  CapacitorGeolocation:
+    :path: "../../node_modules/@capacitor/geolocation"
   CapacitorHaptics:
     :path: "../../node_modules/@capacitor/haptics"
   CapacitorLocalNotifications:
@@ -205,6 +213,7 @@ SPEC CHECKSUMS:
   CapacitorApp: 305bd13c44f6f9d164e2ee66a4faa956ed8c0e06
   CapacitorCamera: 4299fe8cf9b2b15e6ad602bce68d063b2008e8be
   CapacitorCordova: eb79411a3a0ed517eeb4c6dcf5933ce4bcbb5c9e
+  CapacitorGeolocation: 327f18983c8f8a55e191fcf7dee80b9294f1ab78
   CapacitorHaptics: 296f771ecd89c7a1bd92a7b6826a7d268e2e70f5
   CapacitorLocalNotifications: e0747a329ddde3074d52dc74a003688af90e42be
   CapacitorMlkitBarcodeScanning: 4509d61d25ef54a031df6f462c64c322a9d78f86
@@ -220,6 +229,7 @@ SPEC CHECKSUMS:
   GoogleUtilities: 4e0c2ad9fa0d0d18b5c4df8bf57b461cba35b0bb
   GTMSessionFetcher: 5aea5ba6bd522a239e236100971f10cb71b96ab6
   IONCameraLib: 729cae576e1a952602ce750a9790b6dc7d7e2e95
+  IONGeolocationLib: 6a7b6f76063fb1b01cfb14fae7d0f526e3c9b271
   MLImage: 2ab9c968e75f57911c16f4c9d9e8a8e9604a86a1
   MLKitBarcodeScanning: 72c6437f13a900833b400136be53a8a5d86f42fa
   MLKitCommon: 26b779f072a182c1603d4c88a101c350cac837b1
@@ -236,6 +246,6 @@ SPEC CHECKSUMS:
   PromisesObjC: 752c3227f599e3467650e47ea36f433eeb10c273
   SSZipArchive: 8a6ee5677c8e304bebc109e39cf0da91ccef22ea
 
-PODFILE CHECKSUM: 939ee6c6bc356cbadd4f828015605c89373abefe
+PODFILE CHECKSUM: c77c76e0ee99870ea8015cb2ab23bc28f3b28c46
 
 COCOAPODS: 1.17.0
