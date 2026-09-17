@@ -32,10 +32,11 @@ Halal Kansai es la herramienta diaria para la comunidad musulmana en Japón.
 Gratis, sin anuncios y sin registro.
 
 • HORAS DE ORACIÓN calculadas para donde estés, con aviso y widget en la
-  pantalla de inicio.
+  pantalla de inicio. Seis métodos de cálculo y Asr shafi'í o hanafí.
+• AYUNO DE HOY: hasta cuándo el suhur, a qué hora el iftar y cuánto falta.
 • BRÚJULA QIBLA que apunta a La Meca desde tu posición.
-• MAPA HALAL con restaurantes, tiendas y mezquitas de Kansai, y la opción de
-  sugerir los que falten.
+• MAPA HALAL con restaurantes, tiendas y mezquitas de Kansai, con «Cómo
+  llegar» en cada uno y la opción de sugerir los que falten.
 • LECTOR DE ETIQUETAS: apunta la cámara al 原材料名 de un producto japonés y te
   dice qué ingredientes son dudosos y por qué.
 • TRADUCCIÓN DE LA JUTBA EN VIVO: el sermón del viernes, traducido a tu idioma
@@ -55,10 +56,11 @@ Halal Kansai is the daily tool for the Muslim community in Japan.
 Free, no ads, no sign-up.
 
 • PRAYER TIMES calculated for wherever you are, with notifications and a
-  home-screen widget.
+  home-screen widget. Six calculation methods and Shafi'i or Hanafi Asr.
+• FASTING TODAY: when suhoor ends, when iftar is, and how long is left.
 • QIBLA COMPASS pointing to Mecca from your position.
-• HALAL MAP with restaurants, shops and mosques across Kansai, and a way to
-  suggest the ones that are missing.
+• HALAL MAP with restaurants, shops and mosques across Kansai, directions to
+  each one, and a way to suggest the ones that are missing.
 • LABEL READER: point the camera at the 原材料名 list on a Japanese product and
   it tells you which ingredients are doubtful, and why.
 • LIVE KHUTBAH TRANSLATION: the Friday sermon translated into your language as
@@ -78,6 +80,8 @@ Halal Kansai は、日本に暮らすムスリムのための毎日の道具で�
 無料・広告なし・登録不要。
 
 • 礼拝時刻：今いる場所に合わせて計算。通知とホーム画面ウィジェット付き。
+  6つの計算方式と、シャーフィイー派／ハナフィー派のアスルに対応。
+• 今日の断食：スフールの終わり、イフタールの時刻、残り時間を表示。
 • キブラコンパス：現在地からマッカの方角を示します。
 • ハラールマップ：関西のレストラン・店舗・モスク。未掲載の店の提案も可能。
 • 原材料リーダー：日本の商品の「原材料名」にカメラを向けると、疑わしい原材料と
@@ -97,7 +101,9 @@ Halal Kansai は、日本に暮らすムスリムのための毎日の道具で�
 حلال كنساي أداة يومية للجالية المسلمة في اليابان.
 مجاني، بلا إعلانات، وبلا تسجيل.
 
-• أوقات الصلاة محسوبة لمكانك، مع تنبيه وأداة على الشاشة الرئيسية.
+• أوقات الصلاة محسوبة لمكانك، مع تنبيه وأداة على الشاشة الرئيسية، وست طرق
+  للحساب والعصر على المذهب الشافعي أو الحنفي.
+• صيام اليوم: متى ينتهي السحور، وموعد الإفطار، والوقت المتبقي.
 • بوصلة القبلة تشير إلى مكة من موقعك.
 • خريطة الحلال: مطاعم ومتاجر ومساجد في كنساي، مع إمكانية اقتراح ما ينقص.
 • قارئ الملصقات: وجّه الكاميرا إلى قائمة «原材料名» على المنتج الياباني ليخبرك
@@ -258,7 +264,7 @@ Luego TestFlight → grupo externo → enlace público → a la gente con iPhone
 
 | Cosa | Estado |
 |---|---|
-| Build · tests · lint | ✅ 228 tests en verde |
+| Build · tests · lint | ✅ 253 tests en verde |
 | AAB firmado para Google Play | ✅ 39 MB, firma verificada |
 | iOS release para iPhone real | ✅ compila (sin firmar: falta tu cuenta) |
 | Probado en emulador Android (release) | ✅ 6 pestañas, árabe RTL, avisos de rezo, lector de etiquetas |
