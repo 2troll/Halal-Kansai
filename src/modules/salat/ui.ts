@@ -184,7 +184,7 @@ export function renderSalat(container: HTMLElement): void {
  * («2 h 5 min kalan»): delante se lee al revés. Lo señalaron las cuatro
  * traducciones por separado.
  */
-const IN_TIME_AFTER: ReadonlySet<Lang> = new Set(['ur', 'bn', 'tr', 'ne']);
+const IN_TIME_AFTER: ReadonlySet<Lang> = new Set(['ur', 'bn', 'tr', 'ne', 'hi', 'ko', 'si', 'my']);
 
 function withInTime(countdown: string): string {
   return IN_TIME_AFTER.has(getLang()) ? `${countdown} ${t('inTime')}` : `${t('inTime')} ${countdown}`;
@@ -201,10 +201,18 @@ const UNITS: Partial<Record<Lang, [string, string]>> = {
   ms: ['jam', 'minit'],
   tr: ['sa', 'dk'],
   vi: ['giờ', 'phút'],
+  hi: ['घंटे', 'मिनट'],
+  si: ['පැය', 'මිනිත්තු'],
+  my: ['နာရီ', 'မိနစ်'],
+  th: ['ชม.', 'นาที'],
+  fil: ['oras', 'min'],
+  pt: ['h', 'min'],
 };
 
 function formatCountdown(h: number, m: number, lang: Lang): string {
   if (lang === 'ja') return h > 0 ? `${h}時間${m}分` : `${m}分`;
+  if (lang === 'zh') return h > 0 ? `${h}小时${m}分钟` : `${m}分钟`;
+  if (lang === 'ko') return h > 0 ? `${h}시간 ${m}분` : `${m}분`;
   if (lang === 'ar') return h > 0 ? `${h} ساعة و${m} دقيقة` : `${m} دقيقة`;
   const [hu, mu] = UNITS[lang] ?? ['h', 'min'];
   return h > 0 ? `${h} ${hu} ${m} ${mu}` : `${m} ${mu}`;

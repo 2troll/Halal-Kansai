@@ -24,6 +24,14 @@ const LANG_LABEL: Record<Lang, string> = {
   tr: 'Türkçe',
   ne: 'नेपाली',
   vi: 'Tiếng Việt',
+  zh: '中文',
+  ko: '한국어',
+  fil: 'Filipino',
+  pt: 'Português',
+  th: 'ไทย',
+  my: 'မြန်မာ',
+  si: 'සිංහල',
+  hi: 'हिन्दी',
   es: 'Español',
 };
 const LANG_CODE: Record<Lang, string> = {
@@ -37,6 +45,14 @@ const LANG_CODE: Record<Lang, string> = {
   tr: 'TR',
   ne: 'ने',
   vi: 'VI',
+  zh: '中文',
+  ko: '한',
+  fil: 'FIL',
+  pt: 'PT',
+  th: 'ไทย',
+  my: 'မြန်',
+  si: 'සිං',
+  hi: 'हि',
   es: 'ES',
 };
 import { renderSalat } from './modules/salat/ui';

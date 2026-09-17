@@ -9,19 +9,29 @@ import { ne } from './ne';
 import { tr } from './tr';
 import { ur } from './ur';
 import { vi } from './vi';
+import { pickLang } from './detect';
+import { zh } from './zh';
+import { ko } from './ko';
+import { fil } from './fil';
+import { pt } from './pt';
+import { th } from './th';
+import { my } from './my';
+import { si } from './si';
+import { hi } from './hi';
 
 /**
  * Idiomas de la interfaz. Además de los cuatro de partida, los de las
  * comunidades musulmanas más grandes en Japón (indonesio, urdu, bengalí,
  * malayo, turco) y dos de las poblaciones extranjeras más numerosas (nepalí,
- * vietnamita).
+ * vietnamita) y las comunidades inmigrantes grandes de Kansai: chino, coreano,
+ * filipino, portugués de Brasil, tailandés, birmano, cingalés e hindi.
  */
-export const LANGS = ['en', 'ja', 'ar', 'id', 'ur', 'bn', 'ms', 'tr', 'ne', 'vi', 'es'] as const;
+export const LANGS = ['en', 'ja', 'ar', 'id', 'ur', 'bn', 'ms', 'tr', 'ne', 'vi', 'zh', 'ko', 'fil', 'pt', 'th', 'my', 'si', 'hi', 'es'] as const;
 export type Lang = (typeof LANGS)[number];
 /** Mismas claves que el diccionario inglés; los valores son las traducciones. */
 export type Dict = { [K in keyof typeof en]: string };
 
-const DICTS: Record<Lang, Dict> = { ar, bn, en, es, id, ja, ms, ne, tr, ur, vi };
+const DICTS: Record<Lang, Dict> = { ar, bn, en, es, fil, hi, id, ja, ko, ms, my, ne, pt, si, th, tr, ur, vi, zh };
 const RTL_LANGS: ReadonlySet<Lang> = new Set(['ar', 'ur']);
 const STORAGE_KEY = 'hk-lang';
 
@@ -33,9 +43,8 @@ function loadLang(): Lang {
   const saved = localStorage.getItem(STORAGE_KEY);
   if (isLang(saved)) return saved;
   // El idioma del teléfono, si lo tenemos: un indonesio abre la app en indonesio.
-  const nav = navigator.language.slice(0, 2);
-  if (isLang(nav)) return nav;
-  return 'en';
+  const phone = navigator.languages?.length ? navigator.languages : [navigator.language];
+  return pickLang(phone, LANGS) as Lang;
 }
 
 export function getLang(): Lang {

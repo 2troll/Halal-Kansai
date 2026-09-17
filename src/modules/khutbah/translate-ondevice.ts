@@ -34,12 +34,14 @@ import { translateSegment, type TranslatedSegment } from './translate';
  */
 const MLKIT_SUPPORTED = new Set([
   'ar', 'ja', 'en', 'es', 'ur', 'id', 'bn', 'hi', 'tr', 'ms', 'fr', 'zh',
-  'ru', 'fa', 'th', 'vi', 'ta', 'sw',
+  'ru', 'fa', 'th', 'vi', 'ta', 'sw', 'ko', 'pt', 'tl',
 ]);
 
 /** 'ar-SA' → 'ar'. ML Kit quiere el código corto de idioma. */
 export function toMlkitLang(locale: string): string {
-  return (locale.split('-')[0] || '').toLowerCase();
+  const short = (locale.split('-')[0] || '').toLowerCase();
+  // ML Kit llama «tl» (tagalo) al filipino.
+  return short === 'fil' ? 'tl' : short;
 }
 
 /** ¿Puede ML Kit, en teoría, traducir este par de idiomas? (pura, testeable) */

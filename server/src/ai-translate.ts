@@ -110,6 +110,8 @@ const LANG_NAME: Record<string, string> = {
   ne: 'Nepali',
   si: 'Sinhala',
   fil: 'Filipino',
+  ko: 'Korean',
+  pt: 'Portuguese',
   uz: 'Uzbek',
   my: 'Burmese',
   sw: 'Swahili',
