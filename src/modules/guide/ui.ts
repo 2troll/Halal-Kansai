@@ -1,5 +1,8 @@
 import { getLang, t } from '../../i18n';
 import { MESSAGE_MIN, submitFeedback, type FeedbackKind } from './feedback';
+import { DONATE_URL } from '../../config';
+import { isNative } from '../../backend';
+import { icon } from '../../ui/icons';
 
 export function renderGuide(container: HTMLElement): void {
   const sections = [
@@ -12,6 +15,7 @@ export function renderGuide(container: HTMLElement): void {
   container.innerHTML = `
     <h2>${t('guideTitle')}</h2>
     ${feedbackCardHtml()}
+    ${donateCardHtml()}
     ${sections
       .map(
         (s) => `
@@ -135,5 +139,18 @@ function wireFeedback(container: HTMLElement): void {
         button.disabled = false;
       });
   });
+}
+
+/** Tarjeta de apoyo: solo en la web y con enlace (ver config.ts). */
+function donateCardHtml(): string {
+  if (DONATE_URL === '' || isNative()) return '';
+  return `
+    <div class="donate-card">
+      <div>
+        <h3>${t('donateTitle')}</h3>
+        <p>${t('donateText')}</p>
+      </div>
+      <a class="btn" href="${DONATE_URL}" target="_blank" rel="noopener">${icon('heart', 18)}${t('donate')}</a>
+    </div>`;
 }
 

@@ -45,6 +45,8 @@ import { renderPlaces } from './modules/places/ui';
 import { renderKhutbah } from './modules/khutbah/ui';
 import { renderGuide } from './modules/guide/ui';
 import { renderFood, stopFoodCamera } from './modules/food/ui';
+import { DONATE_URL } from './config';
+import { isNative } from './backend';
 
 type Tab = 'salat' | 'qibla' | 'places' | 'food' | 'khutbah' | 'guide';
 
@@ -68,6 +70,11 @@ const RENDERERS: Record<Tab, (el: HTMLElement) => void> = {
 
 let activeTab: Tab = 'salat';
 
+/** Donar: solo en la web y solo si hay enlace (ver config.ts). */
+export function showDonate(): boolean {
+  return DONATE_URL !== '' && !isNative();
+}
+
 function renderShell(): void {
   const app = document.getElementById('app')!;
   app.innerHTML = `
@@ -88,6 +95,11 @@ function renderShell(): void {
               .join('')}
           </select>
         </label>
+        ${
+          showDonate()
+            ? `<a class="btn-donate" href="${DONATE_URL}" target="_blank" rel="noopener" aria-label="${t('donate')}" title="${t('donateTitle')}">${icon('heart', 18)}<span>${t('donate')}</span></a>`
+            : ''
+        }
         <button class="btn-appearance" id="btn-appearance" aria-label="${t('appearance')}" title="${t('appearance')}">${icon('settings', 20)}</button>
       </div>
     </header>
