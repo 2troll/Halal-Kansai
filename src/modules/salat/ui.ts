@@ -373,7 +373,7 @@ function islamicEventHtml(now: Date): string {
   if (!ev) return '';
   const when =
     ev.daysLeft === 0 ? t('evToday') : ev.daysLeft === 1 ? t('evTomorrow') : t('evInDays').replace('{n}', String(ev.daysLeft));
-  let dateText = '';
+  let dateText: string;
   try {
     dateText = ev.date.toLocaleDateString(getLang(), { day: 'numeric', month: 'long' });
   } catch {

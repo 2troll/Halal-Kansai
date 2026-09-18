@@ -26,6 +26,8 @@
 	<true/>
 	<key>NSCameraUsageDescription</key>
 	<string>To read the barcode on a food package and look up its ingredients. Nothing is recorded or sent anywhere.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Halal Kansai only uses your location while you are using the app, to compute prayer times and the qibla direction. It never tracks you in the background, and your location stays on this device.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>To compute prayer times and the qibla direction for where you are. Your location stays on this device.</string>
 	<key>NSMicrophoneUsageDescription</key>
