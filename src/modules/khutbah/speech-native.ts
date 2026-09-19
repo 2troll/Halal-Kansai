@@ -25,17 +25,35 @@ import { registerPlugin } from '@capacitor/core';
 import { isNative } from '../../backend';
 import type { SpeechCallbacks } from './speech';
 
-/** Términos que el reconocedor debe acertar sí o sí en una jutba. */
-const CONTEXT_TERMS = [
-  'الله',
-  'الصلاة',
-  'الزكاة',
-  'التقوى',
-  'القرآن',
-  'رسول الله',
-  'رمضان',
-  'الجمعة',
-];
+/**
+ * Términos que el reconocedor debe acertar sí o sí, POR IDIOMA.
+ *
+ * Antes se mandaba siempre la lista en árabe, daba igual el idioma de origen.
+ * Con el japonés elegido, el reconocedor de Android recibía «الله, القرآن…»
+ * como pistas mientras alguien hablaba japonés: no ayudaba, y el sesgo va en
+ * contra de lo que sí se está diciendo. Se notó escuchando a un cocinero en
+ * un restaurante (19-9-2026).
+ *
+ * Para un idioma sin lista propia se manda vacío: ninguna pista es mejor que
+ * pistas del idioma equivocado.
+ */
+const CONTEXT_TERMS: Record<string, string[]> = {
+  ar: ['الله', 'الصلاة', 'الزكاة', 'التقوى', 'القرآن', 'رسول الله', 'رمضان', 'الجمعة'],
+  ja: ['ハラール', '礼拝', 'モスク', '豚肉', '豚', 'みりん', '料理酒', 'アルコール', 'ラード', 'ゼラチン'],
+  en: ['halal', 'haram', 'khutbah', 'mosque', 'Ramadan', 'Qur’an', 'prayer', 'gelatin', 'lard'],
+  id: ['halal', 'haram', 'khutbah', 'masjid', 'Ramadan', 'salat'],
+  ms: ['halal', 'haram', 'khutbah', 'masjid', 'Ramadan', 'solat'],
+  tr: ['helal', 'haram', 'hutbe', 'cami', 'Ramazan', 'namaz'],
+  ur: ['اللہ', 'نماز', 'قرآن', 'رمضان', 'جمعہ', 'حلال'],
+};
+
+/**
+ * Las pistas del idioma de origen. Acepta tanto `ja-JP` como `ja`, porque el
+ * selector guarda la variante larga y los mapas van por la corta.
+ */
+export function contextTermsFor(locale: string): string[] {
+  return CONTEXT_TERMS[locale.split('-')[0].toLowerCase()] ?? [];
+}
 
 /** Corta la frase cuando el orador hace una pausa, igual que en el navegador. */
 const PAUSE_MS = 1200;
@@ -220,7 +238,7 @@ export class NativeKhutbahListener {
         partialResults: true,
         popup: false,
         addPunctuation: true,
-        contextualStrings: CONTEXT_TERMS,
+        contextualStrings: contextTermsFor(this.locale),
         // Android: sesión segmentada, una frase por pausa (ver punto 1).
         allowForSilence: PAUSE_MS,
         // Android pita al abrir el micrófono; reabriéndolo cada pocos
