@@ -143,6 +143,39 @@ export const RULES: readonly Rule[] = [
   },
   {
     /**
+     * La regla de ハム ya decía «salvo que ponga pollo (鶏ハム) o pavo», pero
+     * el código no lo cumplía: 鶏ハム saltaba como prohibido porque contiene
+     * ハム. Ahora tiene término propio, más largo, y gana la coincidencia.
+     * Dudoso y no lícito, igual que 鶏肉: el problema del ave no es el cerdo,
+     * es el sacrificio.
+     */
+    id: 'ham-poultry',
+    terms: ['鶏ハム', '鶏肉ハム', 'チキンハム', 'ターキーハム', '七面鳥ハム'],
+    search: ['tori hamu', 'chicken ham', 'turkey ham'],
+    status: 'mushbooh',
+    category: 'animal',
+    label: { ar: 'هام من الدجاج أو الديك الرومي', en: 'Poultry ham', es: 'Jamón de ave' },
+    why: {
+      ar: 'ليس من الخنزير، فالمصدر مصرَّح به. يبقى السؤال عن الذبح: حلال إن كان بشهادة، وإلا فمشبوه.',
+      en: 'Not pork — the source is declared. What remains is the slaughter: lawful if certified, doubtful otherwise.',
+      es: 'No es cerdo, el origen está declarado. Queda la cuestión del sacrificio: lícito si hay certificado, dudoso si no.',
+    },
+  },
+  {
+    id: 'bacon-poultry',
+    terms: ['ターキーベーコン', '七面鳥ベーコン', 'チキンベーコン', '鶏ベーコン'],
+    search: ['turkey bacon', 'chicken bacon'],
+    status: 'mushbooh',
+    category: 'animal',
+    label: { ar: 'بيكون من الديك الرومي', en: 'Poultry bacon', es: 'Bacon de ave' },
+    why: {
+      ar: 'ليس من الخنزير، فالمصدر مصرَّح به. يبقى السؤال عن الذبح.',
+      en: 'Not pork — the source is declared. What remains is the slaughter.',
+      es: 'No es cerdo, el origen está declarado. Queda la cuestión del sacrificio.',
+    },
+  },
+  {
+    /**
      * Dudoso, no prohibido, y la diferencia importa: en Japón la
      * 魚肉ソーセージ (de pescado) es un básico de cualquier konbini y es
      * lícita. Esa tiene su propia regla, más larga, y gana la coincidencia.
@@ -329,7 +362,12 @@ export const RULES: readonly Rule[] = [
   },
   {
     id: 'gelatin-fish',
-    terms: ['魚由来ゼラチン', '魚ゼラチン', 'フィッシュゼラチン'],
+    // El origen entre paréntesis DETRÁS es el formato normal de una etiqueta
+    // japonesa, y era justo el que no se leía: «ゼラチン（魚由来）» salía dudoso.
+    terms: [
+      '魚由来ゼラチン', '魚ゼラチン', 'フィッシュゼラチン',
+      'ゼラチン（魚由来）', 'ゼラチン（魚）', 'ゼラチン（魚肉由来）',
+    ],
     status: 'halal',
     category: 'seafood',
     label: { ar: 'جيلاتين سمكي', en: 'Fish gelatin', es: 'Gelatina de pescado' },
@@ -337,6 +375,51 @@ export const RULES: readonly Rule[] = [
       ar: 'المصدر مصرَّح به وهو السمك، وميتة البحر حلال.',
       en: 'The declared source is fish, and sea creatures are lawful without slaughter.',
       es: 'El origen declarado es pescado, y los animales marinos son lícitos sin sacrificio ritual.',
+    },
+  },
+  {
+    id: 'gelatin-plant',
+    terms: ['植物性ゼラチン', '植物由来ゼラチン', 'ゼラチン（植物由来）', 'ゼラチン（海藻由来）'],
+    search: ['shokubutsusei zerachin', 'plant gelatin'],
+    status: 'halal',
+    category: 'plant',
+    label: { ar: 'جيلاتين نباتي', en: 'Plant gelatin', es: 'Gelatina vegetal' },
+    why: {
+      ar: 'المصدر مصرَّح به وهو نباتي (عادةً أجار أو كاراجينان)، فلا مسألة ذبح أصلًا.',
+      en: 'The declared source is plant (usually agar or carrageenan), so slaughter never comes into it.',
+      es: 'El origen declarado es vegetal (agar o carragenano casi siempre), así que el sacrificio ni entra en juego.',
+    },
+  },
+  {
+    id: 'glycerin-plant',
+    terms: [
+      '植物性グリセリン', '植物由来グリセリン',
+      'グリセリン（植物由来）', 'グリセリン（大豆由来）', 'グリセリン（パーム由来）',
+    ],
+    search: ['shokubutsusei guriserin', 'plant glycerin', 'vegetable glycerin'],
+    status: 'halal',
+    category: 'plant',
+    label: { ar: 'جلسرين نباتي', en: 'Plant glycerin', es: 'Glicerina vegetal' },
+    why: {
+      ar: 'الجلسرين لا يُشكَل إلا حين يكون مصدره حيوانيًا مجهولًا؛ وهنا مصرَّح بأنه نباتي.',
+      en: 'Glycerin is only doubtful when the animal source is unknown; here it is declared as plant.',
+      es: 'La glicerina solo es dudosa cuando el origen animal es desconocido; aquí se declara vegetal.',
+    },
+  },
+  {
+    id: 'emulsifier-plant',
+    terms: [
+      '乳化剤（大豆由来）', '乳化剤（植物由来）', '植物性乳化剤',
+      '大豆レシチン', 'レシチン（大豆由来）', '乳化剤（レシチン）',
+    ],
+    search: ['daizu reshichin', 'soy lecithin', 'plant emulsifier'],
+    status: 'halal',
+    category: 'plant',
+    label: { ar: 'مستحلِب نباتي', en: 'Plant emulsifier', es: 'Emulgente vegetal' },
+    why: {
+      ar: 'المستحلِب يُشكَل حين لا يُعرف مصدره؛ وهنا مصرَّح بأنه من الصويا أو من نبات.',
+      en: 'Emulsifier is doubtful when the source is unstated; here it is declared as soy or plant.',
+      es: 'El emulgente es dudoso cuando no se declara el origen; aquí se declara soja o vegetal.',
     },
   },
   {
