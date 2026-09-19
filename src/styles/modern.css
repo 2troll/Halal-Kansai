@@ -1141,31 +1141,41 @@ main h2 {
   height: 28px;
 }
 
+/* El botón mide 44 px de verdad —el mínimo para el dedo— pero solo ocupa 28
+   en la fila: el margen negativo se come la diferencia y el círculo no crece.
+   Antes se intentaba con un `::before` de `inset: -8px`, y NO funcionaba:
+   medido con elementFromPoint, solo respondían los 28 px del centro; a 21 px
+   del centro no tocaba en ninguna dirección. */
 .prayed-mark {
-  min-height: 28px;
+  width: 44px;
+  height: 44px;
+  margin: -8px;
   padding: 0;
-  border-radius: 50%;
-  border: 2px solid color-mix(in srgb, currentColor 45%, transparent);
+  border: none;
   background: transparent;
   cursor: pointer;
   display: grid;
   place-items: center;
-  /* Zona táctil de 44 px sin agrandar el círculo. */
   position: relative;
 }
 
+/* El círculo que se ve. */
 .prayed-mark::before {
   content: '';
   position: absolute;
-  inset: -8px;
+  width: 28px;
+  height: 28px;
+  box-sizing: border-box;
+  border-radius: 50%;
+  border: 2px solid color-mix(in srgb, currentColor 45%, transparent);
 }
 
-.prayed-mark[aria-pressed='true'] {
+.prayed-mark[aria-pressed='true']::before {
   background: var(--emerald);
   border-color: var(--emerald);
 }
 
-.times-list li.next .prayed-mark[aria-pressed='true'] {
+.times-list li.next .prayed-mark[aria-pressed='true']::before {
   background: var(--on-accent);
   border-color: var(--on-accent);
 }
@@ -1176,6 +1186,9 @@ main h2 {
   font-size: 0.95rem;
   font-weight: 700;
   line-height: 1;
+  /* Por encima del círculo, que va posicionado y si no lo taparía. */
+  position: relative;
+  z-index: 1;
 }
 
 .times-list li.next .prayed-mark[aria-pressed='true']::after {

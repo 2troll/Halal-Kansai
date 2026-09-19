@@ -25,17 +25,30 @@ const SCAN = (W) => `(() => {
   const out = [];
   const pane = document.querySelector('.pane:not([hidden])');
   const vis = (e) => { const s = getComputedStyle(e); return s.display !== 'none' && s.visibility !== 'hidden' && !e.closest('[hidden]'); };
+  // En SVG, className es un SVGAnimatedString (salía «[object SVGAnimatedString]»).
+  const clase = (e) => String(e.getAttribute('class') ?? '');
   for (const e of document.querySelectorAll('#app *')) {
     if (!vis(e) || e.closest('#map, .week-scroll, .chip-row, .filters, .leaflet-container')) continue;
     const r = e.getBoundingClientRect();
-    if (r.width && (r.right > ${W} + 1 || r.left < -1)) out.push('DESBORDA ' + e.tagName + '.' + String(e.className).slice(0,40));
+    if (r.width && (r.right > ${W} + 1 || r.left < -1)) out.push('DESBORDA ' + e.tagName + '.' + clase(e).slice(0,40));
     const s = getComputedStyle(e);
-    if (e.children.length === 0 && e.textContent.trim() && (s.overflow === 'hidden' || s.textOverflow === 'ellipsis' || s.whiteSpace === 'nowrap') && e.scrollWidth > e.clientWidth + 2 && !e.closest('select, .place-card h3, .nearest-body')) out.push('CORTADO ' + e.tagName + '.' + String(e.className).slice(0,30) + ' «' + e.textContent.trim().slice(0,30) + '»');
+    // scrollWidth/clientWidth son de caja HTML. En SVG no significan nada: en
+    // RTL Chrome devuelve un scrollWidth inflado para <text> y salían los
+    // cardinales N/S/E/W de la brújula como «recortados» sin estarlo (se
+    // midió: no se salen de la esfera y ocupan lo mismo que en inglés).
+    // Para SVG el recorte de verdad es salirse de la caja del <svg>.
+    if (e.ownerSVGElement) {
+      const svg = e.ownerSVGElement.getBoundingClientRect();
+      if (r.width && (r.left < svg.left - 0.5 || r.right > svg.right + 0.5 || r.top < svg.top - 0.5 || r.bottom > svg.bottom + 0.5))
+        out.push('CORTADO(svg) ' + e.tagName + '.' + clase(e).slice(0,30) + ' «' + (e.textContent ?? '').trim().slice(0,30) + '»');
+      continue;
+    }
+    if (e.children.length === 0 && e.textContent.trim() && (s.overflow === 'hidden' || s.textOverflow === 'ellipsis' || s.whiteSpace === 'nowrap') && e.scrollWidth > e.clientWidth + 2 && !e.closest('select, .place-card h3, .nearest-body')) out.push('CORTADO ' + e.tagName + '.' + clase(e).slice(0,30) + ' «' + e.textContent.trim().slice(0,30) + '»');
   }
   // Botones más pequeños de 40px (difíciles de tocar)
   for (const b of pane?.querySelectorAll('button, a.btn, select') ?? []) {
     if (!vis(b)) continue; const r = b.getBoundingClientRect();
-    if (r.width && r.height < 36) out.push('PEQUEÑO ' + b.tagName + '.' + String(b.className).slice(0,30) + ' ' + Math.round(r.height) + 'px');
+    if (r.width && r.height < 36) out.push('PEQUEÑO ' + b.tagName + '.' + clase(b).slice(0,30) + ' ' + Math.round(r.height) + 'px');
   }
   return out;
 })()`;
