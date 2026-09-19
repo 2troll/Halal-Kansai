@@ -171,11 +171,63 @@ function contaminationClauses(text: string): Array<[number, number]> {
   return clauses;
 }
 
+/**
+ * «No lleva X» NO es «lleva X».
+ *
+ * `豚肉不使用`, `みりん不使用`, `アルコールは使用しておりません`, `ノンアルコール`:
+ * son justo los productos que un musulmán en Japón busca, y la app los estaba
+ * marcando como prohibidos. El error iba en la peor dirección posible.
+ *
+ * El alcance se corta por separador de lista, no por cláusula: en
+ * `豚肉、みりん不使用` la negación es solo de la みりん. Por eso no se reutiliza
+ * `clauseRange`, que solo parte por paréntesis y 。 y se tragaría el cerdo.
+ */
+const SEPARADORES = '、，,･・/／（）()【】「」。\n';
+
+/** Negaciones que van DETRÁS del ingrediente, que es lo normal en japonés. */
+const NEGACION_POSTERIOR = [
+  '不使用', '未使用', '不添加', '無添加',
+  'を使用していません', 'は使用していません', '使用していません',
+  'を使用しておりません', 'は使用しておりません', '使用しておりません',
+  'を含みません', 'は含みません', '含みません',
+  'は含まれていません', '含まれていません',
+  '含有していません', 'フリー', 'ゼロ',
+];
+
+/** Y las que van DELANTE: ノンアルコール, 無アルコール. */
+const NEGACION_ANTERIOR = ['ノン', '無'];
+
+function negatedSpans(text: string): Array<[number, number]> {
+  const spans: Array<[number, number]> = [];
+
+  for (const marca of NEGACION_POSTERIOR) {
+    const needle = normalizeTerm(marca);
+    for (const at of findAll(text, needle)) {
+      let inicio = at;
+      while (inicio > 0 && !SEPARADORES.includes(text[inicio - 1]!)) inicio -= 1;
+      if (inicio < at) spans.push([inicio, at]);
+    }
+  }
+
+  for (const marca of NEGACION_ANTERIOR) {
+    const needle = normalizeTerm(marca);
+    for (const at of findAll(text, needle)) {
+      let fin = at + needle.length;
+      while (fin < text.length && !SEPARADORES.includes(text[fin]!)) fin += 1;
+      if (fin > at + needle.length) spans.push([at + needle.length, fin]);
+    }
+  }
+
+  return spans;
+}
+
 export function analyze(label: string): Analysis {
   const { text, map } = normalizeWithMap(label);
   const clauses = contaminationClauses(text);
+  const negados = negatedSpans(text);
   const insideClause = (start: number, end: number): boolean =>
-    clauses.some((c) => c[0] <= start && end <= c[1]);
+    clauses.some((c) => c[0] <= start && end <= c[1]) ||
+    negados.some((n) => n[0] <= start && end <= n[1]);
 
   const raw: RawMatch[] = [];
   for (const rule of RULES) {

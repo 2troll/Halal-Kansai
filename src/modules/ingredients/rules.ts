@@ -142,6 +142,38 @@ export const RULES: readonly Rule[] = [
     },
   },
   {
+    /**
+     * Dudoso, no prohibido, y la diferencia importa: en Japón la
+     * 魚肉ソーセージ (de pescado) es un básico de cualquier konbini y es
+     * lícita. Esa tiene su propia regla, más larga, y gana la coincidencia.
+     * Lo que queda aquí es la salchicha de carne sin origen declarado.
+     */
+    id: 'sausage',
+    terms: ['ソーセージ', 'ウインナー', 'ウィンナー', 'フランクフルト', 'sausage'],
+    search: ['soseji', 'sausage', 'wiener'],
+    status: 'mushbooh',
+    category: 'pork',
+    label: { ar: 'نقانق', en: 'Sausage', es: 'Salchicha' },
+    why: {
+      ar: 'النقانق في اليابان من الخنزير في الغالب، وحتى نقانق الدجاج كثيرًا ما تُحشى في مصارين خنزير. إن لم يُصرَّح بالمصدر ولا توجد شهادة حلال، فاجتنبها. أما 魚肉ソーセージ (من السمك) فحلال.',
+      en: 'Sausage in Japan is usually pork, and even chicken sausage is often stuffed in pork casing. With no declared source and no halal certificate, avoid it. Fish sausage (魚肉ソーセージ) is lawful.',
+      es: 'La salchicha en Japón suele ser de cerdo, y hasta la de pollo se embute a menudo en tripa de cerdo. Sin origen declarado ni certificado halal, evítala. La de pescado (魚肉ソーセージ) sí es lícita.',
+    },
+  },
+  {
+    id: 'sausage-fish',
+    terms: ['魚肉ソーセージ', 'さかなソーセージ', 'おさかなソーセージ'],
+    search: ['gyoniku soseji', 'fish sausage'],
+    status: 'halal',
+    category: 'seafood',
+    label: { ar: 'نقانق سمك', en: 'Fish sausage', es: 'Salchicha de pescado' },
+    why: {
+      ar: 'المصدر مصرَّح به وهو السمك، وميتة البحر حلال. تبقى مراجعة بقية القائمة (الميرين والكحول).',
+      en: 'The declared source is fish, and sea creatures are lawful. Still check the rest of the list for mirin or alcohol.',
+      es: 'El origen declarado es pescado, y los animales marinos son lícitos. Aun así, revisa el resto de la lista por si lleva mirin o alcohol.',
+    },
+  },
+  {
     id: 'bacon',
     terms: ['ベーコン', 'bacon'],
     status: 'haram',
@@ -509,7 +541,8 @@ export const RULES: readonly Rule[] = [
   },
   {
     id: 'amino-seasoning',
-    terms: ['調味料(アミノ酸等)', '調味料（アミノ酸等）', 'アミノ酸等'],
+    // うま味調味料 es el mismo aditivo con otro nombre en la etiqueta.
+    terms: ['調味料(アミノ酸等)', '調味料（アミノ酸等）', 'アミノ酸等', 'うま味調味料', 'うまみ調味料'],
     status: 'mushbooh',
     category: 'additive',
     label: { ar: 'محسّنات نكهة (أحماض أمينية)', en: 'Flavour enhancer (amino acids)', es: 'Potenciador de sabor (aminoácidos)' },
